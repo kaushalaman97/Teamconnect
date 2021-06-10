@@ -1,0 +1,552 @@
+{% extends 'admin_templates/admin_base.html' %}
+{% load static %}
+{% load i18n %}
+{% block title %}Add manager{% endblock %}
+{% block content %}
+          <!-- Begin Page Content -->
+          <div class="container-fluid">
+            <div class="page-wrap page-add-employee">
+              <div class="row">
+  
+                <!-- Area Chart -->
+                <div class="col-xl-12 col-lg-12">
+  
+                  <!-- Page Heading -->
+                  <div class="d-sm-flex align-items-center justify-content-between mt-2">
+                    <h1 class="h3 mb-0 text-gray-800">{% trans "Add Manager" %}</h1>
+                  </div>
+                  <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 px-0">
+                      <li class="breadcrumb-item"><a href="{% url 'admin_dashboard' %}">{% trans "Admin Dashboard" %}</a></li>
+                      <li class="breadcrumb-item active">{% trans "Add Manager" %}</li>
+                    </ol>
+                  </nav>
+                  <div class="card shadow py-3 px-4">
+                    <div class=" form-wrap-section">
+                      <div class="form-wrap">
+                        <div class="row form-row">
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              <label>{% trans "Name" %} <span class="color-red">*</span></label>
+                              <input type="text" class="form-control" placeholder="{% trans "Enter Name" %}" id="emergency_contact_person" onkeyup="full_name_validation()">
+                              <label id="emergency_contact_person_error" style="display: none;color: red;"></label>
+                            </div>
+                          </div>
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              <label>{% trans "Email" %} <span class="color-red">*</span></label>
+                              <input type="email" class="form-control" placeholder="example@mail.com" id="email" onkeyup="email_validation()">
+                              <label id="error_email" style="display: none;color: red;"></label>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row form-row">
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              <label>{% trans "Phone no." %} <span class="color-red">*</span></label>
+                              <input type="text" class="form-control" placeholder="1234567890" id="contact_number" onkeyup="phone_number_validation()" onkeypress="return accept_number(event)" value="8005555555">
+                              <label id="contact_number_label" style="display: none;color: red;"></label>
+                            </div>
+                          </div>
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              <label>{% trans "Manager's timezone" %} <span class="color-red">*</span></label>
+                              <select class="form-control" id="manager_timezone" onchange="manager_timezone_validation()">
+                                <option>{% trans "Please select Manager's timezone" %}</option>
+                                {% for tim in timezones %}
+                                  <option>{{tim}}</option>
+                                {% endfor %}  
+                              </select>
+                              <label id="manager_timezone_error" style="display: none;color: red;"></label>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row form-row justify-content-center">  
+                          <h5 class="px-1 text-gray-800 mb-2 my-4"><b>{% trans "Manager's Dashboard Timezones" %}</b></h5>
+                        </div>
+
+                        <div class="row form-row">                        
+                          <div class="col-lg-3">
+                            <div class="form-group">
+                              <label>{% trans "Time Zone 1" %} <span class="color-red">*</span></label>
+                              <select class="form-control" id="timezone1" onchange="timezone1_validation()">
+                                <option>{% trans "Please select Time Zone 1" %}</option>
+                                {% for tim in timezones %}
+                                  <option>{{tim}}</option>
+                                {% endfor %}  
+                              </select>
+                              <label id="timezone_1_error" style="display: none;color: red;"></label>
+                            </div>
+                          </div>
+                          <div class="col-lg-3">
+                            <div class="form-group">
+                              <label>{% trans "Time Zone 2" %} <span class="color-red">*</span></label>
+                              <select class="form-control" id="timezone2" onchange="timezone2_validation()">
+                                <option>{% trans "Please select Time Zone 2" %}</option>
+                                {% for tim in timezones %}
+                                  <option>{{tim}}</option>
+                                {% endfor %}  
+                              </select>
+                              <label id="timezone_2_error" style="display: none;color: red;"></label>
+                            </div>
+                          </div>
+                          <div class="col-lg-3">
+                            <div class="form-group">
+                              <label>{% trans "Time Zone 3" %} <span class="color-red">*</span></label>
+                              <select class="form-control"  id="timezone3" onchange="timezone3_validation()">
+                                <option>{% trans "Please select Time Zone 3" %}</option>
+                                {% for tim in timezones %}
+                                  <option>{{tim}}</option>
+                                {% endfor %}  
+                              </select>
+                              <label id="timezone_3_error" style="display: none;color: red;"></label>
+                            </div>
+                          </div>
+                          <div class="col-lg-3">
+                            <div class="form-group">
+                              <label>{% trans "Time Zone 4" %} <span class="color-red">*</span></label>
+                              <select class="form-control" id="timezone4" onchange="timezone4_validation()">
+                                <option>{% trans "Please select Time Zone 4" %}</option>
+                                {% for tim in timezones %}
+                                  <option>{{tim}}</option>
+                                {% endfor %}  
+                              </select>
+                              <label id="timezone_4_error" style="display: none;color: red;"></label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row form-row">
+                          <div class="col-lg-3">
+                            <div class="form-group">
+                              <label>{% trans "Department" %} <span class="color-red">*</span></label>
+                              <select class="form-control" id="department" onchange="department_validation()">
+                                <option>{% trans "Please select department" %}</option>
+                                {% for dept in departments %}
+                                  <option value="{{dept.id}}">{{dept.departments}}</option>
+                                {% endfor %}
+                              </select>
+                              <label id="department_error" style="display: none;color: red;"></label>
+                            </div>
+                          </div>
+
+                          <div class="col-lg-3">
+                            <div class="form-group">
+                              <label> {% trans "Designation" %} <span class="color-red">*</span></label>
+                              <select class="form-control" id="designation" onchange="designation_validation()">
+                                <option>{% trans "Please select designation" %}</option>
+                                {% for fun in designations %}
+                                  <option>{{fun.designation}}</option>
+                                {% endfor %}  
+                              </select>
+                              <label id="designation_error" style="display: none;color: red;"></label>
+                            </div>
+                          </div>
+
+
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              <label>{% trans "Password" %} <span class="color-red">*</span></label>
+                              <input type="password" class="form-control" placeholder="{% trans "Enter Password" %}" id="password" onkeyup="password_validation()">
+                              <label id="password_label" style="display: none;color: red;"></label>
+                            </div>
+                          </div>
+  
+  
+  
+                          <div class="col-lg-12">
+                            <div class="form-group text-center">
+                              <button type="button" class="d-sm-inline-block btn btn-sm btn-primary sbt-btn table-btn shadow-sm" id="add_manager_btn"> {% trans "Submit" %} </button>
+                            </div>
+                          </div>
+  
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Content Row -->
+  
+                </div>
+  
+  
+              </div>
+            </div>
+            <!-- Content Row -->
+  
+  
+  
+          </div>
+          <!-- /.container-fluid -->
+        </div>
+
+      </div>
+      <!-- End of Main Content -->
+
+
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+
+
+  <div class="adjust-clock task add-dce manager-alert modal" id="logout-conformation-popup" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2 flex-row align-items-center justify-content-between">
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn mt-0">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body p-3 p-md-4 p-lg-4">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0" id="universal_ssmsg">{% trans "Are you sure you want to logout?" %}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <a class="d-sm-inline-block btn btn-sm btn-primary yes-btn sbt-btn shadow-sm mr-2" href="{% url 'logout' %}"> {% trans "Yes" %} </a>
+        <button class="d-sm-inline-block btn btn-sm btn-primary yes-btn sbt-btn brown-clr shadow-sm" type="button"
+          data-dismiss="modal"> {% trans "No" %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+ <div class="submit-msg alert modal fade" id="universal_msg_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2 flex-row align-items-center justify-content-between">
+        <button class="close close-bntn" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn mt-0">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+              <p class="m-0" id="universal_msg">{% trans "Manager added successfully" %}</p>
+          </div>          
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn close-bntn shadow-sm" type="button"  data-dismiss="modal"> {% trans "Ok" %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+ <div class="submit-msg alert modal fade" id="universal_msg_modal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2 flex-row align-items-center justify-content-between">
+        <button class="close " type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn mt-0">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+              <p class="m-0" id="universal_msg1">{% trans "Employee added successfully" %}</p>
+          </div>          
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn  shadow-sm" type="button"  data-dismiss="modal"> {% trans "Ok" %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <!-- Core plugin JavaScript-->
+  <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+  <!-- Custom scripts for all pages-->
+  <script src="{% static 'js/sb-admin-2.js' %}"></script>
+  <script type="text/javascript">
+
+
+     function accept_number(evt){
+          evt = (evt) ? evt : window.event;
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            return true;
+        }
+
+
+
+
+    function phone_number_validation(){
+        phone_number = $("#contact_number").val()
+
+        if (phone_number == ""){
+            $("#contact_number_label").show()
+            $("#contact_number_label").html("{% trans 'This field is required' %}")
+            return false
+        }
+        else if (phone_number.length < 4 || phone_number.length >20){
+            $("#contact_number_label").show()
+            $("#contact_number_label").html("{% trans 'A phone number must contain 4-20 digits' %}")
+            return false;
+        }
+        else{
+            $("#contact_number_label").hide()
+            return true;               
+        }
+    }
+
+    function email_validation(){
+        email = $('#email').val()
+        email = $.trim(email)
+        var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+
+        if(email.length == '' || email.length == null) {
+            $("#error_email").show()
+            $("#error_email").html("{% trans 'This field is required' %}");
+            return false;
+        }            
+        else if(regex.test(email)==false){
+            $("#error_email").show()
+            $("#error_email").html("{% trans 'Please enter a valid email address' %}")
+            return false;
+        }
+        else{
+            $("#error_email").hide()
+            return true;
+        }
+    }
+
+
+    function password_validation(){
+        password=$("#password").val();
+        // var password_regex = /^(?=\S*[a-z][A-Z])(?=\S*\d)(?=\S*[^\w\s])\S{6,}$/;
+         password_regex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
+        if(password.length == '' || password.length == null) {
+            $("#password_label").show()
+            $("#password_label").html("{% trans 'This field is required' %}");
+            return false;
+        }
+        else{
+            if(password.length < 6 || password.length > 20 ){
+                $("#password_label").show()
+                $("#password_label").html("{% trans 'Password must contain 6 to 20 characters' %}");
+                return false;
+            }
+            else if(password_regex.test(password)==false){
+                $("#password_label").show()
+                $("#password_label").html("{% trans 'Password must contain Uppercase & lowercase letters, special characters, and numbers.' %}");
+                return false;
+            }
+            // else if(!!~password.indexOf(' ')){
+            //     $("#password_label").show()
+            //     $("#password_label").html("{% trans 'Password must not contain white spaces' %}");
+            //     return false;
+            // }
+            else{
+                $("#password_label").hide()
+                return true;
+            }
+        }
+    };
+
+    function full_name_validation(){
+      // var full_name_regex = /^[a-zA-Z ]+$/;
+      var full_name_regex = /^[^0-9]*$/
+      full_name = $('#emergency_contact_person').val()
+      full_name = $.trim(full_name)
+      if(full_name == '' || full_name == null) {
+          $("#emergency_contact_person_error").show()
+          $("#emergency_contact_person_error").html("{% trans 'This field is required' %}");               
+          return false;
+      }
+      else if(full_name_regex.test(full_name) == false){
+          $("#emergency_contact_person_error").show()
+          $("#emergency_contact_person_error").html("{% trans 'Name must not contain numbers' %}");
+          return false;                
+      }
+
+      else if (full_name.length < 3){
+          $("#emergency_contact_person_error").show()
+          $("#emergency_contact_person_error").html("{% trans 'Name must contain more than 3 characters' %}");
+          return false;
+      }
+      else if(full_name.length > 50){
+          $("#emergency_contact_person_error").show()
+          $("#emergency_contact_person_error").html("{% trans 'Name must contain less than 50 characters' %}");
+          return false; 
+      }
+      else{
+          $("#emergency_contact_person_error").hide()
+          return true;
+      }
+    }
+
+    function department_validation(){
+      dept = $("#department option:selected").text()
+      if(dept == "{% trans 'Please select department' %}"){
+        $("#department_error").html("{% trans 'Please select department' %}")
+        $("#department_error").show()
+        return false
+      }
+      else{
+        $("#department_error").hide()
+        return true
+      }
+    }
+
+    function designation_validation(){
+      designation = $("#designation option:selected").text()
+      if(designation == "{% trans 'Please select designation' %}"){
+        $("#designation_error").html("{% trans 'Please select designation' %}")
+        $("#designation_error").show()
+        return false
+      }
+      else{
+        $("#designation_error").hide()
+        return true
+      }
+    }
+
+    function timezone1_validation(){
+      city = $("#timezone1 option:selected").text()
+      if(city == "{% trans 'Please select Time Zone 1' %}"){
+        $("#timezone_1_error").html("{% trans 'Please select Time Zone 1' %}")
+        $("#timezone_1_error").show()
+        return false
+      }
+      else{
+        $("#timezone_1_error").hide()
+        return true
+      }
+    }
+
+
+     function timezone2_validation(){
+        city = $("#timezone2 option:selected").text()
+        if(city == "{% trans 'Please select Time Zone 2' %}"){
+          $("#timezone_2_error").html("{% trans 'Please select Time Zone 2' %}")
+          $("#timezone_2_error").show()
+          return false
+        }
+        else{
+          $("#timezone_2_error").hide()
+          return true
+        }
+    }
+
+     function timezone3_validation(){
+        city = $("#timezone3 option:selected").text()
+        if(city == "{% trans 'Please select Time Zone 3' %}"){
+          $("#timezone_3_error").html("{% trans 'Please select Time Zone 3' %}")
+          $("#timezone_3_error").show()
+          return false
+        }
+        else{
+          $("#timezone_3_error").hide()
+          return true
+        }
+    }
+
+     function timezone4_validation(){
+        city = $("#timezone4 option:selected").text()
+        if(city == "{% trans 'Please select Time Zone 4' %}"){
+          $("#timezone_4_error").html("{% trans 'Please select Time Zone 4' %}")
+          $("#timezone_4_error").show()
+          return false
+        }
+        else{
+          $("#timezone_4_error").hide()
+          return true
+        }
+    }
+
+    function manager_timezone_validation(){
+      city = $("#manager_timezone option:selected").text()
+        if(city == "{% trans "Please select Manager's timezone" %}"){
+          $("#manager_timezone_error").html("{% trans "Please select Manager's timezone" %}")
+          $("#manager_timezone_error").show()
+          return false
+        }
+        else{
+          $("#manager_timezone_error").hide()
+          return true
+        }
+    }
+
+    $("#add_manager_btn").click(function(){
+      phone_number_validation()
+      email_validation()
+      password_validation()
+      full_name_validation()
+      department_validation()
+      designation_validation()
+      manager_timezone_validation()
+      timezone1_validation()
+      timezone2_validation()
+      timezone3_validation()
+      timezone4_validation()
+      if (phone_number_validation() && email_validation() && password_validation() && full_name_validation() && department_validation() && designation_validation() && timezone1_validation() && timezone2_validation() && timezone3_validation() && timezone4_validation() && manager_timezone_validation()){
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'add_manager' %}",
+            data: {
+                "emergency_contact_person" : $("#emergency_contact_person").val(),
+                "email" : $("#email").val(),
+                "contact_number" : $("#contact_number").val(),
+                "timezone1" : $("#timezone1 option:selected").text(),
+                "timezone2" : $("#timezone2 option:selected").text(),
+                "timezone3" : $("#timezone3 option:selected").text(),
+                "timezone4" : $("#timezone4 option:selected").text(),
+                "department" : $("#department option:selected").text(),
+                "department_id" : $("#department option:selected").val(),
+                "designation" : $("#designation option:selected").text(),
+                "manager_timezone" : $("#manager_timezone option:selected").text(),
+                "password" : $("#password").val(),
+            },
+            success: function(response){
+              if(response == "User Created"){
+                $("#universal_msg_modal").modal("show")
+
+              }
+              else{
+                $("#universal_msg1").html("{% trans 'Email already exist. Please try with different email.' %}")
+                    $("#universal_msg_modal1").modal("show")
+              }
+            }
+        });
+      }
+    })
+
+    $(".close-bntn").click(function(){
+      location.href = "{% url 'admin_dashboard' %}";
+    })
+
+
+  </script>
+{% endblock %}

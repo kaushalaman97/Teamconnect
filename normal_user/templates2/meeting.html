@@ -1,0 +1,124 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src='https://meet.jit.si/external_api.js'></script>
+</head>
+<body>
+<style>
+.loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+  position: fixed;
+  
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+
+
+<!-- meeting id -->
+<input type="hidden" id="mid" value="{{ mid }}"> 
+
+<div class="loader"></div>
+<div id="video_container">
+    <div id="meet" style="height: 100vh;"></div>
+</div>  
+<!-- logged in users's role and username in hidden inputs to be used for socket communication is JS-->
+
+<input type="hidden" name="user_name" id="user_name" value="{{ name }}"/>
+
+<script type="text/javascript">
+
+    $(function(){
+        var meetingId = $('#mid').val(); // JITSI meeting id which is same as username
+        if(!meetingId)
+        {
+            alert('Meeting Id is Missing');
+            return;
+        }
+        var username = $('#user_name').val();
+        // console.log(username)
+        StartMeeting(username, meetingId); // starts JITSI meeting
+
+
+        var ApiObj = null;
+
+        function StartMeeting(userName, MeetingName){
+            // const domain = 'meet.mgdsw.info';//meet.mgdsw.info:13043
+            const domain = 'jitsi.mgdsw.info';
+            const options = {
+                roomName: MeetingName,
+                parentNode: document.querySelector('#meet'),
+                userInfo:{
+                    displayName: userName
+                },
+                configOverwrite: {},
+                interfaceConfigOverwrite: {
+                    SHOW_JITSI_WATERMARK: false,
+                    SHOW_WATERMARK_FOR_GUESTS: false,
+                    DEFAULT_REMOTE_DISPLAY_NAME: 'New user',
+                    CONNECTION_INDICATOR_DISABLED: true,
+                    DEFAULT_REMOTE_DISPLAY_NAME: 'Party Mates',
+                    DISPLAY_WELCOME_PAGE_TOOLBAR_ADDITIONAL_CONTENT: true,
+                    HIDE_INVITE_MORE_HEADER: true,
+                    JITSI_WATERMARK_LINK: '/images/watermark.png',
+                    NATIVE_APP_NAME: 'Virtual Dance Party',
+                    TOOLBAR_BUTTONS: [
+                'microphone', 'camera', 'closedcaptions', 'desktop', 'embedmeeting', 'fullscreen',
+                'fodeviceselection', 'hangup', 'profile', 'chat', 'recording',
+                'livestreaming', 'etherpad', 'sharedvideo', 'settings', 'raisehand',
+                'videoquality', 'filmstrip', 'invite', 'feedback', 'stats', 'shortcuts',
+                'tileview', 'videobackgroundblur', 'download', 'help', 'mute-everyone', 'security'
+            ],
+                },
+                onload: function(){
+                    $(".loader").hide();
+                }
+            };
+            ApiObj = new JitsiMeetExternalAPI(domain, options);
+            ApiObj.addEventListeners({
+                readyToClose: function(){
+                    $("#video_container").empty();
+                    //$("#joinMsg").show().text('Meeting Ended!');
+                    $(".loader").show();
+                    window.close();
+                }
+            })
+            ApiObj.executeCommand('subject', 'Internal Meeting');
+            
+        }
+        /*function HandupCall(){
+            ApiObj.executeCommand('hangup');
+        }*/
+        
+    });
+    
+</script>
+
+</body>
+</html>

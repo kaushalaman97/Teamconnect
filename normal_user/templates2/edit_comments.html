@@ -1,0 +1,389 @@
+{% extends 'base.html' %}
+{% load custom_template_tags %}
+{% load static %}
+{% load i18n %}
+{% block title %}{% trans 'Edit Scheduler' %}{% endblock %}
+{% block content %}
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+           <!-- for mobile device -->
+          <div class="row">
+            <div class="left-header-part mobile-device">
+            <div class="country-wrapper">
+
+              <div class="for-mobile">
+              <div class="country-field">
+                <a href="#" title=""><i class="fas fa-clock"></i> 10:00 am </a>
+                <div class="c-logo-block media">
+                <img class="align-self-center mr-2" src="{% static 'img/c-logo.png' %}" title="Blue Logo" alt="Blue Logo">
+                <p class="media-body"> USA </p>
+                </div>
+              </div>
+
+
+              <div class="country-field">
+                <a href="#" title=""><i class="fas fa-clock"></i> 10:00 am </a>
+                <div class="c-logo-block media">
+                <img class="align-self-center mr-2" src="{% static 'img/c-logo.png' %}" title="Blue Logo" alt="Blue Logo">
+                <p class="media-body"> USA </p>
+                </div>
+              </div>
+              </div>
+
+              <div class="for-mobile">
+              <div class="country-field">
+                <a href="#" title=""><i class="fas fa-clock"></i> 10:00 am </a>
+                <div class="c-logo-block media">
+                <img class="align-self-center mr-2" src="{% static 'img/c-logo.png' %}" title="Blue Logo" alt="Blue Logo">
+                <p class="media-body"> USA </p>
+                </div>
+              </div>
+
+              <div class="country-field">
+                <a href="#" title=""><i class="fas fa-clock"></i> 10:00 am </a>
+                <div class="c-logo-block media">
+                <img class="align-self-center mr-2" src="{% static 'img/c-logo.png' %}" title="Blue Logo" alt="Blue Logo">
+                <p class="media-body"> USA </p>
+                </div>
+              </div>
+              </div>
+            </div>
+            </div>
+          </div>
+          <!-- Content Row -->
+
+          <div class="row">
+
+            <!-- Area Chart -->
+            <div class="col-xl-12 col-lg-12">
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0 px-0">
+                  <li class="breadcrumb-item"><a href="{% url 'manager_dashboard' %}">{% trans "Manager Dashboard" %}</a></li>
+                  <li class="breadcrumb-item"><a href="{% url 'employee_profile' %}?employee_id={{employee_id}}">{% trans "Employee Profile" %}</a></li>
+                  <li class="breadcrumb-item"><a href="{% url 'scheduler_list' user_id %}">{% trans "Scheduled Time" %}</a></li>
+                  <li class="breadcrumb-item active">{% trans "Edit Scheduled Time" %}</li>
+                </ol>
+                </nav>
+
+              <div class="card shadow mb-4">
+                    <div class="card-body">
+                      <div class="row form-row">
+                      <!--   <div class="col-lg-12 text-center">
+                          <h5 class="modal-title schedule-heading" id="exampleModalLabel">{% trans "Scheduler" %} </h5>
+                        </div> -->
+                        <div class="col-lg-12">
+                          <table class="schedule-data" border="0">
+                            <tbody>
+                              <tr>
+                                <td><span class="btn bg">{% trans 'Start Date' %} </span></td>
+                                 <td>
+                                  <div class="label-wrapper">
+                                    <span class="btn">
+                                      <div class="form-group">
+
+                                         <input type="text" class="form-control datepicker schedule-date-cls" value="{{schedule_obj.start_date}}" id="start_date_overtime" >
+                                      </div>
+                                    </span>
+                                     <label id="start_date_scheduler_error" style="display: none;color: red;"></label>
+                                  </div>
+                                </td>
+                              </tr>
+            
+                              <tr>
+                                <td><span class="btn bg">{% trans 'End Date' %} </span></td>
+                                 <td>
+                                  <div class="label-wrapper">
+                                  <span class="btn">
+                                    <div class="form-group">
+                                      {% comment %} <input type="text" class="form-control"  value="{{schedule_obj.end_date}}" placeholder="DD/MM/YYYY" id="end_date_scheduler"> {% endcomment %}
+                                       <input type="text" class="form-control datepicker schedule-date-cls"  value="{{schedule_obj.end_date}}" placeholder="DD/MM/YYYY" id="end_date_overtime">
+                                    </div>
+                                  </span>
+                                      <label id="end_date_scheduler_error" style="display: none;color: red;"></label>
+                                    </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td><span class="btn bg">{% trans 'Start Time' %} </span></td>
+                                 <td>
+                                  <div class="label-wrapper">
+                                  <span class="btn">
+            
+                                    <div class="form-group start_date_form_group">
+   <input type="text" class="form-control  timepicker"  value="{{schedule_obj.start_time}}" name="starttime" id="start_time_overtime" placeholder="HH:MM" />
+                                      </div>
+                                  </span>
+                                      <label id="end_date_scheduler_error" style="display: none;color: red;"></label>
+                                    </div>
+                                </td>
+                              </tr>
+                            <tr>
+                                <td><span class="btn bg">{% trans 'End Time' %} </span></td>
+                                 <td>
+                                
+                                  <div class="label-wrapper">
+                                  <span class="btn">
+                                    <div class="form-group">
+                                <input type="text" class="form-control  timepicker"  value="{{schedule_obj.end_time}}" id="end_time_overtime" name="starttime"  placeholder="HH:MM" />
+                                    </div>
+                                  </span>
+                                      <label id="end_date_scheduler_error" style="display: none;color: red;"></label>
+                                    </div>
+                                </td>
+                              </tr>
+
+
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="col-lg-12 text-center">
+                          <label id="schedule-date-time-error" style="display: none;color: red;"></label>
+                          <div class="form-group">
+                            <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm" id="edit_schedule_btn"
+                              type="button">{% trans "Update OverTime" %}</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+              </div>
+            </div>
+
+
+          </div>
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <!--Start Schedule date-time  Modal-->
+<div class="adjust-clock modal fade" id="schedule-date-time" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  
+</div>
+<!-- End Schedule date-time  Modal-->
+<div class="submit-msg alert modal fade" id="universal_msg_modal" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2 flex-row align-items-center justify-content-between">
+        <button class="close close-bntn" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn mt-0">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0" id="universal_msg"></p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm close-bntn" type="button"
+          data-dismiss="modal"> {% trans "Ok" %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="submit-msg alert modal fade" id="universal_msg_modal11" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+        <button class="close " type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0">{% trans "Something Went Wrong" %}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm " type="button" data-dismiss="modal">
+          {% trans "Ok" %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="loader-overlay" id="page_loader" style="display: none;">
+  <div class="spinner-border text-primary" role="status">
+    <span class="sr-only">{% trans "Loading..." %}</span>
+  </div>
+</div>
+  <!-- Bootstrap core JavaScript-->
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+<!-- <script src="{% static 'datetime-picker/moment.min.js' %}"></script> -->
+<script src="{% static 'datetime-picker/wickedpicker.min.js' %}"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- <script type="text/javascript" src="http://wmh.github.io/jquery-scrollbox/jquery.scrollbox.js"></script> -->
+<script type="text/javascript" src="{% static 'js/scrollbox.js' %}"></script>
+<!-- Custom scripts for all pages-->
+<script src="{% static 'js/sb-admin-2.js' %}"></script>
+  {% for obj in scheduler_days_list %}
+  <script type="text/javascript">
+    {% if not obj.day_off %}
+    $("#date_picker_{{forloop.counter}}".toString()).wickedpicker({now : "{{obj.start_time}}", twentyFour: false})
+    $("#end_date_picker_{{forloop.counter}}".toString()).wickedpicker({now : "{{obj.end_time}}", twentyFour: false})
+    {% endif %}
+  </script>
+{% endfor %}
+<script type="text/javascript">
+  $("#start_date_scheduler").datepicker().datepicker("setDate", new Date("{{start_date}}"));
+  $("#end_date_scheduler").datepicker().datepicker("setDate", new Date("{{end_date}}"));
+  $(document).on('change', ".schedule_day_off", function(){
+    if($(this).is(":checked")){
+
+      $(this).parent().parent().parent().find(".scheduler_start_date").prop('disabled', true)
+      $(this).parent().parent().parent().find(".scheduler_start_date").val("{% trans 'Day Off' %}")
+      $(this).parent().parent().parent().find(".scheduler_end_date").prop('disabled', true)
+      $(this).parent().parent().parent().find(".scheduler_end_date").val("{% trans 'Day Off' %}")
+    }
+    else{
+
+      $(this).parent().parent().parent().find(".scheduler_start_date").prop('disabled', false)
+      $(this).parent().parent().parent().find(".scheduler_end_date").prop('disabled', false)
+
+      hid_scheduler_start_date = $(this).parent().parent().parent().find(".scheduler_start_date").attr("hid-value")
+      hid_scheduler_end_date = $(this).parent().parent().parent().find(".scheduler_end_date").attr("hid-value")
+      start_date_form_group = $(this).parent().parent().parent().find(".scheduler_start_date")
+      end_date_form_group = $(this).parent().parent().parent().find(".scheduler_end_date")
+      
+      if (hid_scheduler_start_date == "" && hid_scheduler_end_date == ""){
+      
+        $(this).parent().parent().parent().find(".scheduler_start_date").remove()
+        $(this).parent().parent().parent().find(".scheduler_end_date").remove()
+        $(this).parent().parent().parent().find(".start_date_form_group").html(start_date_form_group)
+        $(this).parent().parent().parent().find(".end_date_form_group").html(end_date_form_group)
+        $(this).parent().parent().parent().find(".scheduler_start_date").wickedpicker()
+        $(this).parent().parent().parent().find(".scheduler_end_date").wickedpicker()
+      }
+      else{
+        $(this).parent().parent().parent().find(".scheduler_start_date").remove()
+        $(this).parent().parent().parent().find(".start_date_form_group").html(start_date_form_group)
+        $(this).parent().parent().parent().find(".scheduler_start_date").wickedpicker({now : hid_scheduler_start_date, twentyFour:false})
+
+
+        $(this).parent().parent().parent().find(".scheduler_end_date").remove()
+        $(this).parent().parent().parent().find(".end_date_form_group").html(end_date_form_group)
+        $(this).parent().parent().parent().find(".scheduler_end_date").wickedpicker({now : hid_scheduler_end_date, twentyFour:false})
+      }
+
+
+
+    }
+  })
+
+  function time_list_validation() {
+    error_data = []
+    $(".schedule_tr").each(function(){
+        start_time = $(this).find(".scheduler_start_date").val()
+        end_time = $(this).find(".scheduler_end_date").val()
+        if (start_time != "{% trans 'Day Off' %}" && end_time != "{% trans 'Day Off' %}"){
+          if(start_time == end_time){
+            error_data.push(($(this).find(".schedule_day").text()).trim())            
+          }
+        }
+      })
+    console.log("-----",error_data.length)
+    if(error_data.length != 0 || error_data == "None"){
+      error_data_str = error_data.join(", ");
+
+      $("#schedule-date-time-error").html("Start and End time for "+error_data_str+" should not be same.")
+      $("#schedule-date-time-error").show()
+      return false
+    }
+    else{
+      $("#schedule-date-time-error").hide()
+      return true
+    }
+  }
+
+  function start_date_fn() {
+    start_date = $("#start_date_scheduler").val()
+    if (start_date == "") {
+      $("#start_date_scheduler_error").html("{% trans "This field is required" %}")
+      $("#start_date_scheduler_error").show()
+      return false
+    }
+    else {
+      $("#start_date_scheduler_error").hide()
+      return true
+    }
+  }
+
+  function end_date_fn() {
+    end_date = $("#end_date_scheduler").val()
+    if (end_date == "") {
+      $("#end_date_scheduler_error").html("{% trans "This field is required" %}")
+      $("#end_date_scheduler_error").show()
+      return false
+    }
+    else {
+      $("#end_date_scheduler_error").hide()
+      return true
+    }
+  }
+
+  $("#edit_schedule_btn").click(function () {
+      
+      start_date = $("#start_date_overtime").val();
+      end_date = $("#end_date_overtime").val();
+      start_time = $("#start_time_overtime").val();
+      end_time = $("#end_time_overtime").val();
+      
+     $.ajax({
+        url: "{% url 'edit_overtime' user_id overtime_id %}",
+        data: {
+          "start_date": start_date,
+          "end_date": end_date,
+          "start_time":start_time,
+          "end_time":end_time,
+        },
+        dataType: 'json',
+        type: 'POST',
+        success: function (response) {
+            console.log(start_time,end_time,start_date,end_date)
+          $("#page_loader").hide()
+          if (response == 1) {
+            
+            $("#universal_msg").html("Schedule updated successfully")
+            $("#universal_msg_modal").modal("show")
+          }
+        }
+      });
+
+    });
+ 
+  $(".close-bntn").click(function(){
+    window.location = "{% url 'overtime_list' user_id %}"
+  })
+
+</script>
+  
+{% endblock %}

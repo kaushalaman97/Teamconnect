@@ -1,0 +1,398 @@
+{% extends 'base.html' %}
+{% load custom_template_tags %}
+{% block title %}Attendence Record{% endblock %}
+{% load static %}
+{% load i18n %}
+{% block content %}
+
+				<!-- Begin Page Content -->
+				<div class="container-fluid">
+				   <!-- for mobile device -->
+					<div class="row">
+					  <div class="left-header-part mobile-device">
+						<div class="country-wrapper">
+
+						  <div class="for-mobile">
+							<div class="country-field">
+							  <a href="#" title=""><i class="fas fa-clock"></i> 10:00 am </a>
+							  <div class="c-logo-block media">
+								<img class="align-self-center mr-2" src="{% static 'img/c-logo.png' %}" title="Blue Logo" alt="Blue Logo">
+								<p class="media-body"> USA </p>
+							  </div>
+							</div>
+
+
+							<div class="country-field">
+							  <a href="#" title=""><i class="fas fa-clock"></i> 10:00 am </a>
+							  <div class="c-logo-block media">
+								<img class="align-self-center mr-2" src="{% static 'img/c-logo.png' %}" title="Blue Logo" alt="Blue Logo">
+								<p class="media-body"> USA </p>
+							  </div>
+							</div>
+						  </div>
+
+						  <div class="for-mobile">
+							<div class="country-field">
+							  <a href="#" title=""><i class="fas fa-clock"></i> 10:00 am </a>
+							  <div class="c-logo-block media">
+								<img class="align-self-center mr-2" src="{% static 'img/c-logo.png' %}" title="Blue Logo" alt="Blue Logo">
+								<p class="media-body"> USA </p>
+							  </div>
+							</div>
+
+							<div class="country-field">
+							  <a href="#" title=""><i class="fas fa-clock"></i> 10:00 am </a>
+							  <div class="c-logo-block media">
+								<img class="align-self-center mr-2" src="{% static 'img/c-logo.png' %}" title="Blue Logo" alt="Blue Logo">
+								<p class="media-body"> USA </p>
+							  </div>
+							</div>
+						  </div>
+						</div>
+					  </div>
+					</div>
+					<!-- Content Row -->
+
+					<div class="row">
+
+						<!-- Area Chart -->
+						<div class="col-xl-12 col-lg-12">
+							<nav aria-label="breadcrumb">
+								<ol class="breadcrumb mb-0 px-0">
+								  <li class="breadcrumb-item"><a href="{% url 'manager_dashboard' %}">{% trans "Manager Dashboard" %}</a></li>
+								  <li class="breadcrumb-item"><a href="{% url 'employee_profile' %}?employee_id={{employee_id}}">{% trans "Employee Profile" %}</a></li>
+								  <li class="breadcrumb-item active">{% trans "Attendance Record" %}</li>
+								</ol>
+							  </nav>
+
+							<div class="card shadow mb-4">
+								<!-- Card Header - Dropdown -->
+								<div
+									class="card-header no-border py-3 d-flex flex-row align-items-center justify-content-between">
+									<h6 class="m-0 font-weight-bold text-primary"> {% trans 'Attendance Record' %} : <span
+											class="ml-2"> {{user_details.name}} </span></h6>
+
+								</div>
+								<!-- Table  -->
+								<div class="table-responsive">
+									<table class="table table-bordered" cellspacing="0" width="100%">
+										<tr class="border-bottom-2">
+											<th>{% trans "Date" %}</th>
+											<th>{% trans "Shift" %}</th>
+											<th>{% trans "Schedule Time In" %}</th>
+											<th>{% trans "Actual Time In" %}</th>
+											<th>{% trans "Gap" %}</th>
+											<th>{% trans "Schedule Time Off" %}</th>
+											<th>{% trans "Actual Time Off" %}</th>
+											<th>{% trans "Gap" %}</th>
+										</tr>
+										{% if page_obj %}
+											{% for sch in page_obj %}
+												<tr>
+													<td>{{sch.start_date|date:'d/m/Y'}}</td>
+													<td>{% if sch.shift %}{{sch.shift}}{% endif %}</td>
+													<td>{{sch.start_time|date:'h:i A'}}</td>
+													<td> {{sch.login_time|date:'h:i A'}}</td>
+													<td>
+														{% if sch.start_time and sch.login_time %}
+															{{sch.get_time_diff}} 
+															{% if sch.get_time_diff == '+' %}
+																{% time_difference sch.start_date sch.start_time sch.login_time as time %}
+
+																<span style="color: #FF0000;">{{time}}</span>
+															{% else %}
+																{% time_difference sch.start_date sch.start_time sch.login_time as time %}
+
+																<span style="color: #2cd639;">{{time}}</span>
+															{% endif %}
+														{% endif %}
+													</td>
+													<td>{{sch.end_time|date:'h:i A'}}</td>
+													<td> {{sch.logout_time|date:'h:i A'}}</td>
+													<td>
+														{% if sch.end_time and sch.logout_time %}
+															{{sch.get_time_diff_end}} 
+															{% time_difference sch.start_date sch.end_time sch.logout_time as time %}
+
+															{% if sch.get_time_diff_end == '+' %}
+																{% time_difference sch.start_date sch.end_time sch.logout_time as time %}
+
+																<span style="color: #FF0000;">{{time}}</span>
+															{% else %}
+																{% time_difference sch.start_date sch.end_time sch.logout_time as time %}
+
+																<span style="color: #2cd639;">{{time}}</span>
+															{% endif %}
+														{% endif %}
+
+													</td>
+												</tr>
+											{% endfor %}
+										{% else %}
+											<tr class="text-center"><td colspan="8">{% trans "No data found" %}</td></tr>
+										{% endif %}
+									</table>
+								</div>
+								{% if page_obj.paginator.num_pages > 1 %}
+				  <div class="card-body">
+					<div class="row align-items-center">
+					  <div class="col">
+						<span>{% trans "Showing" %} {{page_obj.start_index}} {% trans "to" %} {{page_obj.end_index}} {% trans "of" %} {{schedule_obj_count}}</span>
+					  </div>
+					  <div class="col">
+						<nav aria-label="Page navigation">
+						  <ul class="pagination pg-blue justify-content-end">
+							  {% if page_obj.number != 1 %}
+								<li class="page-item"><a class="page-link" href="?page=1">{% trans "First" %}</a></li>
+							  {% else %}
+								<li class="page-item disabled"><a class="page-link" href="#">{% trans "First" %}</a></li>
+							  {% endif %}
+							  {% if page_obj.has_previous %}
+								<li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+							  {% else %}
+								<li class="page-item disabled"><a class="page-link" href="#">&laquo;</a></li>
+							  {% endif %}
+							  {% for i in page_obj.paginator.page_range %}
+								{% if page_obj.number == i %}
+								  <li class="page-item active"><a class="page-link" href="#">{{ i }} <span class="sr-only">({% trans "current" %})</span></a></li>
+								{% elif page_obj.number > i|add:"-5" and page_obj.number < i|add:"+5"%}
+								  <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+								{% endif %}
+							  {% endfor %}
+							  {% if page_obj.has_next %}
+								<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+							  {% else %}
+								<li class="page-item disabled"><a class="page-link" href="#">&raquo;</a></li>
+							  {% endif %}
+							  {% if page_obj.paginator.num_pages != page_obj.number %}
+								<li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{% trans "Last" %}</a></li>
+							  {% else %}
+								<li class="page-item disabled"><a class="page-link" href="#">{% trans "Last" %}</a></li>
+							  {% endif %}
+						  </ul>
+					  </nav>  
+					  </div>
+					</div>
+				  </div>
+				  {% endif %}
+							</div>
+						</div>
+
+
+					</div>
+
+				</div>
+				<!-- /.container-fluid -->
+
+			</div>
+			<!-- End of Main Content -->
+
+		</div>
+		<!-- End of Content Wrapper -->
+
+	</div>
+	<!-- End of Page Wrapper -->
+
+	<!-- Scroll to Top Button-->
+	<a class="scroll-to-top rounded" href="#page-top">
+		<i class="fas fa-angle-up"></i>
+	</a>
+
+	<!-- Manager Alert Modal-->
+	<div class="adjust-clock task manager-alert modal" id="manager-alert" tabindex="-1" role="dialog"
+		aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Manager's Alert </h5>
+					<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+						<div class="close-btn">
+							<span aria-hidden="true">×</span>
+						</div>
+					</button>
+				</div>
+				<div class="modal-body p-3 p-md-4 p-lg-4">
+					<div class="row form-row">
+						<div class="col-lg-12">
+							<div class="mb-2 text-center">
+								<h5 class="m-0 mb-1">Send Alert to </h5>
+								<h6 class="m-0 font-weight-bold text-primary"> Jacob Watts </h6>
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<div class="form-group m-0">
+								<label> Discription </label>
+								<textarea type="text" class="form-control"
+									placeholder="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industr..."></textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer border-top-0">
+					<button class="d-sm-inline-block btn w-100 btn-sm btn-primary" type="button" data-dismiss="modal">
+						OK </button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+	<!-- Manager Send Email Modal-->
+	<div class="adjust-clock task manager-email modal" id="manager-email" tabindex="-1" role="dialog"
+		aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Send Email: <span
+							class="mr-2 d-lg-inline font-weight-bold text-black1 small word-style">Jacob Watts</span>
+					</h5>
+					<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+						<div class="close-btn">
+							<span aria-hidden="true">×</span>
+						</div>
+					</button>
+				</div>
+				<div class="modal-body p-3 p-md-4 p-lg-4">
+					<div class="row form-row">
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label>To</label>
+								<input type="text" class="form-control" placeholder="mail@mail.com" required>
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label>From</label>
+								<input type="text" class="form-control" placeholder="adminmail@mail.com" required>
+							</div>
+						</div>
+
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label>Subject</label>
+								<input type="text" class="form-control" placeholder="Lorem Ipsum is simply " required>
+							</div>
+						</div>
+
+						<div class="col-lg-12">
+							<div class="form-group m-0">
+								<label>Description</label>
+								<textarea type="text" class="form-control"
+									placeholder="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industr..."></textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer border-top-0">
+					<button class="d-sm-inline-block btn btn-sm btn-primary px-5" type="button" data-dismiss="modal">
+						Send </button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+	<!-- Manager Send Email Modal-->
+	<div class="adjust-clock task manager-email modal" id="manager-email" tabindex="-1" role="dialog"
+		aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Send Email: <span
+							class="mr-2 d-lg-inline font-weight-bold text-black1 small word-style">Jacob Watts</span>
+					</h5>
+					<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+						<div class="close-btn">
+							<span aria-hidden="true">×</span>
+						</div>
+					</button>
+				</div>
+				<div class="modal-body p-3 p-md-4 p-lg-4">
+					<div class="row form-row">
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label>To</label>
+								<input type="text" class="form-control" placeholder="mail@mail.com" required>
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label>From</label>
+								<input type="text" class="form-control" placeholder="adminmail@mail.com" required>
+							</div>
+						</div>
+
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label>Subject</label>
+								<input type="text" class="form-control" placeholder="Lorem Ipsum is simply " required>
+							</div>
+						</div>
+
+						<div class="col-lg-12">
+							<div class="form-group m-0">
+								<label>Description</label>
+								<textarea type="text" class="form-control"
+									placeholder="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industr..."></textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer border-top-0">
+					<button class="d-sm-inline-block btn btn-sm btn-primary px-5" type="button" data-dismiss="modal">
+						Send </button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+	<!-- Manager  Comment Modal-->
+	<div class="adjust-clock task manager-email comment modal" id="manager-comment" tabindex="-1" role="dialog"
+		aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Comment to: <span
+							class="mr-2 d-lg-inline font-weight-bold text-black1 small word-style">Jacob Watts</span>
+					</h5>
+					<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+						<div class="close-btn">
+							<span aria-hidden="true">×</span>
+						</div>
+					</button>
+				</div>
+				<div class="modal-body p-3 p-md-4 p-lg-4">
+					<div class="row form-row">
+						<div class="col-lg-12">
+							<div class="form-group m-0">
+								<label>Comment</label>
+								<textarea type="text" class="form-control"
+									placeholder="Lorem Ipsum is simply dummy text of the printing and typesetting industry"></textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer border-top-0">
+					<button class="d-sm-inline-block btn btn-sm btn-primary px-5" type="button" data-dismiss="modal">
+						Save </button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+	<!-- Bootstrap core JavaScript-->
+	<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+	<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+	<!-- Core plugin JavaScript-->
+	<script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+	<!-- Custom scripts for all pages-->
+	<script src="{% static 'js/sb-admin-2.js' %}"></script>
+{% endblock %}

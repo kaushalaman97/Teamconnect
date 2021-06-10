@@ -1,0 +1,476 @@
+{% extends 'admin_templates/admin_base.html' %}
+{% load static %}
+{% load i18n %}
+{% block title %}City{% endblock %}
+{% block content %}
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <div class="dashboard-body">
+
+           
+            <!-- Content Row -->
+
+            <div class="row">
+
+              <!-- Area Chart -->
+              <div class="col-xl-12 col-lg-12">
+
+                <!-- Page Heading -->
+                <div class="d-sm-flex align-items-center justify-content-between mb-2 mt-2">
+                  <!-- <h1 class="h3 mb-0 text-gray-800 mt-2 mr-3">Cities </h1> -->
+                  <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                      <li class="breadcrumb-item"><a href="{% url 'admin_dashboard' %}">{% trans "Admin Dashboard" %}</a></li>
+                      <li class="breadcrumb-item active">{% trans "City" %}</li>
+                    </ol>
+                  </nav>
+
+                  <div class="grp-btns ml-auto">
+                    <a href="#add-city-popup" data-toggle="modal" data-target="#add-city-popup"
+                      class="d-sm-inline-block btn btn-sm btn-primary table-btn shadow-sm mr-2 add_city_popup"> {% trans 'Add City' %} </a>
+
+                  </div>
+                </div>
+
+                <!-- Content Row -->
+                <div class="row blocks-all">
+
+                  <!-- Earnings (Monthly) Card Example -->
+                  
+
+                  
+                </div>
+
+                <div class="card shadow mb-4">
+                  <!-- Card Header - Dropdown -->
+                  <div class="card-header no-border py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary"> {% trans 'City List' %} ({{city_count}}) </h6>
+                  </div>
+                  <!-- Table  -->
+                  <div class="table-responsive-sm">
+                    <table class="table table-bordered" cellspacing="0" width="100%">
+                      <tr class="border-bottom-2">
+                        <th>{% trans 'Serial no.' %}</th>
+                        <th>{% trans 'City' %}</th>
+                        <th>{% trans 'Actions' %}</th>
+                      </tr>
+                      {% if city_obj %}
+                        {% for city in city_obj %}
+                          <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td>{{city.cities}}</td>
+                            <td>
+                              <div class="gray-circle">
+                                <div class="icons">
+                                  <span>
+                                    <a class="edit_city_icon" data-id="{{city.id}}" data-name="{{city.cities}}" >
+                                      <i class="far fa-edit"></i>
+                                    </a>
+                                    <a class="remove_city_icon" data-attr="{{city.id}}">
+                                      <i class="far fa-trash-alt"></i>
+                                    </a>
+                                  </span>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        {% endfor %}
+                      {% else %}
+                      <tr>
+                        <td colspan="7"><h1>{% trans 'No data found' %}</h1></td>
+                      </tr>
+                      {% endif %}
+                    </table>
+                  </div>
+                  {% if city_obj.paginator.num_pages > 1 %}
+                  <div class="card-body">
+                    <div class="row align-items-center">
+                      <div class="col">
+                        <span>{% trans 'Showing' %} {{city_obj.start_index}} {% trans 'to' %} {{city_obj.end_index}} {% trans 'of' %} {{city_count}}</span>
+                      </div>
+                      <div class="col">
+                        <nav aria-label="Page navigation">
+                          <ul class="pagination pg-blue justify-content-end">
+                              {% if city_obj.number != 1 %}
+                                <li class="page-item"><a class="page-link" href="?page=1">{% trans 'First' %}</a></li>
+                              {% else %}
+                                <li class="page-item disabled"><a class="page-link" href="#">{% trans 'First' %}</a></li>
+                              {% endif %}
+                              {% if city_obj.has_previous %}
+                                <li class="page-item"><a class="page-link" href="?page={{ city_obj.previous_page_number }}">&laquo;</a></li>
+                              {% else %}
+                                <li class="page-item disabled"><a class="page-link" href="#">&laquo;</a></li>
+                              {% endif %}
+                              {% for i in city_obj.paginator.page_range %}
+                                {% if city_obj.number == i %}
+                                  <li class="page-item active"><a class="page-link" href="#">{{ i }} <span class="sr-only">({% trans 'current' %})</span></a></li>
+                                {% elif city_obj.number > i|add:"-5" and city_obj.number < i|add:"+5"%}
+                                  <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                {% endif %}
+                              {% endfor %}
+                              {% if city_obj.has_next %}
+                                <li class="page-item"><a class="page-link" href="?page={{ city_obj.next_page_number }}">&raquo;</a></li>
+                              {% else %}
+                                <li class="page-item disabled"><a class="page-link" href="#">&raquo;</a></li>
+                              {% endif %}
+                              {% if city_obj.paginator.num_pages != city_obj.number %}
+                                <li class="page-item"><a class="page-link" href="?page={{ city_obj.paginator.num_pages }}">{% trans 'Last' %}</a></li>
+                              {% else %}
+                                <li class="page-item disabled"><a class="page-link" href="#">{% trans 'Last' %}</a></li>
+                              {% endif %}
+                          </ul>
+                      </nav>  
+                      </div>
+                    </div>
+                  </div>
+                  {% endif %}
+                </div>
+
+              </div>
+
+
+            </div>
+          </div>
+
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+
+<div class="adjust-clock task add-dce manager-alert modal" id="logout-conformation-popup" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2 flex-row align-items-center justify-content-between">
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn mt-0">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body p-3 p-md-4 p-lg-4">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0" id="universal_ssmsg">{% trans 'Are you sure you want to logout?' %}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <a class="d-sm-inline-block btn btn-sm btn-primary yes-btn sbt-btn shadow-sm mr-2" href="{% url 'logout' %}"> {% trans 'Yes' %} </a>
+        <button class="d-sm-inline-block btn btn-sm btn-primary yes-btn sbt-btn brown-clr shadow-sm" type="button"
+          data-dismiss="modal">{% trans 'No' %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Add City Modal-->
+<div class="adjust-clock task add-dce manager-alert modal" id="add-city-popup" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+          <h5 class="modal-title" id="exampleModalLabel">{% trans 'Add City' %} </h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <div class="close-btn mt-0">
+              <span aria-hidden="true">×</span>
+            </div>
+          </button>
+        </div>
+        <div class="modal-body p-3 p-md-4 p-lg-4">
+          <div class="row form-row">
+            <div class="col-lg-12">
+              <div class="form-group m-0">
+                <input type="text" class="form-control" placeholder="{% trans "Enter City Name *" %}" onkeyup="city_error_fn()" id="add_city" >
+                <span  id="city_error" style="display: none;color: red;"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-top-0">
+          <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm" type="button" id="add_city_btn" > {% trans 'Add' %} </button>
+          <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn brown-clr shadow-sm" type="button"
+            data-dismiss="modal"> {% trans 'Cancel' %} </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+<div class="submit-msg alert modal fade" id="universal_msg_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2 flex-row align-items-center justify-content-between">
+        <button class="close close-bntn" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn mt-0">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+              <p class="m-0" id="universal_msg"></p>
+          </div>          
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary close-bntn sbt-btn shadow-sm" type="button"  data-dismiss="modal"> {% trans 'Ok' %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="submit-msg alert modal fade" id="universal_msg_modal11" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+        <button class="close " type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0" >{% trans 'Something Went Wrong' %}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm " type="button"
+          data-dismiss="modal"> {% trans 'Ok' %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Delete conformation popup -->
+<div class="adjust-clock task add-dce manager-alert modal" id="delete-conformation-popup" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2 flex-row align-items-center justify-content-between">
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn mt-0">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body p-3 p-md-4 p-lg-4">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0" id="universal_msg">{% trans 'Are you sure you want to delete this City?' %}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary yes-btn sbt-btn shadow-sm mr-2"
+          id="confirm_city_task" type="button"> {% trans 'Yes' %} </button>
+        <button class="d-sm-inline-block btn btn-sm btn-primary yes-btn sbt-btn brown-clr shadow-sm" type="button"
+          data-dismiss="modal"> {% trans 'No' %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="adjust-clock task add-dce manager-alert modal" id="edit-city-popup" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabelDesignation" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+          <h5 class="modal-title" id="exampleModalLabelcity">{% trans 'Edit Function' %} </h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <div class="close-btn mt-0">
+              <span aria-hidden="true">×</span>
+            </div>
+          </button>
+        </div>
+        <div class="modal-body p-3 p-md-4 p-lg-4">
+          <div class="row form-row">
+            <div class="col-lg-12">
+              <div class="form-group m-0">
+                <input type="text" class="form-control" placeholder="{% trans "Enter City Name *" %}" onkeyup="edit_function_error_fn()" id="edit_city">
+                <span  id="edit_city_error" style="display: none;color: red;"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-top-0">
+          <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm" type="button" id="edit_city_btn" > {% trans 'Save' %} </button>
+          <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn brown-clr shadow-sm" type="button"
+            data-dismiss="modal"> {% trans 'Cancel' %} </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Bootstrap core JavaScript-->
+  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <!-- Core plugin JavaScript-->
+  <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+  <!-- Custom scripts for all pages-->
+  <script src="{% static 'js/sb-admin-2.js' %}"></script>
+  <script type="text/javascript">
+
+
+
+
+    $(".remove_city_icon").click(function(){
+        $("#delete-conformation-popup").modal('show')
+        $("#confirm_city_task").attr('data-attr', $(this).attr('data-attr'))
+    })
+
+    $(".edit_city_icon").click(function(){
+        $("#edit-city-popup").modal('show')
+        name = $(this).attr('data-name')
+        id = $(this).attr('data-id')
+        $("#edit_city_btn").attr('data-attr', id)
+        $("#edit_city").attr('data-title', name)
+        $("#edit_city").val(name)
+        $("#edit_city_error").hide()
+    })
+
+
+    $("#edit_city_btn").click(function () {
+      
+      edit_city_error_fn()
+      city_name = $("#edit_city").val()
+      if (edit_city_error_fn()) {
+        
+        $.ajax({
+          type: "POST",
+          url: "{% url 'add_city' %}",
+          data: { "city_name": city_name, "city_id": $(this).attr("data-attr") },
+          success: function (response) {
+            // alert(response)
+            if(response == "Designation created"){
+              $("#edit-city-popup").modal("hide")
+              $("#edit-designation-popup").modal("hide")
+              $("#universal_msg").html("{% trans 'City edited successfully' %}")
+              $("#universal_msg_modal").modal("show")
+            }
+            else if(response == "Already exist"){
+              $("#edit_city_error").html("{% trans 'City already exist' %}")
+              $("#edit_city_error").show()
+            }
+
+          }
+        })    
+      }
+    })
+
+    $("#confirm_city_task").click(function(){
+        id = $(this).attr('data-attr')
+        $.ajax({
+          type: 'DELETE',
+          url: "{% url 'add_city' %}",
+          data: { "city_id": id },
+          success: function (response) {
+            if (response == 1) {
+              $("#delete-conformation-popup").modal("hide")
+              // $("#edit-designation-popup").modal("hide")
+              $("#universal_msg").html("{% trans 'City deleted successfully' %}")
+              $("#universal_msg_modal").modal("show")
+            }
+            else {
+
+            }
+          }
+        });
+    })
+
+    function city_error_fn(){
+      city_name = $("#add_city").val()
+      if (city_name == "") {
+        $("#city_error").html("{% trans 'This field is required' %}")
+        $("#city_error").show()
+        return false
+      }
+      else{
+        $("#city_error").hide()
+        return true
+      }
+    }
+
+    function edit_city_error_fn(){
+      city_name = $("#edit_city").val()
+      title = $("#edit_city").attr('data-title')
+      if (city_name == "") {
+        $("#edit_city_error").html("{% trans 'This field is required' %}")
+        $("#edit_city_error").show()
+        return false
+      }
+      else if(city_name == title){
+        // $("#edit_city_error").html("city name should not be same")
+        $("#edit_city_error").hide()
+        return false 
+      }
+      else{
+        $("#edit_city_error").hide()
+        return true
+      }
+    }
+
+    $(".add_city_popup").click(function(){
+      $("#city_error").hide()
+      $("#add_city").val("")
+    })
+
+    $("#add_city_btn").click(function () {
+      city_error_fn()
+      city_name = $("#add_city").val()
+      if (city_error_fn()) {
+        $.ajax({
+          type: "PUT",
+          url: "{% url 'add_city' %}",
+          data: { "city_name": city_name },
+          success: function (response) {
+            if(response == "City created"){
+              
+              $("#add-city-popup").modal("hide")
+              $("#universal_msg").text("{% trans 'City added successfully' %}")
+              $("#universal_msg_modal").modal("show")
+            }
+            else if(response == "Already exist"){
+              $("#city_error").html("{% trans 'City already exist' %}")
+              $("#city_error").show()
+            }
+
+          }
+        })
+      }
+    })
+
+    $(".close-bntn").click(function(){
+      location.reload()
+    })
+
+
+
+  </script>
+{% endblock %}

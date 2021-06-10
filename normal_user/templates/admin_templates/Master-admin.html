@@ -1,0 +1,756 @@
+{% extends 'admin_templates/admin_base.html' %}
+{% load static %}
+{% load i18n %}
+{% block title %}Admin dashboard{% endblock %}
+{% block content %}
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <div class="dashboard-body">
+
+           
+            <!-- Content Row -->
+
+            <div class="row">
+
+              <!-- Area Chart -->
+              <div class="col-xl-12 col-lg-12">
+
+                <!-- Page Heading -->
+                <div class="d-sm-flex align-items-center justify-content-between mb-2 mt-2">
+                  <h1 class="h3 mb-0 text-gray-800 mt-2 mr-3">{% trans 'Dashboard' %} </h1>
+
+                  <div class="grp-btns ml-auto">
+                    <a href="{% url 'add_designation' %}" 
+                      class="d-sm-inline-block btn btn-sm btn-primary table-btn shadow-sm mr-2 add_designation_popup">{% trans 'Designation' %} </a>
+                    <a href="{% url 'add_department' %}" 
+                      class="d-sm-inline-block btn btn-sm btn-primary table-btn shadow-sm mr-2 add_department_popup"> {% trans 'Department' %} </a>
+                    <a href="{% url 'add_city' %}" 
+                      class="d-sm-inline-block btn btn-sm btn-primary table-btn shadow-sm mr-2 add_city_popup"> {% trans 'City' %} </a>
+                    <a href="{% url 'add_function' %}"
+                      class="d-sm-inline-block btn btn-sm btn-primary table-btn shadow-sm mr-2 add_function_popup"> {% trans 'Function' %} </a>
+                    <!-- <a href="{% url 'add_manager' %}" class="d-sm-inline-block btn btn-sm btn-primary table-btn shadow-sm"> Add Manager </a> -->
+
+                  </div>
+                </div>
+
+                <!-- Content Row -->
+                <div class="row blocks-all">
+
+                  <!-- Earnings (Monthly) Card Example -->
+                  <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-primary shadow h-100 py-2">
+                      <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                          <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">{% trans 'Total Managers' %}</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{managers_count}}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  
+                </div>
+
+                <div class="card shadow mb-4">
+                  <!-- Card Header - Dropdown -->
+                  <div class="card-header no-border py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary"> {% trans 'Managers List' %} </h6>
+                    <a href="{% url 'manager_list' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary table-btn shadow-sm" >{% trans 'View All List' %}</a>
+                  </div>
+                  <!-- Table  -->
+                  <div class="table-responsive-sm">
+                    <table class="table table-bordered" cellspacing="0" width="100%">
+                      <tr class="border-bottom-2">
+                      	<th>{% trans 'Serial No.' %}</th>
+                        <th>{% trans 'Date & Time' %}</th>
+                        <th>{% trans 'Name' %}</th>
+                        <th>{% trans 'Department' %}</th>
+                        <th>{% trans 'Designation' %}</th>
+                        <th>{% trans 'Timezone' %}</th>
+                        <th>{% trans 'Action' %}</th>
+                      </tr>
+                      {% if managers %}
+                        {% for manager in managers %}
+                          <tr>
+                          	<td>{{forloop.counter}}</td>
+                            <td>{{manager.created|date:'d/m/Y, H:i A'}}</td>
+                            <td><a href="{% url 'manager_profile_edit' manager.manaager.id %}">{{manager.full_name}}</a></td>
+                            <td>{{manager.department.departments}}</td>
+                            <td>{{manager.designation}}</td>
+                            <td>{{manager.timezone}}</td>
+                            <td>
+                              <div class="gray-circle">
+                                <div class="icons">
+                                  <span>
+                                    <a class="change_password_icon" data-attr="{{manager.full_name}},{{manager.manaager.email}}" href="#" data-toggle="tooltip" data-placement="top" title="{% trans "Change Password" %}">
+                                      <i class="fas fa-unlock-alt"></i>
+                                    </a>
+                                  </span>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        {% endfor %}
+                      {% else %}
+                      <tr>
+                        <td colspan="7"><h1>{% trans 'No data found' %}</h1></td>
+                      </tr>
+                      {% endif %}
+                    </table>
+                  </div>
+                </div>
+
+              </div>
+
+
+            </div>
+          </div>
+
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+
+  <div class="adjust-clock task add-dce manager-alert modal" id="logout-conformation-popup" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2 flex-row align-items-center justify-content-between">
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn mt-0">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body p-3 p-md-4 p-lg-4">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0" id="universal_ssmsg">{% trans 'Are you sure you want to logout?' %}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <a class="d-sm-inline-block btn btn-sm btn-primary yes-btn sbt-btn shadow-sm mr-2" href="{% url 'logout' %}"> {% trans 'Yes' %} </a>
+        <button class="d-sm-inline-block btn btn-sm btn-primary yes-btn sbt-btn brown-clr shadow-sm" type="button"
+          data-dismiss="modal"> {% trans 'No' %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Add City Modal-->
+  <div class="adjust-clock task add-dce manager-alert modal" id="add-designation-popup" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabelDesignation" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+          <h5 class="modal-title" id="exampleModalLabelDesignation">{% trans 'Add Designation' %}</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <div class="close-btn mt-0">
+              <span aria-hidden="true">×</span>
+            </div>
+          </button>
+        </div>
+        <div class="modal-body p-3 p-md-4 p-lg-4">
+          <div class="row form-row">
+            <div class="col-lg-12">
+              <div class="form-group m-0">
+                <input type="text" class="form-control" placeholder="Enter Designation Name *" onkeyup="designation_error_fn()" id="add_designation">
+                <span  id="designation_error" style="display: none;color: red;"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-top-0">
+          <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm" type="button" id="add_designation_btn" > {% trans 'Add' %} </button>
+          <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn brown-clr shadow-sm" type="button"
+            data-dismiss="modal"> {% trans 'Cancel' %} </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="adjust-clock task add-dce manager-alert modal" id="add-function-popup" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabelFunction" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+          <h5 class="modal-title" id="exampleModalLabelFunction">{% trans 'Add Function' %} </h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <div class="close-btn mt-0">
+              <span aria-hidden="true">×</span>
+            </div>
+          </button>
+        </div>
+        <div class="modal-body p-3 p-md-4 p-lg-4">
+          <div class="row form-row">
+            <div class="col-lg-12">
+              <div class="form-group m-0">
+                <input type="text" class="form-control" placeholder="Enter Function Name *" onkeyup="function_error_fn()" id="add_function">
+                <span  id="function_error" style="display: none;color: red;"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-top-0">
+          <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm" type="button" id="add_function_btn" > {% trans 'Add' %} </button>
+          <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn brown-clr shadow-sm" type="button"
+            data-dismiss="modal"> {% trans 'Cancel' %} </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- Manager Alert Modal-->
+  <div class="adjust-clock task manager-alert modal" id="manager-alert" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+          <h5 class="modal-title" id="exampleModalLabel"></h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <div class="close-btn mt-0">
+              <span aria-hidden="true">×</span>
+            </div>
+          </button>
+        </div>
+        <div class="modal-body p-3 p-md-4 p-lg-4">
+          <div class="row form-row">
+            <div class="col-lg-12">
+              <div class="mb-2 text-center">
+                <h5 class="m-0 mb-1">Send Alert to </h5>
+                <h6 class="m-0 font-weight-bold text-primary"> Jacob Watts </h6>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group m-0">
+                <label> Discription <span class="color-red">*</span> </label>
+                <textarea type="text" class="form-control"
+                  placeholder="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industr..."></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-top-0">
+          <button class="d-sm-inline-block btn w-100 btn-sm btn-primary" type="button" data-dismiss="modal"> Ok
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Add Department Modal-->
+  <div class="adjust-clock task add-dce manager-alert modal" id="add-department-popup" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+          <h5 class="modal-title" id="exampleModalLabel">Add Department </h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <div class="close-btn mt-0">
+              <span aria-hidden="true">×</span>
+            </div>
+          </button>
+        </div>
+        <div class="modal-body p-3 p-md-4 p-lg-4">
+          <div class="row form-row">
+            <div class="col-lg-12">
+              <div class="form-group m-0">
+                <input type="text" class="form-control" placeholder="Enter Department Name *" id="add_department" onkeyup="department_error_fn()">
+                <span  id="department_error" style="display: none;color: red;"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-top-0">
+          <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm" id="add_department_btn" type="button">
+            Add </button>
+          <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn brown-clr shadow-sm" type="button"
+            data-dismiss="modal"> Cancel </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- Add City Modal-->
+  <div class="adjust-clock task add-dce manager-alert modal" id="add-city-popup" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+          <h5 class="modal-title" id="exampleModalLabel">Add City </h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <div class="close-btn mt-0">
+              <span aria-hidden="true">×</span>
+            </div>
+          </button>
+        </div>
+        <div class="modal-body p-3 p-md-4 p-lg-4">
+          <div class="row form-row">
+            <div class="col-lg-12">
+              <div class="form-group m-0">
+                <input type="text" class="form-control" placeholder="Enter City Name *" onkeyup="city_error_fn()" id="add_city" >
+                <span  id="city_error" style="display: none;color: red;"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-top-0">
+          <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm" type="button" id="add_city_btn" > Add </button>
+          <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn brown-clr shadow-sm" type="button"
+            data-dismiss="modal"> Cancel </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <!-- Add Employee Modal-->
+  <div class="adjust-clock task add-dce manager-alert modal" id="add-employee-popup" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+          <h5 class="modal-title" id="exampleModalLabel">Add Employee </h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <div class="close-btn mt-0">
+              <span aria-hidden="true">×</span>
+            </div>
+          </button>
+        </div>
+        <div class="modal-body p-3 p-md-4 p-lg-4">
+          <div class="row form-row">
+            <div class="col-lg-12">
+              <div class="form-group m-0">
+                <input type="text" class="form-control" placeholder="Enter Employee Name *" required="">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-top-0">
+          <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm" type="button" data-dismiss="modal">
+            Add </button>
+          <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn brown-clr shadow-sm" type="button"
+            data-dismiss="modal"> Cancel </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- change-password modal -->
+  <div class="adjust-clock task modal" id="change-password" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+          <h5 class="modal-title" id="exampleModalLabel">{% trans "Change Password" %} </h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <div class="close-btn mt-0">
+              <span aria-hidden="true">×</span>
+            </div>
+          </button>
+        </div>
+        <div class="modal-body p-3 p-md-4 p-lg-4">
+          <div class="row form-row ">
+            <div class="col-lg-12">
+              <div class="form-group form-row field-static">
+                <label>{% trans 'Name' %} : </label>
+                <div class="col-sm-10">
+                  <input type="text" readonly class="form-control-plaintext" id="staticName" value="Name">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group form-row field-static">
+                <label>{% trans 'Email' %} :</label>
+                <div class="col-sm-10">
+                  <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="email@example.com">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label>{% trans 'New Password' %} <span class="color-red">*</span></label>
+                <input type="password" class="form-control" id="password" placeholder="{% trans "Enter Password" %}" required="" onkeyup="password_validation()">
+                <label id="password_label" style="display: none;color: red;"></label>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group m-0">
+                <label>{% trans 'Confirm New Password' %} <span class="color-red">*</span></label>
+                <input type="password" class="form-control" id="confirm_password" placeholder="{% trans "Enter Confirm Password" %}" required="" onkeyup="confirm_password_validation()">
+                <label id="confirm_password_label" style="display: none;color: red;"></label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-top-0">
+          <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm" type="button" id="change_password_btn">
+            {% trans 'Submit' %} </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end modal -->
+
+
+  <div class="submit-msg alert modal fade" id="universal_msg_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2 flex-row align-items-center justify-content-between">
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn mt-0">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+              <p class="m-0" id="universal_msg"></p>
+          </div>          
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm" type="button"  data-dismiss="modal"> {% trans 'Ok' %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="submit-msg alert modal fade" id="universal_msg_modal11" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+        <button class="close " type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0" >{% trans 'Something Went Wrong' %}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm " type="button"
+          data-dismiss="modal"> {% trans 'Ok' %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <!-- Core plugin JavaScript-->
+  <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+  <!-- Custom scripts for all pages-->
+  <script src="{% static 'js/sb-admin-2.js' %}"></script>
+  <script type="text/javascript">
+
+    function designation_error_fn(){
+      designation_name = $("#add_designation").val()
+      if (designation_name == "") {
+        $("#designation_error").html("This field is required")
+        $("#designation_error").show()
+        return false
+      }
+      else{
+        $("#designation_error").hide()
+        return true
+      }
+    }
+
+    $(".add_designation_popup").click(function(){
+      $("#designation_error").hide()
+      $("#add_designation").val("")
+    })
+
+    $("#add_designation_btn").click(function () {
+      
+      designation_error_fn()
+      designation_name = $("#add_designation").val()
+      if (designation_error_fn()) {
+        $.ajax({
+          type: "POST",
+          url: "{% url 'add_designation' %}",
+          data: { "designation_name": designation_name },
+          success: function (response) {
+            if(response == "Designation created"){
+              
+              $("#add-designation-popup").modal("hide")
+              $("#universal_msg").text("Designation added successfully")
+              $("#universal_msg_modal").modal("show")
+            }
+            else if(response == "Already exist"){
+              $("#designation_error").html("Designation already exist")
+              $("#designation_error").show()
+            }
+
+          }
+        })    
+      }
+    })
+
+    function password_validation(){
+        password=$("#password").val();
+        // var password_regex = /^(?=\S*[a-z][A-Z])(?=\S*\d)(?=\S*[^\w\s])\S{6,}$/;\
+         password_regex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
+        if(password.length == '' || password.length == null) {
+            $("#password_label").show()
+            $("#password_label").html("{% trans 'This field is required' %}");
+            return false;
+        }
+        else{
+            if(password.length > 20 || password.length < 6){
+                $("#password_label").show()
+                $("#password_label").html("{% trans 'Password must contain 6 to 20 characters' %}");
+                return false;
+            }
+            // else if(!!~password.indexOf(' ')){
+            //     $("#password_label").show()
+            //     $("#password_label").html("{% trans 'Password must not contain white spaces' %}");
+            //     return false;
+            // }
+            else if(password_regex.test(password)==false){
+                $("#password_label").show()
+                $("#password_label").html("{% trans 'Password must contain Uppercase & lowercase letters, special characters, and numbers.' %}");
+                return false;
+            }
+            else{
+                $("#password_label").hide()
+                return true;
+            }
+        }
+    };
+
+    function confirm_password_validation(){
+        pass = $("#password").val();
+        password = $("#confirm_password").val();    
+
+        if(password.length == '' || password.length == null) {
+            $("#confirm_password_label").show()
+            $("#confirm_password_label").html("{% trans 'This field is required' %}");
+            return false;
+        }
+        else{
+            if(password != pass){
+                $("#confirm_password_label").show()
+                $("#confirm_password_label").html("{% trans 'Passwords should be same' %}");
+                return false;
+            }
+            else{
+                $("#confirm_password_label").hide()
+                return true;
+            }
+        }
+    };
+
+
+    $(".change_password_icon").click(function(){
+      val = $(this).attr('data-attr')
+      split = val.split(",")
+      email = split[1]
+      name = split[0]
+      $("#staticName").val(name)
+      $("#staticEmail").val(email)
+      $("#password").val("")
+      $("#confirm_password").val("")
+      $("#change-password").modal("show")
+    })
+
+    $("#change_password_btn").click(function(){
+      password_validation()
+      confirm_password_validation()
+      if(password_validation() && confirm_password_validation()){
+        email = $("#staticEmail").val()
+        $.ajax({
+              type: 'POST',
+              url: "{% url 'change_manager_pass' %}",
+              data: {
+                "email" : email,
+                "password" : $("#password").val(),
+              },
+              success: function(response){
+                if(response == 1){
+                  $("#change-password").modal("hide")
+                  $("#universal_msg").text("{% trans 'Password changed successfully' %}")
+                   $("#universal_msg_modal").modal("show")
+                }
+                else{
+                  $("#universal_msg_modal11").modal("show")
+                }
+              }
+          });
+      }
+    })
+
+    function department_error_fn(){
+      department_name = $("#add_department").val()
+      if (department_name == "") {
+        $("#department_error").html("This field is required")
+        $("#department_error").show()
+        return false
+      }
+      else{
+        $("#department_error").hide()
+        return true
+      }
+    }
+
+    $(".add_department_popup").click(function(){
+      $("#department_error").hide()
+      $("#add_department").val("")
+    })
+
+    $("#add_department_btn").click(function () {
+      department_error_fn()
+      department_name = $("#add_department").val()
+      if (department_error_fn()) {
+         $.ajax({
+          type: "POST",
+          url: "{% url 'add_department' %}",
+          data: { "department_name": department_name },
+          success: function (response) {
+            if(response == "department created"){
+              $("#add-department-popup").modal("hide")
+              $("#universal_msg").text("Department added successfully")
+              $("#universal_msg_modal").modal("show")
+            }
+            else if(response == "Already exist"){
+              $("#department_error").html("Department already exist")
+              $("#department_error").show()
+            }
+
+          }
+        })
+      }
+    })
+
+    function city_error_fn(){
+      city_name = $("#add_city").val()
+      if (city_name == "") {
+        $("#city_error").html("This field is required")
+        $("#city_error").show()
+        return false
+      }
+      else{
+        $("#city_error").hide()
+        return true
+      }
+    }
+
+    $(".add_city_popup").click(function(){
+      $("#city_error").hide()
+      $("#add_city").val("")
+    })
+
+    $("#add_city_btn").click(function () {
+      city_error_fn()
+      city_name = $("#add_city").val()
+      if (city_error_fn()) {
+        $.ajax({
+          type: "POST",
+          url: "{% url 'add_city' %}",
+          data: { "city_name": city_name },
+          success: function (response) {
+            if(response == "City created"){
+              
+              $("#add-city-popup").modal("hide")
+              $("#universal_msg").text("City added successfully")
+              $("#universal_msg_modal").modal("show")
+            }
+            else if(response == "Already exist"){
+              $("#city_error").html("City already exist")
+              $("#city_error").show()
+            }
+
+          }
+        })
+      }
+    })
+
+
+
+    function function_error_fn(){
+      function_name = $("#add_function").val()
+      if (function_name == "") {
+        $("#function_error").html("This field is required")
+        $("#function_error").show()
+        return false
+      }
+      else{
+        $("#function_error").hide()
+        return true
+      }
+    }
+
+    $(".add_function_popup").click(function(){
+      $("#function_error").hide()
+      $("#add_function").val("")
+    })
+
+    $("#add_function_btn").click(function () {
+      
+      function_error_fn()
+      function_name = $("#add_function").val()
+      if (function_error_fn()) {
+        $.ajax({
+          type: "POST",
+          url: "{% url 'add_function' %}",
+          data: { "function_name": function_name },
+          success: function (response) {
+            if(response == "Function created"){
+              
+              $("#add-function-popup").modal("hide")
+              $("#universal_msg").text("Function added successfully")
+              $("#universal_msg_modal").modal("show")
+            }
+            else if(response == "Already exist"){
+              $("#function_error").html("Function already exist")
+              $("#function_error").show()
+            }
+
+          }
+        })    
+      }
+    })
+
+  </script>
+{% endblock %}

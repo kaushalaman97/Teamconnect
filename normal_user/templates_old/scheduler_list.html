@@ -1,0 +1,317 @@
+{% extends 'base.html' %}
+{% load custom_template_tags %}
+{% load static %}
+{% load i18n %}
+{% block title %}{% trans 'Scheduled List' %}{% endblock %}
+{% block content %}
+
+				<!-- Begin Page Content -->
+				<div class="container-fluid">
+				   <!-- for mobile device -->
+					<div class="row">
+					  <div class="left-header-part mobile-device">
+						<div class="country-wrapper">
+
+						  <div class="for-mobile">
+							<div class="country-field">
+							  <a href="#" title=""><i class="fas fa-clock"></i> 10:00 am </a>
+							  <div class="c-logo-block media">
+								<img class="align-self-center mr-2" src="{% static 'img/c-logo.png' %}" title="Blue Logo" alt="Blue Logo">
+								<p class="media-body"> USA </p>
+							  </div>
+							</div>
+
+
+							<div class="country-field">
+							  <a href="#" title=""><i class="fas fa-clock"></i> 10:00 am </a>
+							  <div class="c-logo-block media">
+								<img class="align-self-center mr-2" src="{% static 'img/c-logo.png' %}" title="Blue Logo" alt="Blue Logo">
+								<p class="media-body"> USA </p>
+							  </div>
+							</div>
+						  </div>
+
+						  <div class="for-mobile">
+							<div class="country-field">
+							  <a href="#" title=""><i class="fas fa-clock"></i> 10:00 am </a>
+							  <div class="c-logo-block media">
+								<img class="align-self-center mr-2" src="{% static 'img/c-logo.png' %}" title="Blue Logo" alt="Blue Logo">
+								<p class="media-body"> USA </p>
+							  </div>
+							</div>
+
+							<div class="country-field">
+							  <a href="#" title=""><i class="fas fa-clock"></i> 10:00 am </a>
+							  <div class="c-logo-block media">
+								<img class="align-self-center mr-2" src="{% static 'img/c-logo.png' %}" title="Blue Logo" alt="Blue Logo">
+								<p class="media-body"> USA </p>
+							  </div>
+							</div>
+						  </div>
+						</div>
+					  </div>
+					</div>
+					<!-- Content Row -->
+
+					<div class="row">
+
+						<!-- Area Chart -->
+						<div class="col-xl-12 col-lg-12">
+							<nav aria-label="breadcrumb">
+								<ol class="breadcrumb mb-0 px-0">
+								  <li class="breadcrumb-item"><a href="{% url 'manager_dashboard' %}">{% trans "Manager Dashboard" %}</a></li>
+								  <li class="breadcrumb-item"><a href="{% url 'employee_profile' %}?employee_id={{employee_id}}">{% trans "Employee Profile" %}</a></li>
+								  <li class="breadcrumb-item active">{% trans "Scheduled Time" %}</li>
+								</ol>
+							  </nav>
+
+							<div class="card shadow mb-4">
+								<!-- Card Header - Dropdown -->
+								<div
+									class="card-header no-border py-3 d-flex flex-row align-items-center justify-content-between">
+									<h6 class="m-0 font-weight-bold text-primary"> {% trans 'Scheduled Time' %} : <span
+											class="ml-2"> {{user_details.name}} </span></h6>
+
+								</div>
+								<!-- Table  -->
+								<div class="table-responsive">
+									<table class="table table-bordered" cellspacing="0" width="100%">
+										<tr class="border-bottom-2">
+											<th>{% trans "Serial No." %}</th>
+											<th>{% trans "Scheduler" %}</th>
+											<th>{% trans "Actions" %}</th>
+										</tr>
+										{% if page_obj %}
+											{% for sch in page_obj %}
+												<tr>
+													<td>{{forloop.counter}}</td>
+													<td>{% trans 'From' %} {{sch.start_date|date:"d/m/Y"}} {% trans 'to' %} {{sch.end_date|date:"d/m/Y"}}</td>
+													<td>
+														<div class="icons">
+															<a href="{% url 'edit_scheduler' employee_id sch.id %}">
+								                                <span attr="{{ sch.id }}">
+								                                  <i class="fas fa-edit"></i>
+								                                </span>
+								                            </a>
+								                            <a class="delete_scheduler" href="javascript:void(0);" attr="{{ sch.id }}">
+								                                <span >
+								                                  <i class="far fa-trash-alt"></i>
+								                                </span>
+								                            </a>
+								                        </div>
+													</td>
+												</tr>
+											{% endfor %}
+										{% else %}
+											<tr class="text-center"><td colspan="8">{% trans "No data found" %}</td></tr>
+										{% endif %}
+									</table>
+								</div>
+								{% if page_obj.paginator.num_pages > 1 %}
+							  <div class="card-body">
+								<div class="row align-items-center">
+								  <div class="col">
+									<span>{% trans "Showing" %} {{page_obj.start_index}} {% trans "to" %} {{page_obj.end_index}} {% trans "of" %} {{schedule_obj_count}}</span>
+								  </div>
+								  <div class="col">
+									<nav aria-label="Page navigation">
+									  <ul class="pagination pg-blue justify-content-end">
+										  {% if page_obj.number != 1 %}
+											<li class="page-item"><a class="page-link" href="?page=1">{% trans "First" %}</a></li>
+										  {% else %}
+											<li class="page-item disabled"><a class="page-link" href="#">{% trans "First" %}</a></li>
+										  {% endif %}
+										  {% if page_obj.has_previous %}
+											<li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+										  {% else %}
+											<li class="page-item disabled"><a class="page-link" href="#">&laquo;</a></li>
+										  {% endif %}
+										  {% for i in page_obj.paginator.page_range %}
+											{% if page_obj.number == i %}
+											  <li class="page-item active"><a class="page-link" href="#">{{ i }} <span class="sr-only">({% trans "current" %})</span></a></li>
+											{% elif page_obj.number > i|add:"-5" and page_obj.number < i|add:"+5"%}
+											  <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+											{% endif %}
+										  {% endfor %}
+										  {% if page_obj.has_next %}
+											<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+										  {% else %}
+											<li class="page-item disabled"><a class="page-link" href="#">&raquo;</a></li>
+										  {% endif %}
+										  {% if page_obj.paginator.num_pages != page_obj.number %}
+											<li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{% trans "Last" %}</a></li>
+										  {% else %}
+											<li class="page-item disabled"><a class="page-link" href="#">{% trans "Last" %}</a></li>
+										  {% endif %}
+									  </ul>
+								  </nav>  
+								  </div>
+								</div>
+							  </div>
+							  {% endif %}
+							</div>
+						</div>
+
+
+					</div>
+
+				</div>
+				<!-- /.container-fluid -->
+
+			</div>
+			<!-- End of Main Content -->
+
+		</div>
+		<!-- End of Content Wrapper -->
+
+	</div>
+	<!-- End of Page Wrapper -->
+
+	<!-- Scroll to Top Button-->
+	<a class="scroll-to-top rounded" href="#page-top">
+		<i class="fas fa-angle-up"></i>
+	</a>
+
+	<!--Start Schedule date-time  Modal-->
+<div class="adjust-clock modal fade" id="schedule-date-time" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  
+</div>
+
+
+<div class="adjust-clock task add-dce manager-alert modal" id="scheduler-delete-conformation-popup" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2 flex-row align-items-center justify-content-between">
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn mt-0">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body p-3 p-md-4 p-lg-4">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0">{% trans "Are you sure you want to delete scheduler ?" %}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <a class="d-sm-inline-block btn btn-sm btn-primary yes-btn sbt-btn shadow-sm mr-2"
+          id="confirm_delete_scheduler" > {% trans "Yes" %} </a>
+        <button class="d-sm-inline-block btn btn-sm btn-primary yes-btn sbt-btn brown-clr shadow-sm" type="button"
+          data-dismiss="modal"> {% trans "No" %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="submit-msg alert modal fade" id="universal_msg_modal" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2 flex-row align-items-center justify-content-between">
+        <button class="close close-bntn" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn mt-0">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0" id="universal_msg"></p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm close-bntn" type="button"
+          data-dismiss="modal"> {% trans "Ok" %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="submit-msg alert modal fade" id="universal_msg_modal11" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+        <button class="close " type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0">{% trans "Something Went Wrong" %}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm " type="button" data-dismiss="modal">
+          {% trans "Ok" %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- End Schedule date-time  Modal-->
+
+	<!-- Bootstrap core JavaScript-->
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+<!-- <script src="{% static 'datetime-picker/moment.min.js' %}"></script> -->
+<script src="{% static 'datetime-picker/wickedpicker.min.js' %}"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- <script type="text/javascript" src="http://wmh.github.io/jquery-scrollbox/jquery.scrollbox.js"></script> -->
+<script type="text/javascript" src="{% static 'js/scrollbox.js' %}"></script>
+<!-- Custom scripts for all pages-->
+<script src="{% static 'js/sb-admin-2.js' %}"></script>
+	<script type="text/javascript">
+		// function asd(){
+		// 	console.log($("#start_date_scheduler"))
+		// 	$("#start_date_scheduler").datepicker("setDate", "12/22/2020")
+		// }
+		$(".delete_scheduler").click(function(){
+			attr = $(this).attr('attr')
+			$("#confirm_delete_scheduler").attr("attr", attr)
+			$("#scheduler-delete-conformation-popup").modal('show')
+		})
+		$("#confirm_delete_scheduler").click(function(){
+			scheduler_id = $(this).attr('attr')
+			$.ajax({
+		        type: 'POST',
+		        url: "{% url 'scheduler_list' employee_id %}",
+		        data: {
+		          "scheduler_id": scheduler_id,
+		        },
+		        success: function (response) {
+		          $("#scheduler-delete-conformation-popup").modal('hide')
+		          if (response == 1) {
+		            
+		            $("#universal_msg").html("{% trans 'Schedule deleted successfully' %}")
+		            $("#universal_msg_modal").modal("show")
+		          }
+		          else if(response == 0){
+		            $("#universal_msg_modal11").modal("show")
+		          }
+		          // else {
+		          //   $("#schedule-date-time-error").html(response)
+		          //   $("#schedule-date-time-error").show()
+		          // }
+		        }
+		      });
+		})
+		$(".close-bntn").click(function(){
+		    window.location = "{% url 'scheduler_list' employee_id %}"
+		  })
+	</script>
+{% endblock %}

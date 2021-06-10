@@ -1,0 +1,1024 @@
+{% load static %}
+{% load i18n %}
+{% load custom_template_tags %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title id="chat_page_title">{% block title %}{% endblock %}</title>
+    <!-- Custom fonts for this template-->
+    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oswald:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <!-- Custom styles for this template-->
+    <link href="{% static 'css/sb-admin-2.css' %}" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> -->
+</head>
+
+<body id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+        <!-- Sidebar -->
+        {% if "manager_chat" in request.path %}
+            {% include 'sidebar.html' %}
+            {% include 'manager_chat_header.html' %}
+            {% include 'timezones_universal_modal.html' %}
+        {% else %}
+            {% include 'staff_chat_header.html' %}
+        
+        {% endif %}
+
+    {% block content %}
+    {% endblock %}
+
+<!-- logout confirmaton popup start -->
+    {% user_status reciever_id as status_ %}
+    <input type="hidden" name="" id="{{user_div_id}}_status" class="fas fa-circle {{status_.icon_class}}-color">
+    <div class="adjust-clock task add-dce manager-alert modal" id="logout-conformation-popup" tabindex="-1" role="dialog"
+      aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header py-2 flex-row align-items-center justify-content-between">
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <div class="close-btn mt-0">
+                <span aria-hidden="true">×</span>
+              </div>
+            </button>
+          </div>
+          <div class="modal-body p-3 p-md-4 p-lg-4">
+            <div class="row form-row">
+              <div class="col-lg-12 text-center">
+                <p class="m-0" >{% trans "Are you sure you want to logout?" %}</p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer border-top-0">
+            <a class="d-sm-inline-block btn btn-sm btn-primary yes-btn sbt-btn shadow-sm mr-2" href="{% url 'logout' %}"> {% trans "Yes" %} </a>
+            <button class="d-sm-inline-block btn btn-sm btn-primary yes-btn sbt-btn brown-clr shadow-sm" type="button"
+              data-dismiss="modal"> {% trans "No" %} </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="adjust-clock task add-dce manager-alert modal" id="archive-conformation-popup" tabindex="-1" role="dialog"
+      aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header py-2 flex-row align-items-center justify-content-between">
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <div class="close-btn mt-0">
+                <span aria-hidden="true">×</span>
+              </div>
+            </button>
+          </div>
+          <div class="modal-body p-3 p-md-4 p-lg-4">
+            <div class="row form-row">
+              <div class="col-lg-12 text-center">
+                <p class="m-0" >{% trans "Are you sure you want to archive this chat ?" %}</p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer border-top-0">
+            <a class="d-sm-inline-block btn btn-sm btn-primary yes-btn sbt-btn shadow-sm mr-2"
+              id="confirm_archive_button" > {% trans "Yes" %} </a>
+            <button class="d-sm-inline-block btn btn-sm btn-primary yes-btn sbt-btn brown-clr shadow-sm" type="button"
+              data-dismiss="modal"> {% trans "No" %} </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+<div class="adjust-clock task add-dce manager-alert modal" id="notifications-delete-conformation-popup" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2 flex-row align-items-center justify-content-between">
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn mt-0">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body p-3 p-md-4 p-lg-4">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0">{% trans "Do you want to mark all notifications as read?" %}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <a class="d-sm-inline-block btn btn-sm btn-primary yes-btn sbt-btn shadow-sm mr-2"
+          id="confirm_delete_notification" > {% trans "Yes" %} </a>
+        <button class="d-sm-inline-block btn btn-sm btn-primary yes-btn sbt-btn brown-clr shadow-sm" type="button"
+          data-dismiss="modal"> {% trans "No" %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+   <!--  <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Video call invitation</h4>
+            </div>
+            <div class="modal-body">
+              <p></p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+          
+        </div>
+    </div> -->
+
+    <div class="modal fade show" id="myModal" role="dialog" aria-modal="true" >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+              <h5 class="modal-title">{% trans "Video call invitation" %}</h5>
+              <button type="button" class="close" data-dismiss="modal">×</button>
+              </div>
+            <div class="modal-body p-5 text-center">
+              
+            </div>
+          </div>
+        </div>
+    </div>
+    
+    <div class="submit-msg alert modal fade" id="time_zone_message" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button class="close close-bntnn" type="button" data-dismiss="modal" aria-label="Close">
+              <div class="close-btn">
+                <span aria-hidden="true">×</span>
+              </div>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row form-row">
+              <div class="col-lg-12 text-center">
+                  <p class="m-0" >{% trans "Timezones added successfully" %}</p>
+              </div>          
+            </div>
+          </div>
+          <div class="modal-footer border-top-0">
+            <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm close-bntnn" type="button"  data-dismiss="modal"> {% trans "Ok" %} </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="submit-msg alert modal fade" id="universal_msg_modal1111" tabindex="-1" role="dialog"
+      aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+            <button class="close " type="button" data-dismiss="modal" aria-label="Close">
+              <div class="close-btn">
+                <span aria-hidden="true">×</span>
+              </div>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row form-row">
+              <div class="col-lg-12 text-center">
+                <p class="m-0" >{% trans "Something Went Wrong" %}</p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer border-top-0">
+            <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm " type="button"
+              data-dismiss="modal"> {% trans "Ok" %} </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <a style="display: none;" class='myclass search_by_user' id="hidden_a_tag" ></a>
+    
+
+    <div id="snackbar"></div>
+
+   <!--  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div> -->
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="/static/vendor/jquery/jquery.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script> -->
+
+
+    <!-- Core plugin JavaScript-->
+    <script src="/static/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- <script src="/static/datetime-picker/moment.min.js"></script> -->
+    <script src="/static/datetime-picker/wickedpicker.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="/static/js/sb-admin-2.js"></script>
+
+    {% if "manager_chat" in request.path %}
+      <script type="text/javascript">
+        console.log(location.href)
+        url = location.href
+        if(!!~url.indexOf('query')){
+          split_url = url.split("query=")
+          // alert(split_url[1])
+          localStorage.setItem("query", split_url[1]);
+          location.href = "{% url 'manager_chat' %}"
+        }
+        $(".clear_all_notification").click(function(){
+          $("#notifications-delete-conformation-popup").modal("show")
+        })
+		$(document).on('click', '#confirm_delete_notification', function() {
+			$.ajax({
+			type: 'POST',
+			url: "{% url 'all_notifications' %}",
+			data: {
+			"user_id" : "{{request.user.id}}",
+			},
+			success: function(response){
+			if(response == 1){
+			  location.reload()
+			}
+			}
+			});
+		})
+      </script>
+    {% endif %}
+    <script type="text/javascript" src="https://momentjs.com/downloads/moment.js"></script>
+    <script src="https://momentjs.com/downloads/moment-timezone-with-data.js"></script>
+    {% if request.path == "/" %}
+        <script type="text/javascript">
+          var loc = window.location   
+          var open_popup = window.open(loc.protocol+"//"+loc.host+"/staff_user_window", "StaffTimer", "width=420,height=360")
+          function open_staff_popup(){
+            // if (open_popup){
+              open_popup.close()
+             
+                     
+            window.open_popup =  window.open(loc.protocol+"//"+loc.host+"/staff_user_window", "StaffTimer", "width=420,height=360")
+            open_popup.focus()          
+          } 
+
+          // window.aaaaaaaaa = open_popup
+
+          var loc = window.location
+          var endpoint = ''
+          var wsStart = 'ws://'
+          if (loc.protocol == 'https:') {
+              wsStart = 'wss://'
+          }
+          var endpoint = wsStart + loc.host + "/channels_url/{{request.user.username}}/"
+          var socket = new WebSocket(endpoint)
+
+          socket.onmessage = function (e) {
+              e_data = JSON.parse(e.data)
+              e_data = JSON.parse(e_data["data"])
+             if(e_data['flash_popup']){
+              // console.log("Opening")
+              open_staff_popup()
+              // open_popup.blur()
+              // open_popup.focus()
+              // console.log(open_popup.document.getElementsByTagName("body")[0])
+              // open_popup.document.getElementsByTagName("body")[0].focus()
+              console.log("END")
+              // open_popup.focus();
+              // console.log("here")
+             }
+          }
+
+
+
+        socket.onopen = function (e) {
+          console.log("open", e)
+        }
+        socket.onerror = function (e) {
+            console.log("error", e)
+        }
+        socket.onclose = function (e) {
+            console.log("onclose", e)
+        }
+          
+
+        </script>
+    {% else %}
+    <script type="text/javascript">
+        function timezone_2()
+        {
+          var london = moment.tz("{{user_timezones.timezone2}}").format('h:mm A');
+          $("#timezone_2_2").html(london)
+        }
+        setInterval(timezone_2, 1000);
+
+
+
+        function timezone_3()
+        {
+          var london = moment.tz("{{user_timezones.timezone3}}").format('h:mm A');
+          $("#timezone_3_3").html(london)
+        }
+        setInterval(timezone_3, 1000);
+
+
+        function timezone_4()
+        {
+          var london = moment.tz("{{user_timezones.timezone4}}").format('h:mm A');
+          $("#timezone_4_4").html(london)
+        }
+        setInterval(timezone_4, 1000);
+
+        function timezone_1()
+        {
+            var london = moment.tz("{{user_timezones.timezone1}}").format('h:mm A');
+          $("#timezone_1_1").html(london)
+        }
+        setInterval(timezone_1, 1000);
+
+
+
+        $(".close-bntnn").click(function () {
+          location.reload()
+        })
+            // console.log(moment.tz("{{user_timezones.timezone2}}").format('MMMM Do YYYY, h:mm:ss a'))
+        // function timezone_2()
+        // {
+        //   var london = moment.tz("{{user_timezones.timezone2}}").format('h:mm A');
+
+        //     $("#timezone_2_2").html(london)
+        // }
+        // setInterval(timezone_2, 1000);
+
+
+
+          // function timezone_3()
+          // {
+          //   var london = moment.tz("{{user_timezones.timezone3}}").format('h:mm A');
+          //   $("#timezone_3_3").html(london)
+          // }
+          // setInterval(timezone_3, 1000);
+
+
+          // function timezone_4()
+          // {
+          //   var london = moment.tz("America/Los_Angeles").format('h:mm A');
+          //   $("#timezone_4_4").html(london)
+          // }
+          // setInterval(timezone_4, 1000);
+
+          // function timezone_1()
+          // {
+          //     var london = moment.tz("{{user_timezones.timezone1}}").format('h:mm A');
+          //   $("#timezone_1_1").html(london)
+          // }
+          // setInterval(timezone_1, 1000);
+
+            function timezone1_validation(){
+              city = $("#timezone1 option:selected").text()
+              if(city == "Please select timezone"){
+                $("#timezone_1_error").html("{% trans "Please select this field" %}")
+                $("#timezone_1_error").show()
+                return false
+              }
+              else{
+                $("#timezone_1_error").hide()
+                return true
+              }
+            }
+
+
+             function timezone2_validation(){
+              city = $("#timezone2 option:selected").text()
+              if(city == "Please select timezone"){
+                $("#timezone_2_error").html("{% trans "Please select this field" %}")
+                $("#timezone_2_error").show()
+                return false
+              }
+              else{
+                $("#timezone_2_error").hide()
+                return true
+              }
+            }
+
+             function timezone3_validation(){
+              city = $("#timezone3 option:selected").text()
+              if(city == "Please select timezone"){
+                $("#timezone_3_error").html("{% trans "Please select this field" %}")
+                $("#timezone_3_error").show()
+                return false
+              }
+              else{
+                $("#timezone_3_error").hide()
+                return true
+              }
+            }
+
+             function timezone4_validation(){
+              city = $("#timezone4 option:selected").text()
+              if(city == "Please select timezone"){
+                $("#timezone_4_error").html("{% trans "Please select this field" %}")
+                $("#timezone_4_error").show()
+                return false
+              }
+              else{
+                $("#timezone_4_error").hide()
+                return true
+              }
+            }
+
+
+
+
+            $("#adjust_clock_btn").click(function(){
+              timezone1_validation()
+              timezone2_validation()
+              timezone3_validation()
+              timezone4_validation()
+              if(timezone1_validation() && timezone2_validation() && timezone3_validation() && timezone4_validation()){
+                timezone1 = $("#timezone1 option:selected").text()
+                timezone2 = $("#timezone2 option:selected").text()
+                timezone3 = $("#timezone3 option:selected").text()
+                timezone4 = $("#timezone4 option:selected").text()
+                $.ajax({
+                      type: 'POST',
+                      url: "{% url 'add_clock_timezone' %}",
+                      data: {
+                        "timezone1" : timezone1,
+                        "timezone2" : timezone2,
+                        "timezone3" : timezone3,
+                        "timezone4" : timezone4,
+                      },
+                      success: function(response){
+                          if(response == 1){
+                            $("#add-Schedule").modal("hide")
+                            $("#time_zone_message").modal("show")
+                          }
+                      }
+                  });
+              }
+                
+            })
+      </script>
+    {% endif %}
+
+    <script>
+      $("#select_lang").change(function(){
+            $("#submit_lang").click()
+          })
+      $( document ).ready(function() {
+        var query = localStorage.getItem("query");
+        if (query){
+        	// alert(query)
+        	// element = document.querySelector("[data-email='"+query+"']")
+        	$.ajax({
+                              type: 'POST',
+                              url: "{% url 'new_chat_thread' %}",
+                              data: {
+                                "email" : query,
+                                "user_id" : "{{request.user.id}}"
+                              },
+                              success: function (response) {
+                                if(response != 1){
+                              		response = JSON.parse(response)
+	                                $("#chat_side_bar").prepend(response)
+	                                $(".open_chat_thread_staff").removeClass("active")
+	                                 $("#chat_side_bar  div:first").addClass("active")
+	                                $("#chat_side_bar  div:first").click();
+                              	}
+                              }
+                            });
+          // $("#hidden_a_tag").attr("data-email", query)
+          // $("#hidden_a_tag").click();
+          localStorage.removeItem("query");
+        }
+      });
+
+
+        $(document).on('click', '.open_chat_thread', function(){
+          // $(this).prependTo("#chat_side_bar")
+          $(".open_chat_thread").removeClass("active")
+          document.title = "Manager Chat";
+          $(this).addClass("active")
+          data_sender = $(this).attr('data-sender')
+          data_receiver = $(this).attr('data-receiver')
+          data_thread = $(this).attr('data-thread')
+          $.ajax({
+                type: 'POST',
+                url: "{% url 'manager_chat_box' %}",
+                data: {
+                  "data_sender" : data_sender,
+                  "data_receiver" : data_receiver,
+                  "data_thread" : data_thread
+                },
+                success: function (response) {
+                  response = JSON.parse(response)
+                  $("#user_messages").html(response)
+                  div = $(".message-box")
+                  div.scrollTop(div.prop('scrollHeight'));
+                }
+            });
+        })
+
+        $(document).on('click', '.open_chat_thread_staff', function(){
+          document.title = "Staff Chat";
+          $(".open_chat_thread_staff").removeClass("active")
+          $(this).addClass("active")
+          data_sender = $(this).attr('data-sender')
+          data_receiver = $(this).attr('data-receiver')
+          data_thread = $(this).attr('data-thread')
+          $.ajax({
+                type: 'POST',
+                url: "{% url 'chat_box' %}",
+                data: {
+                  "data_sender" : data_sender,
+                  "data_receiver" : data_receiver,
+                  "data_thread" : data_thread
+                },
+                success: function (response) {
+                  response = JSON.parse(response)
+                  $("#user_messages").html(response)
+                  
+                  div = $(".message-box")
+                  div.scrollTop(div.prop('scrollHeight'));
+                }
+            });
+        })
+
+
+        $(document).on("click",".archive_chat_btn",function(){
+            user_mail = $(this).attr("data-attr")
+            $("#confirm_archive_button").attr("data-attr", user_mail)
+            $("#archive-conformation-popup").modal("show")
+        })
+
+        $(document).on("click","#confirm_archive_button",function(){
+            user_mail = $(this).attr("data-attr")
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'archive_chat' %}",
+                data: {
+                  "user_mail": user_mail,
+                },
+                success: function (response) {
+                  loc = location.href
+                    
+                    if(response == 1)   {
+                      if(!!~loc.indexOf('manager_chat')){
+                        location.href = "{% url 'manager_chat' %}"
+                      }
+                      else{
+                        location.href= "{% url 'landing_page' %}"
+                      }
+                    }
+                    else{
+                        $("#universal_msg_modal1111").modal("show")
+                    }
+                }
+            });
+        })
+
+        // $(document).on('click', ".search_by_user", function(event){          
+        //   email_ = $(this).attr("data-email")
+        //   email = email_.replace("@","")
+        //   email = email.replace(".","")
+        //   alert(email)
+        //   // if($("#"+email+"_message_list").length > 0){
+        //   //   $("#"+email+"_message_list").click()
+        //   // }
+        //   // else{
+        //   //     $.ajax({
+        //   //       type: 'POST',
+        //   //       url: "{% url 'new_chat_thread' %}",
+        //   //       data: {
+        //   //         "email" : email_,
+        //   //         "user_id" : "{{request.user.id}}"
+        //   //       },
+        //   //       success: function (response) {
+        //   //         response = JSON.parse(response)
+        //   //         $("#chat_side_bar").prepend(response)
+        //   //         $(".open_chat_thread_staff").removeClass("active")
+        //   //          $("#chat_side_bar  div:first").addClass("active")
+        //   //         $("#chat_side_bar  div:first").click();
+        //   //       }
+        //   //     });
+        //   // }
+        // })
+
+        // $(document).on('click', "[data-email='"+ui.item.href +"']", fucntion(){
+        //   alert("asd")
+        // })
+
+        $('#search_user').autocomplete({
+            delay : 100,
+            source: function(request, response){
+                $.ajax({
+                    type: 'POST',
+                    url: "{% url 'get_searched_users' %}",
+                    data: {"search_data": $("#search_user").val()},
+                    success: function (data){
+
+                        href = location.href
+
+                        availableTags = []
+                        data = JSON.parse(data)
+                        for(var i = 0; i<data.length;i++){
+                            if(data[i]['user__username']){
+
+                                availableTags.push({'href':  data[i]['user__username'], 'label': data[i]['name'],"class": "search_by_user"})
+                            }
+                            if(data[i]['manaager__username']){
+                                availableTags.push({'href': data[i]['manaager__username'], 'label': data[i]['full_name'],"class": "search_by_user"})
+                            }
+                        }
+
+                        var keys = availableTags;
+                        if (keys.length == 0){
+                          keys = [{'href': "", 'label': "{% trans "No data Found" %}","class": ""}]
+                        }
+                        response(keys)
+
+                    }
+                });
+            },
+            minLength : 1,
+            select: function(event, ui){
+               element = document.querySelector("[data-email='"+ui.item.href+"']")
+                if (element) {
+    
+                    // TODO: Attaching sample click listener. Remove it.
+                    element.addEventListener('click', function () {
+                      // console.log(.getAttribute("data-email"))
+                        email_ = element.getAttribute("data-email")
+                        email = email_.replace("@","")
+                        email = email.replace(".","")
+                        // alert(email)
+                        if($("#"+email+"_message_list").length > 0){
+                          $("#"+email+"_message_list").click()
+                        }
+                        else{
+                            $.ajax({
+                              type: 'POST',
+                              url: "{% url 'new_chat_thread' %}",
+                              data: {
+                                "email" : email_,
+                                "user_id" : "{{request.user.id}}"
+                              },
+                              success: function (response) {
+                              	if(response != 1){
+                              		response = JSON.parse(response)
+	                                $("#chat_side_bar").prepend(response)
+	                                $(".open_chat_thread_staff").removeClass("active")
+	                                 $("#chat_side_bar  div:first").addClass("active")
+	                                $("#chat_side_bar  div:first").click();
+                              	}
+                              }
+                            });
+                        }
+
+                    }, false);
+                    
+                    element.click();
+
+                }
+              }
+            },            
+            ).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+                return $( "<li></li>" )
+                    .data( "item.autocomplete", item )
+                    .append( "<a class='myclass "+ item.class +"' data-email='"+ item.href +"'>" + item.label + "</a>" )
+                    .appendTo( ul ); 
+        };        
+
+
+
+         $("#search_user").keydown(function(event){
+
+            if(event.keyCode == 13) {
+              console.log($(".ui-state-active"))
+              // if($("#search_user").val().length==0) {
+              //     event.preventDefault();
+              //     return false;
+              // }
+            }
+         });
+
+
+        div = $(".{{reciever_div_id}}_message-box-div");
+        div.scrollTop(div.prop('scrollHeight'));
+
+        function contactList() {
+            var element = document.getElementById("mySidenav");
+            element.classList.add("widthstyle");
+        }
+
+        function closeNav() {
+            var element = document.getElementById("mySidenav");
+            element.classList.remove("widthstyle");
+        }
+
+        $(document).on('keypress','#chat_message',function (e) {
+           var key = e.which;
+           if(key == 13)  // the enter key code
+           {
+              $('#send_message_btn').click();
+              return false;
+           }
+        });
+
+
+        var loc = window.location
+        var endpoint = ''
+        var wsStart = 'ws://'
+        if (loc.protocol == 'https:') {
+            wsStart = 'wss://'
+        }
+        var endpoint = wsStart + loc.host + "/char_bxx/"
+
+        console.log(endpoint)
+
+        var socket = new WebSocket(endpoint)
+
+        socket.onmessage = function (e) {
+            // console.log("messsssage", e)
+            e_data = JSON.parse(e.data)
+            e_data = JSON.parse(e_data.data)
+
+            if (e_data['user_id']){
+              if($("#"+e_data["user_div_thread"]+"_message_list").length == 0){
+                locatio = location.href
+
+                if (!!~locatio.indexOf('manager_chat')){
+                    href_s = "/manager_chat_box/"
+                    classs = "open_chat_thread"
+                }
+                else{
+                    href_s = "/chat_box/"
+                    classs = "open_chat_thread_staff"
+                }
+
+                html = '<div class="block-part d-flex '+classs+'" data-thread="'+ e_data["thread_id"] +'"  data-sender="{{chat.sender.id}}" data-receiver="{{chat.reciever.id}}"  id="'+e_data["user_div_thread"]+'_message_list"><a><div class="d-flex"><div class="img-wrap admin-img mr-3"><img src="/static/img/admin-demo.png" class="admin-img mr-3" title="" alt=""><i class="'+ e_data["Online_status"] +'" id="'+e_data["user_div_thread"]+'_status"></i></div><div class="message-block"><h5>'+ e_data["name"] +'</h5><p id="'+e_data["user_div_thread"]+'_message_list_msg"></p></div> <div class="time-block1 ml-auto justify-content-center align-self-center"><p id="'+e_data["user_div_thread"]+'_message_list_date"></p></div></div></a><div class="option-block ml-auto justify-content-center align-self-center"><button class="show-options" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="fas fa-ellipsis-v"></i> </button> <div class="dropdown-menu dropdown-menu-right shadow" aria-labelledby="searchDropdown"><ul><li class="archive_chat_btn" data-attr="'+ e_data["reciever_email"] +'">Archive</li></ul></div></div></div>'
+                if (e_data["name"]){
+                  document.title = "{% trans "New message from" %} "+e_data["name"];
+                  console.log(document.title)
+
+                  $("#chat_side_bar").prepend(html)
+                }
+              }
+              else{
+                
+              }
+
+              if (e_data["chat_message"]){
+                document.title = "New message from "+e_data["name"];
+                $("#snackbar").html("New message from "+e_data["name"])
+                // +"<br>:  <u>"+e_data["chat_message"]+"</u>"
+
+                var x = document.getElementById("snackbar");
+                x.className = "show";
+                setTimeout(function(){ x.className = x.className.replace("show", ""); }, 1400);
+
+
+                $("#"+e_data["user_div_message_id"]+"_msg").html("<b>"+e_data["chat_message"]+"</b>")
+                $("#"+e_data["user_div_message_id"]+"_date").html(e_data["receiver_date"])
+
+
+                $("#"+ e_data["reciever_div_id_div"] +"_message_list").prependTo("#chat_side_bar")
+
+                $("#"+ e_data["reciever_div_id_div"] +"_message_list").addClass("new-message");
+                
+                $("#"+ e_data["reciever_div_id_div"] +"_message_list").delay(1000).queue(function(next) {
+                  $(this).removeClass("new-message");
+                  next();
+                });
+
+
+                $(e_data["reciever_div_id"]).append('<div class="receiver d-flex pt-3"><img class="admin-img mr-2 align-self-end" src="/static/img/admin-demo.png" title="" alt=""><div class="text-msg"><p>'+ e_data["chat_message"] +'</p><div class="time">'+ e_data["receiver_date"] +'</div></div></div>')
+                div = $(e_data["reciever_div_id"])
+                div.scrollTop(div.prop('scrollHeight'));
+              } 
+            }
+            else{
+
+            }
+        }
+
+        socket.onopen = function (e) {
+            formData = $("#chat_data")
+            $(document).on('click',"#send_message_btn",function(){
+                if($("#chat_message").val() == ""){
+                    $("#chat_message").focus()
+                }
+                else{
+
+                    sender_timezone = $("#hidden_details_id").attr('sender_timezone')
+                    reciever_manager_timezone = $("#hidden_details_id").attr('reciever_manager_timezone')
+                    reciever_div_id = $("#hidden_details_id").attr('reciever_div_id')
+                    reciever_id = $("#hidden_details_id").attr('reciever_id')
+                    user_div_id = $("#hidden_details_id").attr('user_div_id')
+                    thread_id = $("#hidden_details_id").attr('thread_id')
+                    reciever_name = $("#hidden_details_id").attr('reciever_name')
+                    console.log(thread_id)
+                    name = $("#hidden_details_id").attr('name')
+                    console.log(user_div_id)
+                    reciever_email = $("#hidden_details_id").attr('reciever_email')
+                    reciever_manager_id = $("#hidden_details_id").attr('reciever_manager_id')
+                    manager_id = $("#hidden_details_id").attr('manager_id')
+
+
+                    var sender_time = moment.tz(sender_timezone).format('DD/MM/YYYY , hh:mm A');
+                    var sender_time_backend = moment.tz(sender_timezone).format('MM/DD/YYYY hh:mm:ss A');
+
+                    var receiver_time = moment.tz(reciever_manager_timezone).format('DD/MM/YYYY , hh:mm A');
+                    var receiver_time_backend = moment.tz(reciever_manager_timezone).format('MM/DD/YYYY hh:mm:ss A');
+                    
+
+
+                    $("."+ reciever_div_id +"_message-box-div").append('<div class="d-flex"><div class="sender d-flex pt-3  ml-auto"><div class="text-msg"><p>'+ $("#chat_message").val()  +'</p><div class="time text-end">'+ sender_time +'</div></div><img src="/static/img/admin-demo.png" class="admin-img ml-2 align-self-end" title="" alt=""></div></div>')
+
+                    $("#"+ reciever_div_id +"_message_list").prependTo("#chat_side_bar")
+                    $("#"+ reciever_div_id +"_message_list_msg").html($("#chat_message").val())
+                    $("#"+ reciever_div_id +"_message_list_date").html(sender_time)
+
+                    div = $("."+ reciever_div_id +"_message-box-div");
+                    div.scrollTop(div.prop('scrollHeight'));               
+
+                    data = {"user_id" : reciever_id, "chat_message" : $("#chat_message").val(), 'date' : sender_time, "backend_time" :sender_time_backend , 'receiver_date' : receiver_time, "receiver_backend_time" :receiver_time_backend, "user_div_message_id" : ""+ user_div_id +"_message_list", "user_div_thread" : user_div_id, "name": name, "Online_status" : $("#"+ user_div_id +"_status").attr("class"), "reciever_email" : reciever_email, "reciever_div_id" : "."+ user_div_id +"_message-box-div", "reciever_div_id_div": user_div_id, "thread_id":thread_id}
+
+                    // console.log(data)
+                    // console.log(socket)
+                    socket.send(JSON.stringify(data))
+
+                    if (manager_id == reciever_manager_id){
+
+                      if(manager_id == "{{request.user.id}}"){
+                        manager_data = {"manager_id" : manager_id, "chat_message" : $("#chat_message").val(), 'date' : sender_time, "backend_time" :sender_time_backend , 'receiver_date' : receiver_time, "receiver_backend_time" :receiver_time_backend, "user_div_message_id" : ""+user_div_id+"_message_list", "user_div_thread" : user_div_id, "name": name, "Online_status" : $("#"+user_div_id+"_status").attr("class"), "reciever_email" : reciever_email, "reciever_div_id" : "."+user_div_id+"_message-box-div", "reciever_div_id_div": thread_id, "name2" : reciever_name}
+
+                        socket.send(JSON.stringify(manager_data))
+                      }
+
+                      else{
+                        reciever_manager_data = {"reciever_manager_id" : reciever_manager_id, "chat_message" : $("#chat_message").val(), 'date' : sender_time, "backend_time" :sender_time_backend , 'receiver_date' : receiver_time, "receiver_backend_time" :receiver_time_backend, "user_div_message_id" : ""+user_div_id+"_message_list", "user_div_thread" : user_div_id, "name": name, "Online_status" : $("#"+user_div_id+"_status").attr("class"), "reciever_email" : reciever_email, "reciever_div_id" : "."+user_div_id+"_message-box-div", "reciever_div_id_div": thread_id, "name2" : reciever_name}
+
+                        socket.send(JSON.stringify(reciever_manager_data))
+                      }
+
+                      
+                    }
+
+                    else{
+                      manager_data = {"manager_id" : manager_id, "chat_message" : $("#chat_message").val(), 'date' : sender_time, "backend_time" :sender_time_backend , 'receiver_date' : receiver_time, "receiver_backend_time" :receiver_time_backend, "user_div_message_id" : ""+user_div_id+"_message_list", "user_div_thread" : user_div_id, "name": name, "Online_status" : $("#"+user_div_id+"_status").attr("class"), "reciever_email" : reciever_email, "reciever_div_id" : "."+user_div_id+"_message-box-div", "reciever_div_id_div": thread_id, "name2" : reciever_name}
+
+                      socket.send(JSON.stringify(manager_data))
+                      reciever_manager_data = {"reciever_manager_id" : reciever_manager_id, "chat_message" : $("#chat_message").val(), 'date' : sender_time, "backend_time" :sender_time_backend , 'receiver_date' : receiver_time, "receiver_backend_time" :receiver_time_backend,  "user_div_message_id" : ""+user_div_id+"_message_list", "user_div_thread" : user_div_id, "name": name, "Online_status" : $("#"+user_div_id+"_status").attr("class"), "reciever_email" : reciever_email, "reciever_div_id" : "."+user_div_id+"_message-box-div", "reciever_div_id_div": thread_id, "name2" : reciever_name}
+
+                      socket.send(JSON.stringify(reciever_manager_data))
+                    }
+
+
+                    
+                    $("#chat_message").val("")
+                    $("#chat_message").focus()
+                    // alert("asdasd")
+                }
+            })
+        }
+
+        socket.onerror = function (e) {
+            console.log("error", e)
+        }
+        socket.onclose = function (e) {
+            console.log("onclose", e)
+        }
+    </script>
+
+    <script type="text/javascript">
+      var loc = window.location
+      var endpoint = ''
+      var wsStart = 'ws://'
+      if (loc.protocol == 'https:') {
+        wsStart = 'wss://'
+      }
+
+      a = wsStart + loc.host + "/chat_bxx/"
+      var exampleSocket = new WebSocket(a);
+      exampleSocket.onmessage = function (e) {
+        // console.log("message", e)
+        e_data = JSON.parse(e.data)
+        e_data = JSON.parse(e_data.data)
+        if(e_data["status"]){
+          $("#" + e_data["staff_div_id"] + "_status").removeClass()
+          if (e_data["status"] == "i_am_here") {
+            $("#" + e_data["staff_div_id"] + "_status").addClass("fas fa-circle green-color")
+          }
+          if (e_data["status"] == "offline") {
+            $("#" + e_data["staff_div_id"] + "_status").addClass("fas fa-circle red-color")
+          }
+          else {
+            $("#" + e_data["staff_div_id"] + "_status").addClass("fas fa-circle orange-color")
+          }
+        }
+          
+      }
+      exampleSocket.onopen = function (e) {
+        console.log("ow--pen", e)
+      }
+      exampleSocket.onerror = function (e) {
+        console.log("error", e)
+      }
+      exampleSocket.onclose = function (e) {
+        console.log("onclose", e)
+      }
+    </script>
+
+    <script type="text/javascript">
+      // open a socket connection
+      // var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+      // const chatSocket = new WebSocket(
+      //     ws_scheme
+      //     + '://'
+      //     + window.location.host
+      //     + '/ws/startCall/'
+      // );
+      var loc = window.location
+      var endpoint = ''
+      var wsStart = 'ws://'
+      if (loc.protocol == 'https:') {
+      wsStart = 'wss://'
+      }
+      var endpoint = wsStart + loc.host + '/ws/startCall/'
+      console.log(endpoint)
+      var chatSocket = new WebSocket(endpoint)
+
+      // listen to data on socket communication
+      chatSocket.onmessage = function(e) {
+
+        var data = JSON.parse(e.data);
+        // console.log(data)
+        var meeting_id = data['meeting_id'];
+
+
+        if(meeting_id){
+          //https://meet.mgdsw.info:13043/${meeting_id}/
+          var user_id = "{{request.user.id}}" // username of current logged in user
+          if(user_id == (meeting_id).toString()){ 
+            var body = `<p> {% trans "You are invited to join the video call. Please join here" %} </p><a class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm close_popup mt-4" href='/meeting/${meeting_id}/' target='_blank'>{% trans "JOIN NOW" %}</a>`
+
+            // var body = `You are invited to join the video call. Please join here - <a class="close_popup" href='/meeting/${meeting_id}/' target='_blank'>JOIN NOW</a>`;
+            $('#myModal').find('.modal-body').html(body);
+
+            $("#myModal").modal()
+          }
+        }
+      };
+
+      $(document).on("click", ".close_popup", function(){
+        $("#myModal").modal("hide")
+      }) 
+      // on manager role, clicking on call button will pass the username on socket and send notification to that user for a call accept.
+      // $(".meeting_id").click(function(){
+      //     userToCall= $(this).attr('attr');
+      //     start(userToCall);
+      // });
+
+      // // start socket connection
+      // function start(name) {
+      //     chatSocket.send(JSON.stringify({
+      //         'meeting_id': name,
+      //     }));
+      // }
+
+      chatSocket.onopen = function open() {
+        console.log('WebSockets connection created.');
+      };
+
+
+      chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+      };
+
+    </script>
+    <!-- <script type="text/javascript">
+      
+
+    </script> -->
+
+</body>
+
+</html>

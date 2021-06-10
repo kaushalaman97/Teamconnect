@@ -1,0 +1,917 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Resources{% endblock %}
+{% block content %}
+
+<div class="outer-dashboard py-md-3 py-lg-3 py-3">
+  <!-- Begin Page Content -->
+  <div class="container-fluid">
+    <div class="page-wrap page-add-employee">
+      <!-- Content Row -->
+      <div class="row">
+        <!-- Area Chart -->
+        <div class="col-xl-12 col-lg-12">
+          <div class="big-wrapper mt-1">
+            <!-- Page Heading -->
+            <div class="top-bar d-lg-flex align-items-center justify-content-between mb-2">
+              <h1 class="h3 mb-0 text-gray-800">Resource View </h1>
+              <div class="btn-wrapper mt-md-0 mt-2">
+                <a href="{% url 'resources' %}" class="refresh-btn d-sm-inline-block mr-3 py-2"><i
+                  class="fas fa-sync-alt"></i></a>
+                <form class="d-none d-sm-inline-block form-inline mr-2 my-2 my-md-0 mw-100 navbar-search diff-mobile">
+                  <div class="input-group">
+                    <input type="text" class="form-control border-0 small" placeholder="Search for..."
+                      aria-label="Search" id="search_resource_inp" aria-describedby="basic-addon2"
+                      value="{{seached_by}}">
+                    <div class="input-group-append">
+                      <button class="btn btn-primary search_resource" type="button">
+                        <i class="fas fa-search fa-sm"></i>
+                      </button>
+                    </div>
+                  </div>
+                </form>
+                <!-- <form class="d-sm-inline-block form-inline mw-100 navbar-search sort-w mb-lg-0 mb-2 mr-2">
+                  <div class="input-group">
+                    <select class="form-control" id="sort_by_doc">
+                      <option value="sort">Sort By</option>
+                      <option {% if query_str == 'created' %}selected{% endif %} value="created">date</option>
+                      <option {% if query_str == 'doc' %}selected{% endif %} value="doc">doc</option>
+                      <option {% if query_str == 'docx' %}selected{% endif %} value="docx">docx</option>
+                      <option {% if query_str == 'pdf' %}selected{% endif %} value="pdf">pdf</option>
+                      <option {% if query_str == 'ppt' %}selected{% endif %} value="ppt">ppt</option>
+                      <option {% if query_str == 'csv' %}selected{% endif %} value="csv">csv</option>
+                      <option {% if query_str == 'pptx' %}selected{% endif %} value="pptx">pptx</option>
+                      <option {% if query_str == 'jpeg' %}selected{% endif %} value="jpeg">jpeg</option>
+                      <option {% if query_str == 'xls' %}selected{% endif %} value="xls">xls</option>
+                      <option {% if query_str == 'xlsx' %}selected{% endif %} value="xlsx">xlsx</option>
+                      <option {% if query_str == 'jpg' %}selected{% endif %} value="jpg">jpg</option>
+                      <option {% if query_str == 'png' %}selected{% endif %} value="png">png</option>
+                    </select>
+                  </div>
+                </form> -->
+                <!-- <form method="POST" id="pdf_form" class="d-flex design-box">
+                  
+                  <div class="custom-file mr-2">
+                    <input id="fileupload" type="file" class="custom-file-input" name="file"
+                      accept=".doc,.docx,.pdf,.ppt,.csv,.jpeg,.xls,.pptx,.xlsx,.jpg,.png" value="Add Document">
+                    <label class="custom-file-label" for="customFile">
+                      <div class="d-flex mt-1">
+                        <i class="fas fa-folder"></i>
+                        <p id="filename_user">50 MB max</p>
+                      </div>
+                    </label>
+
+                  </div>
+                  <label class="accept-content">Only Doc, Docx, Pdf, Ppt, Csv, Pptx, Jpeg, Xls, Xlsx, Jpg, Png can be uploaded.
+                  </label>
+
+                </form> -->
+                <!-- <a class="d-sm-inline-block btn btn-sm btn-primary table-btn res-top mb-lg-0 mb-2 mr-2" id="add_doc">Add
+                  Document</a> -->
+                <a class="d-sm-inline-block btn btn-sm btn-primary table-btn res-top mb-lg-0 mb-2 mr-2" role="button" id="open_resource_popup" style="cursor: pointer; "> 
+                  Add Document
+                </a>  
+              </div>
+            </div>
+
+            <div class="row all-attachment doc-upload-wrap pt-3">
+              <div class="col-12">
+                <div class="documents-filter-selection">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="actions">
+                        <div class="select-all">
+                          <input type="checkbox" name="all-selection" value="" id="all-selection">
+                          <label for="all-selection">
+                            <img src="../../static/images/checked-blue.png" alt="Check" />
+                            <span class="label-text">Select All</span>
+                          </label>
+                        </div>
+                        <div class="btn-group-list">
+                          <!-- <button type="button" class="btn btn-info">Multi Select</button> -->
+                          <button type="button" class="btn btn-info" id="open_assign_modal">Assign</button>
+                          <button type="button" class="btn btn-info" id="download_files">Download</button>
+                          <button type="button" class="btn btn-info" id="delete_resources">Delete</button>
+                        </div>
+                        <span id="select_resource_error" style="display: none; color: red;">Please select any resource first</span>
+                      </div>
+                      <div class="sort-docs">
+                        <select class="custom-select" id="sort_by_doc">
+                          <option value="sort">Sort By</option>
+                          <option {% if query_str == 'created' %}selected{% endif %} value="created">date</option>
+                          <option {% if query_str == 'doc' %}selected{% endif %} value="doc">doc</option>
+                          <option {% if query_str == 'docx' %}selected{% endif %} value="docx">docx</option>
+                          <option {% if query_str == 'pdf' %}selected{% endif %} value="pdf">pdf</option>
+                          <option {% if query_str == 'ppt' %}selected{% endif %} value="ppt">ppt</option>
+                          <option {% if query_str == 'csv' %}selected{% endif %} value="csv">csv</option>
+                          <option {% if query_str == 'pptx' %}selected{% endif %} value="pptx">pptx</option>
+                          <option {% if query_str == 'jpeg' %}selected{% endif %} value="jpeg">jpeg</option>
+                          <option {% if query_str == 'xls' %}selected{% endif %} value="xls">xls</option>
+                          <option {% if query_str == 'xlsx' %}selected{% endif %} value="xlsx">xlsx</option>
+                          <option {% if query_str == 'jpg' %}selected{% endif %} value="jpg">jpg</option>
+                          <option {% if query_str == 'png' %}selected{% endif %} value="png">png</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% if documents %}
+              {% for doc in documents %}
+              <div class="col-12 col-sm-6 col-md-4 col-lg-3 p-2">
+                <div class="cards rounded shadow">
+                  <div class="attch-body p-2">
+                    <div class="d-flex down-del">
+                      <div class="check-document">
+                        <input type="checkbox" data-path="{{doc.path}}" title="{{doc.name}}" delete-id="{{doc.id}}" class="chck_box_rsrc" name="select-document-{{forloop.counter}}" value="" id="select-document-{{forloop.counter}}">
+                        <label for="select-document-{{forloop.counter}}">
+                          <img src="../../static/images/checked-blue.png" alt="Check" />
+                        </label>
+                      </div>
+                      <!-- <div class="ml-auto">
+                        <a data-attr="{{doc.path}}"  class="download-icon mr-2" data-toggle="tooltip" data-placement="top" title="{{doc.name}}">
+                          <i class="fas fa-download"></i>
+                        </a>
+                        <button class="close remove_resource" data-attr="{{doc.id}}">
+                          <span class="btn-wrap" data-toggle="tooltip" data-placement="top" title="Delete">
+                            <i class="far fa-trash-alt"></i>
+                          </span>
+                        </button>
+                      </div> -->
+                    </div>
+
+                    <img {% if ".csv" in doc.name %}src="{% static 'img/csv.png' %}"
+                      {% elif ".pdf" in doc.name %}src="{% static 'img/pdf.png' %}"
+                      {% elif ".docx" in doc.name %}src="{% static 'img/docx.png' %}"
+                      {% elif ".doc" in doc.name %}src="{% static 'img/doc.png' %}"
+                      {% elif ".jpeg" in doc.name %}src="{% static 'img/jpeg.png' %}"
+                      {% elif ".xlsx" in doc.name %}src="{% static 'img/xlsx.png' %}"
+                      {% elif ".xls" in doc.name %}src="{% static 'img/xls.png' %}"
+                      {% elif ".pptx" in doc.name %}src="{% static 'img/pptx.png' %}"
+                      {% elif ".ppt" in doc.name %}src="{% static 'img/ppt.png' %}"
+                      {% elif ".png" in doc.name %}src="{% static 'img/png.png' %}"
+                      {% elif ".jpg" in doc.name %}src="{% static 'img/jpg.png' %}"
+                      {% endif %} title="{{doc.name}}"
+                      alt="Resource">
+                  </div>
+                  <div class="footer-part d-flex px-2 py-2 flex-row align-items-center justify-content-between">
+                    <div class="left-side mr-auto">
+                      <h4 class="mb-0">{{doc.name}}</h4>
+                      <p> {{doc.created|date:'d/m/Y , H:i A'}}</p>
+                    </div>
+                    <!-- <div class="right-side ml-auto">
+                      <button class="btn btn-sm btn-primary table-btn resource-btn assign_button" type="button"
+                        data-attr="{{doc.path}} && {{doc.name}}"> Assign </button>
+                    </div> -->
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+              {% else %}
+              <div class="col-12 not-found border-top w-100 text-center mt-3 pt-3">
+                <h3> No data found</h3>
+              </div>
+              {% endif %}
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <!--/row  -->
+    </div>
+    <!-- /.container-fluid -->
+  </div>
+</div>
+</div>
+<!-- End of Content Wrapper -->
+</div>
+<!-- End of Page Wrapper -->
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+  <i class="fas fa-angle-up"></i>
+</a>
+
+<!-- loader -->
+<div class="loader-overlay" id="page_loader" style="display: none;">
+  <div class="spinner-border text-primary" role="status">
+    <span class="sr-only">Loading...</span>
+  </div>
+</div>
+
+
+
+<!--  Modal-->
+<div class="modal fade" id="assignSingleBtn" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+        <h5 class="modal-title" id="exampleModalLabel">Assign </h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12">
+            <div class="form-group">
+              <label>Department:</label>
+              <select class="form-control" id="department-select">
+                <option>Please select department</option>
+                {% for dept in departments %}
+                <option value="{{dept.id}}">{{dept.departments}}</option>
+                {% endfor %}
+              </select>
+              <label id="resources_error" style="display: none;color: red;"></label>
+            </div>
+          </div>
+          <!-- <div class="col-lg-12">
+            <div class="form-group">
+              <label>Already Assigned Departments<span class="text-light-gray assign_departments_count"></span></label>
+              <div class="employee-group" id="assign_department_div">
+
+              </div>
+            </div>
+          </div> -->
+          <div class="col-lg-12">
+            <div class="form-group">
+              <div class="drop-down-checkbox" disabled id="dropdown_show">
+                <div class="dropHead form-control" id="dropdown_users_div">
+                  Users List
+                </div>       
+                <ul class="dropdownOptions" id="dropdown_users_Options">
+                  <li>
+                    <div class="form-group form-check">
+                      <!-- <input type="checkbox" class="form-check-input" id="exampleCheck1"> -->
+                      <label class="form-check-label" for="exampleCheck1">Please select any department</label>
+                    </div>
+                  </li>
+                </ul>      
+              </div>  
+            </div>
+          </div>
+        </div>
+      </div>
+      <label style="display: none; color: red;" id="user_department_error"></label>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm" id="assign_department_btn"
+          type="button">Assign Department</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="submit-msg alert modal fade" id="time_zone_message" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2 flex-row align-items-center justify-content-between">
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn mt-0">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0">Timezones added successfully</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm" type="button" data-dismiss="modal">
+          Ok </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="submit-msg alert modal fade" id="universal_msg_modal" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2 flex-row align-items-center justify-content-between">
+        <button class="close close-bntn" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn mt-0">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0" id="universal_msg">Employee added successfully</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn close-bntn shadow-sm" type="button"
+          data-dismiss="modal"> Ok </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="submit-msg alert modal fade" id="universal_msg_modawl" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2 flex-row align-items-center justify-content-between">
+        <button class="close close-bntn" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn mt-0">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0" id="universal_msg">Something went wrong</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn  shadow-sm" type="button"
+          data-dismiss="modal"> Ok </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- conformation popup -->
+
+<div class="adjust-clock task add-dce manager-alert modal" id="conformation-popup" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2 flex-row align-items-center justify-content-between">
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn mt-0">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body p-3 p-md-4 p-lg-4">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0" id="universal_msg">Are you sure you want to delete resource?</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary yes-btn sbt-btn shadow-sm mr-2"
+          id="confirm_delete_resource" type="button"> Yes </button>
+        <button class="d-sm-inline-block btn btn-sm btn-primary yes-btn sbt-btn brown-clr shadow-sm" type="button"
+          data-dismiss="modal"> No </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="submit-msg alert modal fade" id="resource_doc_error" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2 flex-row align-items-center justify-content-between">
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn mt-0">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0" id="resource_doc_error_text"></p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm" type="button" data-dismiss="modal">
+          Ok </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="adjust-clock modal fade" id="docAddModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+        <h5 class="modal-title" id="exampleModalLabel">Add Document </h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" id="pdf_form" class="d-flex design-box">
+         
+          <div class="custom-file">
+            <input id="fileupload" type="file" class="custom-file-input" name="file"
+              accept=".doc,.docx,.pdf,.ppt,.csv,.jpeg,.xls,.pptx,.xlsx,.jpg,.png" value="Add Document">
+            <label class="custom-file-label" for="customFile">
+              <div class="d-flex mt-1">
+                <i class="fas fa-folder"></i>
+                <p id="filename_user">50 MB max</p>
+              </div>
+            </label>
+          </div>
+          <label class="accept-content">Only Doc, Docx, Pdf, Ppt, Csv, Pptx, Jpeg, Xls, Xlsx, Jpg, Png can be uploaded.
+          </label>
+          <label id="doc_error" style="display: none; color: red;"></label>
+        </form>
+
+        <div id="file_rename">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <button class="btn btn-outline-secondary" type="button" id="button-addon1">File Name</button>
+            </div>
+            <input type="text" class="form-control" id="file_name" placeholder="" aria-label="File Rename" aria-describedby="File Name" onkeyup="file_name_validation()">
+          </div>
+            <label id="file_name_error" style="display: none; color: red;"></label> 
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm" type="button" id="add_doc">Ok</button>
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm" type="button" data-dismiss="modal" aria-label="Close">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Bootstrap core JavaScript-->
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- Core plugin JavaScript-->
+<script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+<!-- Custom scripts for all pages-->
+<script src="{% static 'js/sb-admin-2.js' %}"></script>
+<script type="text/javascript">
+
+  $(document).on("change","#department-select", function(){
+    selected = $("#department-select option:selected").text()
+    if (selected == "Please select department"){
+      $("#resources_error").html("Please select department")
+      $("#resources_error").show()
+      $("#dropdown_show").removeClass()
+      $("#dropdown_show").addClass("drop-down-checkbox")
+      return false
+    }
+    else{
+      $.ajax({
+        type: 'GET',
+        url: "{% url 'get_users' %}",
+        data: { "selected": $("#department-select option:selected").val() },
+        success: function (response) {
+          // alert(response)
+          // $("#dropdown_users_div").click()
+          if (response == 0) {
+            $("#dropdown_users_Options").html('<li><div class="form-group form-check"><label class="form-check-label" for="exampleCheck1">No user found</label></div></li>')
+            $("#dropdown_show").removeClass()
+            $("#dropdown_show").addClass("drop-down-checkbox showDropdown")
+          }
+          else{
+            response = JSON.parse(response)
+            users_obj = response[0]["users_obj"]
+            assigned_departments = response[0]["assigned_departments"]
+            console.log( users_obj)
+            html = ""
+            for (var i = 0; i < users_obj.length; i++){
+
+              if (assigned_departments.includes(users_obj[i]['user_id'])){
+                checked = 'checked'
+              }
+              else{
+                checked = ''
+              }
+
+              html += '<li><div class="form-group form-check"><input type="checkbox" class="form-check-input users_idsf" '+ checked +' id="exampleCheck'+ i.toString() +'" data-attr="'+ users_obj[i]['user_id'].toString() +' , '+ checked +'"><label class="form-check-label" for="exampleCheck'+ i.toString() +'">'+ users_obj[i]['name'] +'</label></div></li>'
+            }
+            $("#dropdown_users_Options").html(html)
+            $("#dropdown_show").removeClass()
+            $("#dropdown_show").addClass("drop-down-checkbox showDropdown")
+          }
+        }
+      });
+    }
+  })
+
+
+
+  $("#assign_department_btn").click(function () {
+    $("#resources_error").hide()
+    attr = $(this).attr("data-attr")
+    assign_department = $("#department-select option:selected").text()
+    if (assign_department == "Please select department"){
+        $("#resources_error").html("Please select department")
+        $("#resources_error").show()
+        return false
+    }
+
+    else{
+      user_list = []
+      $(".users_idsf").each(function(){
+        data_attr = $(this).attr("data-attr")
+        data_attr = data_attr.split(" , ")
+        if ($(this).prop("checked")){
+          checked = 'checked'
+        }
+        else{
+          checked = ''
+        }
+        data_dict = {"id": data_attr[0], "checked": checked}
+        user_list.push(data_dict)
+      })
+      if(user_list.length == 0){
+        $("#user_department_error").html("Please select department and user")
+        $("#user_department_error").show()
+        return false
+      }
+      else{
+        $("#user_department_error").hide()
+        $.ajax({
+          type: 'POST',
+          url: "{% url 'assign_department' %}",
+          data: {
+            "resource_id" : attr,
+            "department_id" : $("#department-select option:selected").val(),
+            "data": JSON.stringify(user_list)
+          },
+          success: function (response) {
+            // alert(response)
+            if (response == 1) {
+              $("#assign").modal("hide")
+              $("#universal_msg").html("Resource assigned successfully")
+              $("#assignSingleBtn").modal("hide")
+              $("#universal_msg_modal").modal("show")
+            }
+            else {
+              $("#assignSingleBtn").modal("hide")
+              // $("#resources_error").html("Resource already assigned")
+              $("#universal_msg_modawl").show()
+            }
+          }
+        });
+      }
+
+      // assign_department_id = $("#department-select option:selected").val()
+      // $.ajax({
+      //   type: 'POST',
+      //   url: "{% url 'assign_department' %}",
+      //   data: {
+      //     "attr": attr,
+      //     "assign_department": assign_department,
+      //     "assign_department_id": assign_department_id,
+      //   },
+      //   success: function (response) {
+      //     if (response == 1) {
+      //       $("#assign").modal("hide")
+      //       $("#universal_msg").html("Resource assigned successfully")
+      //       $("#universal_msg_modal").modal("show")
+      //     }
+      //     if (response == 5) {
+      //       $("#resources_error").html("Resource already assigned")
+      //       $("#resources_error").show()
+      //     }
+      //   }
+      // });
+    }
+  })
+
+  $("#all-selection").change(function(){
+
+    if($(this).is(':checked')){
+      $(".chck_box_rsrc").prop("checked", true)
+    }
+    else{
+      $(".chck_box_rsrc").prop("checked", false)
+    }
+  })
+
+
+  $("#open_resource_popup").click(function(){
+    $("#docAddModal").modal("show")
+    $("#file_name_error").html("") 
+    $("#doc_error").html("")
+  })
+
+
+function file_name_validation(){
+  city = $("#file_name").val()
+  if(city == ""){
+    $("#file_name_error").html("This field is required")
+    $("#file_name_error").show()
+    return false
+  }
+  else{
+    $("#file_name_error").hide()
+    return true
+  }
+}
+
+
+  /* Helper function */
+function download_file(fileURL, fileName) {
+    // for non-IE
+    if (!window.ActiveXObject) {
+        var save = document.createElement('a');
+        save.href = fileURL;
+        save.target = '_blank';
+        var filename = fileURL.substring(fileURL.lastIndexOf('/')+1);
+        save.download = fileName || filename;
+         if ( navigator.userAgent.toLowerCase().match(/(ipad|iphone|safari)/) && navigator.userAgent.search("Chrome") < 0) {
+        document.location = save.href; 
+        // window event not working here
+        }else{
+              var evt = new MouseEvent('click', {
+                  'view': window,
+                  'bubbles': true,
+                  'cancelable': false
+              });
+              save.dispatchEvent(evt);
+              (window.URL || window.webkitURL).revokeObjectURL(save.href);
+        } 
+      }
+
+      // for IE < 11
+      else if ( !! window.ActiveXObject && document.execCommand)     {
+          var _window = window.open(fileURL, '_blank');
+          _window.document.close();
+          _window.document.execCommand('SaveAs', true, fileName || fileURL)
+          _window.close();
+      }
+}
+  
+$("#download_files").click(function(){
+  if($(".chck_box_rsrc:checked").length == 0){
+    $("#select_resource_error").show()
+    return false
+  }
+  else{
+    $("#select_resource_error").hide()
+    $(".chck_box_rsrc:checked").each(function(){
+    fileURL = $(this).attr("data-path")
+    fileName = $(this).attr("title")
+    download_file(fileURL, fileName); //call function
+    // alert("downloaded")
+    })
+  }
+
+})
+
+
+// $(document).on("click", ".remove_resource", function () {
+  
+// })
+
+
+$("#delete_resources").click(function(){
+  resources_list = []
+  if($(".chck_box_rsrc:checked").length == 0){
+    $("#select_resource_error").show()
+    return false
+  }
+  else{
+    $("#select_resource_error").hide()
+    $(".chck_box_rsrc:checked").each(function(){
+      resources_list.push($(this).attr('delete-id'))
+    })
+    $("#confirm_delete_resource").attr("data-attr", resources_list)
+    $("#conformation-popup").modal("show")
+  }
+
+})
+
+
+$("#open_assign_modal").click(function(){
+  resources_list = []
+  if($(".chck_box_rsrc:checked").length == 0){
+    $("#select_resource_error").show()
+    return false
+  }
+  else{
+    $("#select_resource_error").hide()
+    $(".chck_box_rsrc:checked").each(function(){
+      resources_list.push($(this).attr('delete-id'))
+    })
+    $("#assign_department_btn").attr("data-attr", resources_list)
+    $("#assignSingleBtn").modal("show")
+  }
+
+})
+
+
+$(document).on('keypress','#search_resource_inp',function (e) {
+   var key = e.which;
+   if(key == 13)  // the enter key code
+   {
+      $('.search_resource').click();
+      return false;
+   }
+});
+
+
+
+$("#fileupload").change(function () {
+  filename = $(this).val()
+  if (filename.substring(3, 11) == 'fakepath') {
+    filename = filename.substring(12);
+  }
+  $("#filename_user").html(filename)
+})
+
+$("#sort_by_doc").change(function () {
+  value = $('option:selected', this).val()
+  if (value != "sort") {
+    if ($("#search_resource_inp").val() == "") {
+      location.href = "{% url 'resources' %}?sort_by=" + value + ""
+    }
+    else {
+      location.href = "{% url 'resources' %}?sort_by=" + value + "&search_name=" + $("#search_resource_inp").val() + ""
+    }
+  }
+});
+
+$(".search_resource").click(function () {
+  sort_value = $('#sort_by_doc option:selected').val()
+  if ($("#search_resource_inp").val() == "") {
+    $("#search_resource_inp").focus()
+  }
+  else if (sort_value != "sort") {
+    location.href = "{% url 'resources' %}?sort_by=" + sort_value + "&search_name=" + $("#search_resource_inp").val() + ""
+  }
+  else {
+    location.href = "{% url 'resources' %}?search_name=" + $("#search_resource_inp").val() + ""
+  }
+});
+
+
+$("#confirm_delete_resource").click(function () {
+  resource_id = $(this).attr("data-attr")
+  $.ajax({
+    type: 'POST',
+    url: "{% url 'delete_resource' %}",
+    data: { "resource_id": resource_id },
+    success: function (response) {
+      if (response == 1) {
+        location.reload()
+      }
+      else{
+
+      }
+    }
+  });
+})
+
+
+$(".assign_button").click(function () {
+  value = $(this).attr("data-attr")
+  $.ajax({
+    type: 'GET',
+    url: "{% url 'assign_department' %}",
+    data: { "data": value },
+    success: function (response) {
+      if (response != 0) {
+        console.log(response)
+        response = JSON.parse(response)
+        $(".assign_departments_count").html("(" + (response.length).toString() + ")")
+        html = ''
+        if (response.length == 0) {
+
+        }
+        else {
+          for (var i = 0; i < response.length; i++) {
+            html += '<div class="slip-wrap d-flex align-item-center justify-content-between py-md-2 py-2 mx-2 mx-md-3"><h4>' + response[i]['departments__departments'] + '</h4><a class="remove_assign_resource" data-attr="' + response[i]['id'] + '"><i class="far fa-trash-alt"></i></a></div>'
+          }
+        }
+        $("#assign_department_div").html(html)
+        $("#assign").modal("show")
+        $("#assign_department_btn").attr("data-attr", value)
+      }
+    }
+  });
+})
+
+  var re = /[\0-\x1F\x7F-\x9F\xAD\u0378\u0379\u037F-\u0383\u038B\u038D\u03A2\u0528-\u0530\u0557\u0558\u0560\u0588\u058B-\u058E\u0590\u05C8-\u05CF\u05EB-\u05EF\u05F5-\u0605\u061C\u061D\u06DD\u070E\u070F\u074B\u074C\u07B2-\u07BF\u07FB-\u07FF\u082E\u082F\u083F\u085C\u085D\u085F-\u089F\u08A1\u08AD-\u08E3\u08FF\u0978\u0980\u0984\u098D\u098E\u0991\u0992\u09A9\u09B1\u09B3-\u09B5\u09BA\u09BB\u09C5\u09C6\u09C9\u09CA\u09CF-\u09D6\u09D8-\u09DB\u09DE\u09E4\u09E5\u09FC-\u0A00\u0A04\u0A0B-\u0A0E\u0A11\u0A12\u0A29\u0A31\u0A34\u0A37\u0A3A\u0A3B\u0A3D\u0A43-\u0A46\u0A49\u0A4A\u0A4E-\u0A50\u0A52-\u0A58\u0A5D\u0A5F-\u0A65\u0A76-\u0A80\u0A84\u0A8E\u0A92\u0AA9\u0AB1\u0AB4\u0ABA\u0ABB\u0AC6\u0ACA\u0ACE\u0ACF\u0AD1-\u0ADF\u0AE4\u0AE5\u0AF2-\u0B00\u0B04\u0B0D\u0B0E\u0B11\u0B12\u0B29\u0B31\u0B34\u0B3A\u0B3B\u0B45\u0B46\u0B49\u0B4A\u0B4E-\u0B55\u0B58-\u0B5B\u0B5E\u0B64\u0B65\u0B78-\u0B81\u0B84\u0B8B-\u0B8D\u0B91\u0B96-\u0B98\u0B9B\u0B9D\u0BA0-\u0BA2\u0BA5-\u0BA7\u0BAB-\u0BAD\u0BBA-\u0BBD\u0BC3-\u0BC5\u0BC9\u0BCE\u0BCF\u0BD1-\u0BD6\u0BD8-\u0BE5\u0BFB-\u0C00\u0C04\u0C0D\u0C11\u0C29\u0C34\u0C3A-\u0C3C\u0C45\u0C49\u0C4E-\u0C54\u0C57\u0C5A-\u0C5F\u0C64\u0C65\u0C70-\u0C77\u0C80\u0C81\u0C84\u0C8D\u0C91\u0CA9\u0CB4\u0CBA\u0CBB\u0CC5\u0CC9\u0CCE-\u0CD4\u0CD7-\u0CDD\u0CDF\u0CE4\u0CE5\u0CF0\u0CF3-\u0D01\u0D04\u0D0D\u0D11\u0D3B\u0D3C\u0D45\u0D49\u0D4F-\u0D56\u0D58-\u0D5F\u0D64\u0D65\u0D76-\u0D78\u0D80\u0D81\u0D84\u0D97-\u0D99\u0DB2\u0DBC\u0DBE\u0DBF\u0DC7-\u0DC9\u0DCB-\u0DCE\u0DD5\u0DD7\u0DE0-\u0DF1\u0DF5-\u0E00\u0E3B-\u0E3E\u0E5C-\u0E80\u0E83\u0E85\u0E86\u0E89\u0E8B\u0E8C\u0E8E-\u0E93\u0E98\u0EA0\u0EA4\u0EA6\u0EA8\u0EA9\u0EAC\u0EBA\u0EBE\u0EBF\u0EC5\u0EC7\u0ECE\u0ECF\u0EDA\u0EDB\u0EE0-\u0EFF\u0F48\u0F6D-\u0F70\u0F98\u0FBD\u0FCD\u0FDB-\u0FFF\u10C6\u10C8-\u10CC\u10CE\u10CF\u1249\u124E\u124F\u1257\u1259\u125E\u125F\u1289\u128E\u128F\u12B1\u12B6\u12B7\u12BF\u12C1\u12C6\u12C7\u12D7\u1311\u1316\u1317\u135B\u135C\u137D-\u137F\u139A-\u139F\u13F5-\u13FF\u169D-\u169F\u16F1-\u16FF\u170D\u1715-\u171F\u1737-\u173F\u1754-\u175F\u176D\u1771\u1774-\u177F\u17DE\u17DF\u17EA-\u17EF\u17FA-\u17FF\u180F\u181A-\u181F\u1878-\u187F\u18AB-\u18AF\u18F6-\u18FF\u191D-\u191F\u192C-\u192F\u193C-\u193F\u1941-\u1943\u196E\u196F\u1975-\u197F\u19AC-\u19AF\u19CA-\u19CF\u19DB-\u19DD\u1A1C\u1A1D\u1A5F\u1A7D\u1A7E\u1A8A-\u1A8F\u1A9A-\u1A9F\u1AAE-\u1AFF\u1B4C-\u1B4F\u1B7D-\u1B7F\u1BF4-\u1BFB\u1C38-\u1C3A\u1C4A-\u1C4C\u1C80-\u1CBF\u1CC8-\u1CCF\u1CF7-\u1CFF\u1DE7-\u1DFB\u1F16\u1F17\u1F1E\u1F1F\u1F46\u1F47\u1F4E\u1F4F\u1F58\u1F5A\u1F5C\u1F5E\u1F7E\u1F7F\u1FB5\u1FC5\u1FD4\u1FD5\u1FDC\u1FF0\u1FF1\u1FF5\u1FFF\u200B-\u200F\u202A-\u202E\u2060-\u206F\u2072\u2073\u208F\u209D-\u209F\u20BB-\u20CF\u20F1-\u20FF\u218A-\u218F\u23F4-\u23FF\u2427-\u243F\u244B-\u245F\u2700\u2B4D-\u2B4F\u2B5A-\u2BFF\u2C2F\u2C5F\u2CF4-\u2CF8\u2D26\u2D28-\u2D2C\u2D2E\u2D2F\u2D68-\u2D6E\u2D71-\u2D7E\u2D97-\u2D9F\u2DA7\u2DAF\u2DB7\u2DBF\u2DC7\u2DCF\u2DD7\u2DDF\u2E3C-\u2E7F\u2E9A\u2EF4-\u2EFF\u2FD6-\u2FEF\u2FFC-\u2FFF\u3040\u3097\u3098\u3100-\u3104\u312E-\u3130\u318F\u31BB-\u31BF\u31E4-\u31EF\u321F\u32FF\u4DB6-\u4DBF\u9FCD-\u9FFF\uA48D-\uA48F\uA4C7-\uA4CF\uA62C-\uA63F\uA698-\uA69E\uA6F8-\uA6FF\uA78F\uA794-\uA79F\uA7AB-\uA7F7\uA82C-\uA82F\uA83A-\uA83F\uA878-\uA87F\uA8C5-\uA8CD\uA8DA-\uA8DF\uA8FC-\uA8FF\uA954-\uA95E\uA97D-\uA97F\uA9CE\uA9DA-\uA9DD\uA9E0-\uA9FF\uAA37-\uAA3F\uAA4E\uAA4F\uAA5A\uAA5B\uAA7C-\uAA7F\uAAC3-\uAADA\uAAF7-\uAB00\uAB07\uAB08\uAB0F\uAB10\uAB17-\uAB1F\uAB27\uAB2F-\uABBF\uABEE\uABEF\uABFA-\uABFF\uD7A4-\uD7AF\uD7C7-\uD7CA\uD7FC-\uF8FF\uFA6E\uFA6F\uFADA-\uFAFF\uFB07-\uFB12\uFB18-\uFB1C\uFB37\uFB3D\uFB3F\uFB42\uFB45\uFBC2-\uFBD2\uFD40-\uFD4F\uFD90\uFD91\uFDC8-\uFDEF\uFDFE\uFDFF\uFE1A-\uFE1F\uFE27-\uFE2F\uFE53\uFE67\uFE6C-\uFE6F\uFE75\uFEFD-\uFF00\uFFBF-\uFFC1\uFFC8\uFFC9\uFFD0\uFFD1\uFFD8\uFFD9\uFFDD-\uFFDF\uFFE7\uFFEF-\uFFFB\uFFFE\uFFFF]/g;
+
+
+  $(document).on('click', ".remove_assign_resource", function () {
+    id = $(this).attr('data-attr')
+    var that = $(this)
+    $.ajax({
+      type: 'POST',
+      url: "{% url 'remove_assigned_department' %}",
+      data: { "resource_id": id },
+      success: function (response) {
+        if (response == 1) {
+          count = $(".assign_departments_count").text()
+          count = count.replace("(", "")
+          count = count.replace(")", "")
+          var betterInt = parseInt(count.replace(window.re, ''), 10 );
+          $(".assign_departments_count").text("("+(betterInt - 1).toString()+")")
+          that.parent().remove()
+        }
+        else {
+
+        }
+      }
+    });
+  })
+
+
+
+
+  function file_error(){
+
+    file = $("#fileupload").val()
+    if (file == "" || file == null) {
+      $("#doc_error").html("Please select file")
+      $("#doc_error").show()      
+      return false
+    }
+    // else if ( !!~password.indexOf('.jpeg') === -1 || !!~password.indexOf('.doc') === -1 || !!~password.indexOf('.docs') === -1 || !!~password.indexOf('.pdf') === -1 || !!~password.indexOf('.ppt') === -1 || !!~password.indexOf('.xls') === -1  || !!~password.indexOf('.csv') === -1 || !!~password.indexOf('.pptx') === -1 || !!~password.indexOf('.xlsx') === -1 || !!~password.indexOf('.jpg') === -1 || !!~password.indexOf('.png') === -1 ) {
+    //   $("#doc_error").html("Please check your file format")
+    //   $("#doc_error").show()
+    //   return false
+    // }
+
+    else {
+      if (file.includes(".jpeg") || file.includes(".doc") || file.includes(".docs") || file.includes(".pdf") || file.includes(".ppt") || file.includes(".xls") || file.includes(".csv") || file.includes(".pptx") || file.includes(".xlsx") || file.includes(".jpg") || file.includes(".png")){
+
+        const size = (document.getElementById("fileupload").files[0].size / 1024 / 1024).toFixed(2);
+        if (size > 50) {
+          $("#doc_error").html("File size must me less than 50 mb")
+          $("#doc_error").modal("show")
+          return false
+        }
+        else {
+          $("#doc_error").hide()
+          return true
+        }
+      }
+      else{
+        $("#doc_error").html("Please check your file format")
+        $("#doc_error").show()
+        return false
+      }
+
+    }
+  }
+
+  $("#add_doc").click(function () {
+    file_name_validation()
+    file_error()
+    if (file_name_validation() && file_error()){
+      var fd = new FormData(),
+      myFile = document.getElementById("fileupload").files[0];
+
+      fd.append('file', myFile);
+      fd.append('file_name', $("#file_name").val());
+      // alert("asdasd")
+      $("#page_loader").show()
+      $.ajax({
+        type: 'POST',
+        url: "{% url 'save_document' %}",
+        data: fd,
+        processData: false,
+        contentType: false,
+        success: function (response) {
+          // alert(response)
+          $("#page_loader").hide()
+          if (response == 1) {
+            $("#docAddModal").modal("hide")
+            $("#universal_msg").html("Document added successfully")
+            $("#universal_msg_modal").modal("show")
+          }
+          if (response == 5) {
+            $("#resource_doc_error_text").html("Document already exist")
+            $("#resource_doc_error").modal("show")
+          }
+        }
+      });
+    }
+
+  })
+
+  $(".close-bntn").click(function () {
+    location.href = "{% url 'resources' %}";
+  })
+
+</script>
+{% endblock %}

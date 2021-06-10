@@ -1,0 +1,35 @@
+{% load static %}
+{% load i18n %}
+{% block content %}
+<div class="block-part d-flex {% if manager.user_manager %}open_chat_thread{% else %}open_chat_thread_staff{% endif %}" data-thread="{{manager.chat_id}}" data-sender="{{chat.sender.id}}" data-receiver="{{chat.reciever.id}}" id="{{manager.reciever_email_id}}_message_list">
+        <a>
+            <div class="d-flex">
+                <div class="img-wrap admin-img mr-3">
+                    <img src="{% static 'img/admin-demo.png' %}" class="admin-img mr-3" title="" alt="">
+                    <i class="fas fa-circle {{manager.icon_class}}-color"
+                        id="{{manager.reciever_email_id}}_status"></i>
+                </div>
+                <div class="message-block justify-content-center align-self-center">
+
+                    <h5>{{manager.reciever_name}}</h5>
+                    <p id="{{manager.reciever_email_id}}_message_list_msg">{{manager.last_message}}</p>
+                </div>
+                <div class="time-block1 ml-auto justify-content-center align-self-center">
+                    <p id="{{manager.reciever_email_id}}_message_list_date">{{manager.last_updated}}</p>
+
+                </div>
+            </div>
+        </a>
+        <div class="option-block ml-auto justify-content-center align-self-center">
+            <button class="show-options" href="#" id="searchDropdown" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false"> <i class="fas fa-ellipsis-v"></i> </button>
+            <div class="dropdown-menu dropdown-menu-right shadow" aria-labelledby="searchDropdown">
+                <ul>
+                    <!-- <li>Delete</li> -->
+                    <li class="archive_chat_btn" data-attr="{{manager.reciever_email}}">{% trans "Archive" %}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

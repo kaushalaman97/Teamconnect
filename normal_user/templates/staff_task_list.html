@@ -1,0 +1,45 @@
+{% load i18n %}
+<tr class="border-bottom-2">
+  <th>{% trans "Serial No." %}</th>
+  <th>{% trans "Date" %}</th>
+  <th class="task-fix">{% trans "Task" %}</th>
+  <th class="status-fix">{% trans "Status" %}</th>
+</tr>
+    {% if manager %}
+    {% for task in manager %}
+    <tr>
+        <td>{{forloop.counter}}</td>
+         <td class="task-fix">{{task.date_str}}</td>
+        <td colspan="3">
+          <div class="table-responsive-sm">
+            <table class="inner-table child-table">  
+             {% for i in task.tasks %}
+             <tr>
+              <td class="task-fix">{{forloop.counter}}. {{i.task}}</td>
+
+              <!-- <td>
+                  <div class="icons">
+                    <a class="remove_task_icon" data-attr="{{i.id}}"> <i class="far fa-trash-alt"></i></a>
+                </div>
+            </td> -->
+            <td class="status-fix">
+                {% if i.acknowledge %}
+                  <a class="ack-icon" data-toggle="tooltip" data-placement="top" title="Acknowledge" >{% trans "Acknowledged" %}</a>
+                {% else %}
+                  <a class="acknowledge_status_btn ack-icon" data-toggle="tooltip" data-placement="top" title="{% trans "Acknowledge" %}" data-attr="{{i.id}}"> <i class="fa fa-check-circle" aria-hidden="true"></i></a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        </table> 
+        </div>     
+    </td>
+</tr>
+{% endfor %}            
+{% else %}
+    <tr class="text-center">
+        <td colspan="4">{% trans "No data found" %}</td>
+    </tr>
+{% endif %}
+
+

@@ -1,0 +1,67 @@
+{% load static %}
+{% load i18n %}
+{% load custom_template_tags %}
+<!-- Card Header - Dropdown -->
+<div class="short-top short-msg border-right">
+    <div class="card-header all-messages py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-black1">{% trans "All Messages" %}</h6>
+        <div class="ml-auto d-flex">
+            <button class="contact-list mr-2 d-sm-inline-block btn btn-sm btn-primary table-btn shadow-sm"
+                onclick="contactList()">{% trans "Contact List" %}</button>
+            <div class="search-block d-none d-sm-inline-block form-inline navbar-search">
+                <div class="input-group">
+                    <input type="text" class="form-control border-0 small" placeholder="{% trans "Search for" %}..."
+                        aria-label="Search" aria-describedby="basic-addon2" id="search_user">
+
+                    <!-- <div class="input-group-append mr-3">
+                        <i class="fas fa-search fa-sm"></i>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="mySidenav" class="sidenav shadow"> <a href="javascript:void(0)" class="closebtncontact"
+            onclick="closeNav()">&times;</a>
+        <div class="chat-side-bar {% if  'manager_chat' in request.path %}manager-staff-chat{% endif %}" id="chat_side_bar">
+            
+
+            {% for chat in chat_thread %}
+                {% chat_info chat.id request.user.id as data %}
+                <div class="block-part d-flex {% if user_manager %}open_chat_thread{% else %}open_chat_thread_staff{% endif %}" data-thread="{{chat.id}}" data-sender="{{chat.sender.id}}" data-receiver="{{chat.reciever.id}}" id="{{data.reciever_email_id}}_message_list">
+                    <a>
+                        <div class="d-flex">
+                            <div class="img-wrap admin-img mr-3">
+                                <img src="{% static 'img/admin-demo.png' %}" class="admin-img mr-3" title="" alt="">
+                                {% user_status data.reciever_id as status %}
+                                <i class="fas fa-circle {{status.icon_class}}-color"
+                                    id="{{data.reciever_email_id}}_status"></i>
+                            </div>
+                            <div class="message-block justify-content-center align-self-center">
+
+                                <h5>{{data.reciever_name}}</h5>
+                                <p id="{{data.reciever_email_id}}_message_list_msg">{{data.last_message}}</p>
+                            </div>
+                            <div class="time-block1 ml-auto justify-content-center align-self-center">
+                                <p id="{{data.reciever_email_id}}_message_list_date">
+                                    {% if chat.sender.id == request.user.id %}{{ chat.date_updated|date:'d/m/Y , h:i A' }}{% else %}{{ chat.date_updated_receiver|date:'d/m/Y, h:i A' }}{% endif %}
+                                </p>
+
+                            </div>
+                        </div>
+                    </a>
+                    <div class="option-block ml-auto justify-content-center align-self-center">
+                        <button class="show-options" href="#" id="searchDropdown" role="button" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false"> <i class="fas fa-ellipsis-v"></i> </button>
+                        <div class="dropdown-menu dropdown-menu-right shadow" aria-labelledby="searchDropdown">
+                            <ul>
+                                <!-- <li>Delete</li> -->
+                                <li class="archive_chat_btn" data-attr="{{data.reciever_email}}">{% trans "Archive" %}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</div>

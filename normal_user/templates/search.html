@@ -1,0 +1,339 @@
+{% extends 'base.html' %}
+{% load custom_template_tags %}
+{% block title %}Manager dasboard{% endblock %}
+{% load static %}
+{% load i18n %}
+
+{% block content %}
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+	<!-- for mobile device -->
+	<div class="row">
+		<div class="left-header-part mobile-device">
+			<div class="country-wrapper">
+
+				<div class="for-mobile">
+					<div class="country-field">
+						<a href="#" title=""><i class="fas fa-clock"></i> 10:00 am </a>
+						<div class="c-logo-block media">
+							<img class="align-self-center mr-2" src="{% static 'img/c-logo.png' %}" title="Blue Logo" alt="Blue Logo">
+							<p class="media-body"> USA </p>
+						</div>
+					</div>
+
+
+					<div class="country-field">
+						<a href="#" title=""><i class="fas fa-clock"></i> 10:00 am </a>
+						<div class="c-logo-block media">
+							<img class="align-self-center mr-2" src="{% static 'img/c-logo.png' %}" title="Blue Logo" alt="Blue Logo">
+							<p class="media-body"> USA </p>
+						</div>
+					</div>
+				</div>
+
+				<div class="for-mobile">
+					<div class="country-field">
+						<a href="#" title=""><i class="fas fa-clock"></i> 10:00 am </a>
+						<div class="c-logo-block media">
+							<img class="align-self-center mr-2" src="{% static 'img/c-logo.png' %}" title="Blue Logo" alt="Blue Logo">
+							<p class="media-body"> USA </p>
+						</div>
+					</div>
+
+					<div class="country-field">
+						<a href="#" title=""><i class="fas fa-clock"></i> 10:00 am </a>
+						<div class="c-logo-block media">
+							<img class="align-self-center mr-2" src="{% static 'img/c-logo.png' %}" title="Blue Logo" alt="Blue Logo">
+							<p class="media-body"> USA </p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Content Row -->
+
+	<div class="row">
+
+		<!-- Area Chart -->
+		<div class="col-xl-12 col-lg-12">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb mb-0 px-0">
+				  <li class="breadcrumb-item"><a href="{% url 'manager_dashboard' %}">{% trans "Manager Dashboard" %}</a></li>
+				  <li class="breadcrumb-item"><a href="{% url 'employee_profile' %}?employee_id={{user_id}}">{% trans "Employee Profile" %}</a></li>
+				  <li class="breadcrumb-item active">{% trans "Reporting Module" %}</li>
+				</ol>
+			  </nav>
+
+			<div class="card shadow reporting-module ScdBlock mb-4">
+				<!-- Card Header - Dropdown -->
+				<div
+				class="card-header no-border py-3 d-md-flex d-lg-flex flex-row align-items-center justify-content-between">
+				<h6 class="m-0 mb-2 mb-md-0 mb-lg-0 font-weight-bold text-primary"> {% trans "Reporting Module" %} : <span
+					class="ml-2"> {{user_details.name}} </span></h6>
+					<div class="d-md-flex d-lg-flex align-items-center justify-content-between">
+				
+						<div class="">
+						<form action="/seacrh-report/" method="GET">
+						</div>
+						
+                    <div class="d-flex form-group align-items-center justify-content-between mr-2 mr-md-3 mb-2 mb-md-0 mb-lg-0">
+						<label>{% trans "Name" %}:</label>
+                       <select name="username" id="username">
+					<option selected="selected" disabled>Select Name</option>
+					   {% for usr in user_details %}
+					   
+							<option value="{{usr.name}}">{{usr.name}}</option>
+						{% endfor %}
+						</select>
+						</div>
+                    <div class="d-flex form-group align-items-center justify-content-between mr-2 mr-md-3 mb-2 mb-md-0 mb-lg-0">
+						<label>{% trans "Location" %}:</label>
+                       <select name="location" id="location">
+					<option selected="selected" disabled>Select Location</option>
+					   {% for usr in user_details %}
+					   
+						<option value="{{usr.city}}">{{usr.city}}</option>
+						{% endfor %}
+						</select>
+                        </div>
+					<input type="submit" class="mr-2 mr-md-3 mb-2 mb-md-0 mb-lg-0 d-sm-inline-block btn common-btns btn-sm btn-primary" value="Filter">
+			
+				</form>
+						
+						
+					
+						<input type="submit" id="search__btn" class="mr-1 mb-0 d-sm-inline-block btn common-btns btn-sm btn-primary" value="Download Csv">
+						
+					</div>
+					<span id="dates_error" style="display: none;color: red;"></span>
+
+				</div>
+				<!-- Table  -->
+				<div class="table-responsive">
+					<table class="table table-bordered" cellspacing="0" width="100%">
+						<tr class="border-bottom-2">
+                        <th>{% trans "Sr No." %}</th>
+						<th>{% trans "Name" %}</th>
+						
+					
+						{% if early_time %}
+							<th>{% trans "Early Time" %}</th>
+						{% else %}
+						 		<th>{% trans "Early Time" %}</th>
+						{% endif %}
+						{% if late_time %}
+							<th>{% trans "Late Time" %}</th>
+						{% else %}
+						 		<th>{% trans "Late Time" %}</th>
+						{% endif %}
+						<th>{% trans "Login Time" %}</th>
+						<th>{% trans "Logout Time" %}</th>
+                        <th>{% trans "Date" %}</th>
+                         <th>{% trans "Location" %}</th>
+						</tr>
+						{% if page_obj %}
+							{% for sch in page_obj %}
+								<tr>
+									<!-- <td>Day</td> -->
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{sch.name}}</td>
+									
+									<td>{{early_time}}</td>
+									<td>{{late_time}}</td>
+	                                
+									<td>{{sch.login_time|date:'h:i A'}}</td>
+									<td>{{sch.logout_time|date:'h:i A'}}</td>
+									<td>{{sch.start_date|date:'d/m/Y'}}</td>
+                                    <td>{{sch.location}}</td>
+	
+								</tr>
+
+							{% endfor %}
+						{% else %}
+							<tr class="text-center"><td colspan="8">{% trans "No data found" %}</td></tr>
+						{% endif %}
+					</table>
+				</div>
+				{% if page_obj.paginator.num_pages > 1 %}
+				<div class="card-body">
+					<div class="row align-items-center">
+						<div class="col">
+							<span>{% trans "Showing" %} {{page_obj.start_index}} {% trans "to" %} {{page_obj.end_index}} {% trans "of" %} {{schedule_obj_count}}</span>
+						</div>
+						<div class="col">
+							<nav aria-label="Page navigation">
+								<ul class="pagination pg-blue justify-content-end">
+									{% if page_obj.number != 1 %}
+										<li class="page-item"><a class="page-link" href="?page=1">{% trans "First" %}</a></li>
+									{% else %}
+										<li class="page-item disabled"><a class="page-link" href="#">{% trans "First" %}</a></li>
+									{% endif %}
+									{% if page_obj.has_previous %}
+										<li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+									{% else %}
+										<li class="page-item disabled"><a class="page-link" href="#">&laquo;</a></li>
+									{% endif %}
+									{% for i in page_obj.paginator.page_range %}
+									{% if page_obj.number == i %}
+											<li class="page-item active"><a class="page-link" href="#">{{ i }} <span class="sr-only">({% trans "current" %})</span></a></li>
+										{% elif page_obj.number > i|add:"-5" and page_obj.number < i|add:"+5"%}
+											<li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+										{% endif %}
+									{% endfor %}
+									{% if page_obj.has_next %}
+										<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+									{% else %}
+										<li class="page-item disabled"><a class="page-link" href="#">&raquo;</a></li>
+									{% endif %}
+									{% if page_obj.paginator.num_pages != page_obj.number %}
+										<li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{% trans "Last" %}</a></li>
+									{% else %}
+										<li class="page-item disabled"><a class="page-link" href="#">{% trans "Last" %}</a></li>
+									{% endif %}
+								</ul>
+							</nav>  
+						</div>
+					</div>
+				</div>
+				{% endif %}
+			</div>
+		</div>
+
+
+	</div>
+
+</div>
+<!-- /.container-fluid -->
+
+</div>
+<!-- End of Main Content -->
+
+</div>
+<!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+	<i class="fas fa-angle-up"></i>
+</a>
+
+<div class="submit-msg alert modal fade" id="universal_msg_modal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered" role="document">
+	<div class="modal-content">
+		<div class="modal-header py-2 flex-row align-items-center justify-content-between">
+			<button class="close " type="button" data-dismiss="modal" aria-label="Close">
+				<div class="close-btn mt-0">
+					<span aria-hidden="true">×</span>
+				</div>
+			</button>
+		</div>
+		<div class="modal-body">
+			<div class="row form-row">
+				<div class="col-lg-12 text-center">
+					<p class="m-0" id="universal_msg1">{% trans "Employee added successfully" %}</p>
+				</div>          
+			</div>
+		</div>
+		<div class="modal-footer border-top-0">
+			<button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn  shadow-sm" type="button"  data-dismiss="modal"> {% trans "Ok" %} </button>
+		</div>
+	</div>
+</div>
+</div>
+
+<!-- Bootstrap core JavaScript-->
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+<!-- <script src="{% static 'datetime-picker/moment.min.js' %}"></script> -->
+<script src="{% static 'datetime-picker/wickedpicker.min.js' %}"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- <script type="text/javascript" src="http://wmh.github.io/jquery-scrollbox/jquery.scrollbox.js"></script> -->
+<script type="text/javascript" src="{% static 'js/scrollbox.js' %}"></script>
+<!-- Custom scripts for all pages-->
+<script src="{% static 'js/sb-admin-2.js' %}"></script>
+<script type="text/javascript">
+
+ $("#generate_csv_report").click(function(){
+	 from_date = $("#from_date").val()
+	 to_date = $("#to_date").val()
+            $.ajax({
+                type: "POST",
+                url: "{% url 'latereporting_module'  %}",
+				contentType: 'text/csv',
+                data: {
+				"from_date" : from_date,
+				"to_date" : to_date,
+				},
+                success: function(respone) {                        
+                    console.log(response);
+                },
+                error:function(error){
+                    console.log(error);
+                }
+            });
+        });
+
+
+
+
+
+
+$("#from_date").val("")
+  $("#to_date").val("")
+{% if from_date %}
+  $("#from_date").datepicker().datepicker("setDate", new Date("{{from_date}}"));
+{% else %}
+	$("#from_date").datepicker()
+{% endif %}
+
+{% if to_date %}
+  $("#to_date").datepicker().datepicker("setDate", new Date("{{to_date}}"));
+{% else %}
+	$("#to_date").datepicker()
+{% endif %}
+  
+
+
+
+
+
+$('#search__btn').click(function() {
+    var username = $('#username option:selected').val();
+	var location = $('#location option:selected').val();
+	$.ajax({
+                type: "POST",
+                url: "{% url 'seacrh-report'  %}",
+                data: {
+				"username" : username,
+				"location" : location,
+				},
+                success: function (response) {
+                    console.log(response);
+					var hiddenElement = document.createElement('a');
+                    hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(response);
+                    hiddenElement.target = '_blank';
+                    hiddenElement.download = 'report.csv';
+                    hiddenElement.click();
+                        
+                },
+                 error: function (jqXHR) {
+                    console.log(jqXHR.responseText); //
+                }
+            });
+	
+
+	
+})
+
+</script>
+
+
+{% endblock %}

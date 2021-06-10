@@ -1,0 +1,62 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>{% trans 'Employee Profile' %}</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <link
+        href="https://fonts.googleapis.com/css?family=Oswald:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+    <!-- Custom styles for this template-->
+    <link href="{% static 'css/sb-admin-2.css' %}" rel="stylesheet">
+
+</head>
+
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="error-template d-flex flex-column h-100 justify-content-between">
+                <div class="error-actions">
+                    <a><i class="fas fa-lock"></i> </a>
+                </div>
+                <h1>{% trans 'Oops!' %}</h1>
+                <h2>{% trans 'Locked Account' %}</h2>
+                <div class="error-details">
+                    {% trans 'Sorry, an error has occured, Requested page not found!' %}
+                </div>                
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<style>
+    body {
+        background-color: #f8f9fc;
+    }
+.error-template {padding: 150px 15px;text-align: center;}
+.error-actions {margin-top:15px;margin-bottom:15px;}
+.error-actions .btn { margin-right:10px; }
+.error-actions i {
+    font-size: 80px;
+}
+</style>
+
+</html>

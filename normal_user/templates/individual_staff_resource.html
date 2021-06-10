@@ -1,0 +1,314 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% block title %}Staff Resource{% endblock %}
+{% block content %}
+
+<div class="outer-dashboard py-md-3 py-lg-3 py-3">
+  <!-- Begin Page Content -->
+  <div class="container-fluid">
+    <div class="page-wrap page-add-employee">
+      <!-- Content Row -->
+      <div class="row">
+        <!-- Area Chart -->
+        <div class="col-xl-12 col-lg-12">
+          <div class="big-wrapper mt-1">
+            <!-- Page Heading -->
+            <div class="top-bar d-lg-flex align-items-center justify-content-between mb-1">
+              <h1 class="h3 mb-0 text-gray-800">{% trans "Resource View" %} </h1>
+             
+              <div class="btn-wrapper mt-md-0 mt-2">
+                <a href="{% url 'individual_staff_resource' employee_id %}"
+                  class="refresh-btn d-sm-inline-block mr-3 py-2"><i class="fas fa-sync-alt"></i></a>
+                <form class="d-none d-sm-inline-block form-inline mr-2 my-2 my-md-0 mw-100 navbar-search diff-mobile">
+                  <div class="input-group">
+                    <input type="text" class="form-control border-0 small" placeholder="{% trans "Search for" %}..."
+                      aria-label="Search" id="search_resource_inp" aria-describedby="basic-addon2"
+                      value="{{seached_by}}">
+                    <div class="input-group-append">
+                      <button class="btn btn-primary search_resource" type="button">
+                        <i class="fas fa-search fa-sm"></i>
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <!-- breadcrumb -->
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb mb-0 p-0">
+                <li class="breadcrumb-item"><a href="{% url 'manager_dashboard' %}">{% trans "Manager Dashboard" %}</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'employee_profile' %}?employee_id={{employee_id}}">{% trans 'Employee Profile' %}</a></li>
+                <li class="breadcrumb-item active">{% trans 'Staff Resource' %}</li>
+              </ol>
+            </nav>
+
+            <div class="row all-attachment pt-2">
+              {% if assigned_resources %}
+              {% for resource in assigned_resources %}
+
+              <div class="col-md-3 col-lg-3 p-2">
+                <div class="cards rounded shadow">
+                  <div class="attch-body p-2">
+                    <div class="d-flex down-del">
+                      <div class="ml-auto">
+                        <a href="{{resource.resource_obj.path}}" class="download-icon mr-2" data-toggle="tooltip"
+                          data-placement="top" title="">
+                          <i class="fas fa-download"></i>
+                        </a>
+                      </div>
+                    </div>
+
+                    <img {% if ".csv" in resource.resource_obj.name %}src="{% static 'img/csv.png' %}"
+                        {% elif ".pdf" in resource.resource_obj.name %}src="{% static 'img/pdf.png' %}"
+                        {% elif ".docx" in resource.resource_obj.name %}src="{% static 'img/docx.png' %}"
+                        {% elif ".doc" in resource.resource_obj.name %}src="{% static 'img/doc.png' %}"
+                        {% elif ".jpeg" in resource.resource_obj.name %}src="{% static 'img/jpeg.png' %}"
+                        {% elif ".xlsx" in resource.resource_obj.name %}src="{% static 'img/xlsx.png' %}"
+                        {% elif ".xls" in resource.resource_obj.name %}src="{% static 'img/xls.png' %}"
+                        {% elif ".pptx" in resource.resource_obj.name %}src="{% static 'img/pptx.png' %}"
+                        {% elif ".ppt" in resource.resource_obj.name %}src="{% static 'img/ppt.png' %}"
+                        {% elif ".png" in resource.resource_obj.name %}src="{% static 'img/png.png' %}"
+                        {% elif ".jpg" in resource.resource_obj.name %}src="{% static 'img/jpg.png' %}"
+                        {% elif ".mp4" in resource.resource_obj.name %}src="{% static 'img/mp4.png' %}" {% endif %}
+                      title="{{resource.resource_obj.file_name_by_user}}" alt="Resource">
+                  </div>
+                  <div class="footer-part d-flex px-2 py-2 flex-row align-items-center justify-content-between">
+                    <div class="left-side mr-auto">
+                      <h4 class="mb-0">{{resource.resource_obj.file_name_by_user}}</h4>
+                      <p> </p>
+                    </div>
+                    <!-- <div class="right-side ml-auto">
+                            <button class="btn btn-sm btn-primary table-btn resource-btn assign_button" type="button"> Assign </button>
+                          </div> -->
+                  </div>
+                </div>
+              </div>
+
+              {% endfor %}
+              {% else %}
+              <div class="not-found border-top w-100 text-center mt-3 pt-3">
+                <h3> {% trans "No data found" %}</h3>
+              </div>
+              {% endif %}
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <!--/row  -->
+    </div>
+    <!-- /.container-fluid -->
+  </div>
+</div>
+</div>
+<!-- End of Content Wrapper -->
+</div>
+<!-- End of Page Wrapper -->
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+  <i class="fas fa-angle-up"></i>
+</a>
+
+<!-- loader -->
+<div class="loader-overlay" id="page_loader" style="display: none;">
+  <div class="spinner-border text-primary" role="status">
+    <span class="sr-only">{% trans "Loading..." %}</span>
+  </div>
+</div>
+
+
+
+
+<!--  Modal-->
+<div class="adjust-clock modal fade" id="assign" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+        <h5 class="modal-title" id="exampleModalLabel">{% trans "Assign" %} </h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12">
+            <div class="form-group">
+              <label>{% trans "Department" %}:</label>
+              <select class="form-control" id="department-select">
+                <option>{% trans "Please select department" %}</option>
+                {% for dept in departments %}
+                <option value="{{dept.id}}">{{dept.departments}}</option>
+                {% endfor %}
+              </select>
+              <label id="resources_error" style="display: none;color: red;"></label>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div class="form-group">
+              <label>{% trans "Already Assigned Departments" %}<span
+                  class="text-light-gray assign_departments_count"></span></label>
+              <div class="employee-group" id="assign_department_div">
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm" id="assign_department_btn"
+          type="button">{% trans "Share" %}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="submit-msg alert modal fade" id="time_zone_message" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2 flex-row align-items-center justify-content-between">
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn mt-0">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0">{% trans "Timezones added successfully" %}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm" type="button" data-dismiss="modal">
+          Ok </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="submit-msg alert modal fade" id="universal_msg_modal" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2 flex-row align-items-center justify-content-between">
+        <button class="close close-bntn" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn mt-0">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0" id="universal_msg">{% trans "Employee added successfully" %}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn close-bntn shadow-sm" type="button"
+          data-dismiss="modal"> {% trans "Ok" %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- conformation popup -->
+
+<div class="adjust-clock task add-dce manager-alert modal" id="conformation-popup" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2 flex-row align-items-center justify-content-between">
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn mt-0">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body p-3 p-md-4 p-lg-4">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0" id="universal_msg">{% trans "Are you sure you want to delete resource?" %}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary yes-btn sbt-btn shadow-sm mr-2"
+          id="confirm_delete_resource" type="button"> {% trans "Yes" %} </button>
+        <button class="d-sm-inline-block btn btn-sm btn-primary yes-btn sbt-btn brown-clr shadow-sm" type="button"
+          data-dismiss="modal"> {% trans "No" %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="submit-msg alert modal fade" id="resource_doc_error" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2 flex-row align-items-center justify-content-between">
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn mt-0">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0" id="resource_doc_error_text"></p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm" type="button" data-dismiss="modal">
+          {% trans "Ok" %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Bootstrap core JavaScript-->
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- Core plugin JavaScript-->
+<script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+<!-- Custom scripts for all pages-->
+<script src="{% static 'js/sb-admin-2.js' %}"></script>
+<script type="text/javascript">
+
+
+  $(document).on('keypress', '#search_resource_inp', function (e) {
+    var key = e.which;
+    if (key == 13)  // the enter key code
+    {
+      $('.search_resource').click();
+      return false;
+    }
+  });
+
+  $(".search_resource").click(function () {
+    // sort_value = $('#sort_by_doc option:selected').val()
+    if ($("#search_resource_inp").val() == "") {
+      $("#search_resource_inp").focus()
+    }
+    else {
+      location.href = "{% url 'individual_staff_resource' employee_id %}?search_name=" + $("#search_resource_inp").val() + ""
+    }
+  });
+
+
+</script>
+{% endblock %}

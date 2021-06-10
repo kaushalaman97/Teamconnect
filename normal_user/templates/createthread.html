@@ -1,0 +1,104 @@
+ {% extends 'base.html' %}
+{% load custom_template_tags %}
+{% block title %}Manager dasboard{% endblock %}
+{% load static %}
+{% load i18n %}
+
+{% block content %}
+ <div class="outer-dashboard py-md-4 py-lg-4 py-3">
+  <!-- Begin Page Content -->
+  <div class="container-fluid">
+      <div class="page-wrap page-add-employee">
+          <div class="row">
+​
+              <!-- Area Chart -->
+              <div class="col-xl-12 col-lg-12">
+​
+                  <!-- Page Heading -->
+                  <div class="d-sm-flex align-items-center justify-content-between">
+                      <h1 class="h3 mb-0 text-gray-800">Add Group</h1>
+                  </div>
+                  <nav aria-label="breadcrumb">
+                      <ol class="breadcrumb mb-0 px-0">
+                          <li class="breadcrumb-item"><a href="/manager_dashboard">Manager Dashboard</a></li>
+                          <li class="breadcrumb-item active">Add Group</li>
+                      </ol>
+                  </nav>
+                  <div class="card shadow p-4">
+                      <div class=" form-wrap-section">
+                          <form action="/create_thread/" method="post">
+                             {% csrf_token %}
+                              <div class="row form-row">
+                                  <div class="col-lg-12">
+                                      <div class="form-group">
+                                          <label>Room No<span class="color-red">*</span></label>
+                                          <input type="text" name="room_no" class="form-control" placeholder="Enter Room No"
+                                            required="">
+                                          <span id="emergency_contact_person_error"
+                                              style="display: none;color: red;"></span>
+                                      </div>
+                                  </div>
+                                  <div class="col-lg-12">
+                                      <div class="form-group">
+                                          <label>Name<span class="color-red">*</span></label>
+                                          <input type="text"  name="name" class="form-control" placeholder="Enter Name"
+                                          required="">
+                                          <span id="error1_email" style="display: none;color: red;"></span>
+                                      </div>
+                                  </div>
+​
+                                  <div class="col-lg-12">
+                                      <div class="form-group">
+                                          <label>Select User</label>
+                                            {% for usr in users %}
+                                              <div class="form-check col-md-3 px-4"><input type="checkbox"
+                                                      name="users" class="form-check-input" id="{{usr.id}}" value="{{usr.id}}">
+                                                  <label class="form-check-label" for="exampleCheck1">{{usr.name}}</label>
+                                              </div>
+                                                {% endfor %}
+                                      </div>
+                                  </div>
+                                  <div class="col-lg-12">
+                                      <div class="form-group">
+                                        <input type="submit"  class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm" value=" Submit">
+                    
+                                      </div>
+                                  </div>
+                                  </form>
+                              </div>
+                          </form>
+                      </div>
+                  </div>
+                  <!-- Content Row -->
+​
+              </div>
+          </div>
+      </div>
+      <!-- Content Row -->
+  </div>
+  <!-- /.container-fluid -->
+</div>
+
+{% endblock %} 
+
+
+  {% comment %} <div  style="height:100vh"class="d-flex justify-content-center align-items-center">
+    <form action="/create_thread/" method="post">
+   {% csrf_token %}
+
+    <input  class="form-control"  name="room_no" placeholder="enter room no" type="text" name="room_no">
+    <input  class="form-control" name="name" type="text" placeholder="enter name" name="name">
+      <span>Select  User</span>
+     <div class="form-check">
+    {% for usr in users %}
+    {{usr.id}}
+    <input type="checkbox" name="users" class="form-check-input" id="{{usr.id}}" value="{{usr.id}}">
+     <label class="form-check-label" for="exampleCheck1">{{usr.name}}</label>
+       {% endfor %}
+   
+  </div>
+    <div  class="d-flex justify-content-center">
+    <input type="submit" class="btn btn-primary" value="Enter">
+    </div>
+</form>
+</div> {% endcomment %}

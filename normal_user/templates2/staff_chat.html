@@ -1,0 +1,61 @@
+{% extends 'staff_chat_base.html' %}
+{% load static %}
+{% load i18n %}
+{% block title %} Staff chat {% endblock %}
+{% block content %}
+    <script src="{% static '/js/websocketbridge.js' %}" type="text/javascript"></script>    
+        
+                <div class="chat-screen">
+                    <div class="card no-border-radius border-top-0">
+                        <!-- Card Body -->
+                        <div class="row card-body message-part d-flex">
+                             {% include 'staff_chat_list.html' %}
+
+                            <div class="short-bottom type-msg" id="user_messages">
+                                <div class="chat-inner d-flex flex-column justify-content-center">
+                                    <div class="not-chat text-center">
+                                        <i class="fab fa-rocketchat"></i>
+                                      </div>
+                                    <div class="center-wrap mt-2 text-center">                                      
+                                         <h1>{% trans "Start your conversation here!" %}</h1>
+                                    </div>
+                                </div>
+                               
+                                <!-- type bar -->
+                                <!-- <div class="send-bar type-here d-flex">
+                                    <input class="form-control search-icon mr-sm-2" type="search" placeholder="Type in your message..." aria-label="Search">
+                                    <div class="send-arrow">
+                                        <a href="#">
+                                            <img src="{% static 'img/arrow-white.png' %}" class="res-img ml-auto" tittle="" alt="">
+                                        </a>
+                                    </div>
+                                </div> -->
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    <!-- End of Page Wrapper -->
+    <!-- Bootstrap core JavaScript-->
+    {% endblock %}
+    <script>
+     document.addEventListener('DOMContentLoaded', function() {
+      const webSocketBridge = new channels.WebSocketBridge();
+      const nl = document.querySelector("#notifylist");
+      webSocketBridge.connect('/groupmsg/');
+      webSocketBridge.listen(function(action, stream) {
+        console.log("RESPONSE:", action);
+        if(action.event == "New Message") {
+             alert(action.message);
+         var el = document.createElement("li");
+         el.innerHTML = `New Message<b>${action.message}</b> has joined!`;
+        nl.appendChild(el);
+        
+        }
+      })
+      document.ws = webSocketBridge; /* for debugging */
+    })
+    </script>

@@ -1,0 +1,96 @@
+{% load static %}
+{% load i18n %}
+<!-- Content Wrapper -->
+<div id="content-wrapper" class="d-flex flex-column">
+    <!-- Main Content -->
+    <div id="content">
+        <!-- Topbar -->
+        <nav class="navbar navbar-expand navbar-light bg-white topbar static-top shadow">
+
+
+            <a class="sidebar-brand d-flex align-items-center" href="{% url 'landing_page' %}">
+                <div class="sidebar-brand-icon">
+                    <img src="{% static 'images/logo-large.png' %}" title="Team Connect" alt="Team Connect">
+                </div>
+                <!-- <div class="sidebar-brand-text">Team Connect<sup></sup></div> -->
+            </a>
+
+
+
+            <!-- Sidebar Toggle (Topbar) -->
+            <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3"> <i class="fa fa-bars"></i>
+            </button>
+            <!-- Topbar Navbar -->
+            <ul class="navbar-nav ml-auto">
+                <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                <li class="nav-item dropdown no-arrow d-sm-none">
+                    <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i
+                            class="fas fa-search fa-fw"></i>
+                    </a>
+                    <!-- Dropdown - Messages -->
+                    <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+                        aria-labelledby="searchDropdown">
+                        <form class="form-inline mr-auto w-100 navbar-search">
+                            <div class="input-group">
+                                <input type="text" class="form-control bg-light border-0 small"
+                                    placeholder="{% trans "Search for" %}..." aria-label="Search"
+                                    aria-describedby="basic-addon2">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" type="button"> <i class="fas fa-search fa-sm"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </li>
+
+                <li class="nav-item dropdown no-arrow">
+                    <div class="left-header-part">
+                        <div class="btn-group ml-1" role="group" aria-label="Third group">
+                            <form action="{% url 'set_language' %}" method="POST"
+                                class="language-form d-flex align-items-center h-100">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="{{redirect_to}}">
+                                <select class="form-control mr-2" name="language" id="select_lang">
+                                    {% get_available_languages as LANGUAGES %}
+                                    {% get_current_language as LANGUAGE_CODE %}
+                                    {% get_language_info_list for LANGUAGES as languages %}
+                                    {% for language in languages %}
+                                    <option value="{{language.code}}"
+                                        {% if language.code == LANGUAGE_CODE %}selected{% endif %}>
+                                        {{language.name_local}} ({{language.code}})
+                                    </option>
+                                    {% endfor %}
+    
+                                </select>
+                                <input type="submit" class="btn btn-primary h-100" value="{% trans "Submit" %}" id="submit_lang" style="display: none;">
+                            </form>
+                        </div>
+                    </div>
+                </li>
+
+                <div class="topbar-divider d-none d-sm-block"></div>
+                <!-- Nav Item - User Information -->
+                <li class="nav-item dropdown no-arrow">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false"> <span
+                            class="mr-2 d-none d-lg-inline font-weight-bold text-black1 small">{{userdetails.name}}</span>
+                        <img class="img-profile rounded-circle" src="{{userdetails.profile_pic}}">
+                    </a>
+                    <!-- Dropdown - User Information -->
+                    <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                        aria-labelledby="userDropdown">
+                        <a class="dropdown-item" href="{% url 'staff_profile' %}"> <i
+                                class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                            {% trans "Profile" %}</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logout-conformation-popup">
+                            <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                            {% trans "Logout" %}</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        <!-- End of Topbar -->
+        <!-- start-body -->

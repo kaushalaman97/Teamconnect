@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% block title %} Manager chat {% endblock %}
+{% block content %}
+  <div class="chat-screen">
+                    <div class="card no-border-radius border-top-0">
+                        <!-- Card Body -->
+                        <div class="row card-body message-part d-flex">
+                             {% include 'staff_chat_list.html' with name=name %}
+
+                            <div class="short-bottom type-msg" id="user_messages">
+                                <div class="chat-inner d-flex flex-column justify-content-between h-100">
+                                <div class="text-center-wrapper">
+                                    <div class="not-chat text-center mt-4">
+                                         <div id="messagecontainer" class="container" style="overflow-y:auto;position:relative;width:40vw;height:40vh">
+                                     {% for message in messages %}
+                                     <div class="lefttext">{{message}}</div><br><br>
+                                          {% endfor %}
+         
+                                </div> 
+                                        </div>
+                                       
+                                    </div>
+                                  
+                                    <div class="send-bar type-here d-flex">
+                                        <textarea class="form-control search-icon mr-sm-2" id="messageinputfield" name="message"  type="text" placeholder="{% trans "Type in your message" %}..." aria-label="text"></textarea>
+                                        <div class="send-arrow">
+                                            <a id="sendbutton" data-toggle="tooltip" data-placement="top" title="" data-original-title="{% trans "Send" %}">
+                                                <img src="{% static 'img/arrow-white.png' %}" class="res-img ml-auto" tittle="" alt="">
+                                            </a> 
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+          
+
+
+
+ 
+
+
+<script type="text/javascript">
+var loc = window.location
+  var endpoint = ''
+  var wsStart = 'ws://'
+  if (loc.protocol == 'https:') {
+    wsStart = 'wss://'
+  }
+
+ 
+  var endpoint = wsStart + loc.host + "/ws/chat/{{room_no}}/";
+    var chatSocket = new WebSocket(endpoint)
+document.querySelector('#sendbutton').onclick = function(e){
+   message =  document.querySelector('#messageinputfield').value;
+   chatSocket.send(JSON.stringify({'message':'{{name}}: ' + message}));
+   document.querySelector('#messageinputfield').value=" "
+
+}
+document.querySelector('#messageinputfield').onkeyup = function(e){
+    if(e.keyCode==13){
+        document.querySelector('#sendbutton').click();
+
+    }
+}
+chatSocket.onmessage = function(e){
+    const data = JSON.parse(e.data);
+    document.querySelector('#messagecontainer').innerHTML +=  '<div class="lefttext">'+data.message+'</div>'+'<br><br>';
+}
+
+</script> 
+
+   {% endblock %}
+
+
+    
+
+
+
+{% comment %} <!DOCTYPE html>
+<html>
+  <head>
+    <title>Broad Cast Message</title>
+     <script src="{% static '/js/websocketbridge.js' %}" type="text/javascript"></script>
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+     <style>
+    .lefttext{
+            position: absolute;
+            left: 0px;
+            padding: 3px;
+            padding-left: 6px;
+            padding-right: 6px;
+            border-radius: 5px;
+            color: white;
+            background-color: blue;
+        }
+    </style>
+  </head>
+  <body>
+   
+     <div  style="position:relative;height:100vh;width:100vw;"class="d-flex justify-content-center align-items-center">
+       <h1 style="top:0;position:absolute;"> Welcome To The Group<span style="color:red">{{name}}</span> </h1>
+       <div id="messagecontainer" class="container" style="overflow-y:auto;position:relative;width:40vw;height:40vh">
+  
+    <p>Broad Cast Message</p>
+    <ul id="notifylist"></ul>
+       </div>
+      <div style="position:absolute;bottom:20px;width:100vw" class="d-flex justify-content-center">
+       <input id="messageinputfield" type="text"  class="form-control" style="text-align:center;width:40vw;" type="text" name="" >
+       <input class="btn btn-primary" id="sendbutton" type="submit" value="send">
+      </div>
+
+  
+    </div>
+
+</form>
+</div>
+    <script type="text/javascript">
+
+const url = 'ws://' + window.location.host + '/ws/chat/{{room_no}}/';
+    const chatSocket = new WebSocket(url)
+document.querySelector('#sendbutton').onclick = function(e){
+   message =  document.querySelector('#messageinputfield').value;
+   chatSocket.send(JSON.stringify({'message':'{{name}}: ' + message}));
+   document.querySelector('#messageinputfield').value=" "
+
+}
+document.querySelector('#messageinputfield').onkeyup = function(e){
+    if(e.keyCode==13){
+        document.querySelector('#sendbutton').click();
+
+    }
+}
+chatSocket.onmessage = function(e){
+    const data = JSON.parse(e.data);
+    document.querySelector('#messagecontainer').innerHTML +=  '<div class="lefttext">'+data.message+'</div>'+'<br><br>';
+}
+
+  </body>
+</html> {% endcomment %}

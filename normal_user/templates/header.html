@@ -1,0 +1,221 @@
+{% load i18n %}
+{% load i18n %}
+{% load static %}
+
+<div id="content">
+
+  <!-- Topbar -->
+  <nav class="navbar navbar-expand navbar-light bg-white topbar static-top shadow">
+
+    <!-- Sidebar Toggle (Topbar) -->
+    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+      <i class="fa fa-bars"></i>
+    </button>
+
+    <!-- Topbar Search -->
+    <!-- <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+            <div class="input-group">
+              <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+                aria-label="Search" aria-describedby="basic-addon2">
+              <div class="input-group-append">
+                <button class="btn btn-primary" type="button">
+                  <i class="fas fa-search fa-sm"></i>
+                </button>
+              </div>
+            </div>
+          </form> -->
+
+          <!-- Topbar Navbar -->
+          <ul class="navbar-nav ml-auto">
+
+            <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+            <li class="nav-item dropdown no-arrow d-sm-none">
+              <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-search fa-fw"></i>
+            </a>
+            <!-- Dropdown - Messages -->
+            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
+              <form class="form-inline mr-auto w-100 navbar-search">
+                <div class="input-group">
+                  <input type="text" class="form-control bg-light border-0 small" placeholder="{% trans "Search for" %}..."
+                  aria-label="Search" aria-describedby="basic-addon2">
+                  <div class="input-group-append">
+                    <button class="btn btn-primary" type="button">
+                      <i class="fas fa-search fa-sm"></i>
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </li>
+
+          <!-- Nav Item - Alerts -->
+          <li class="nav-item dropdown no-arrow mx-1">
+            <div class="left-header-part">
+              <div class="country-wrapper d-flex">
+                <div class="country-field">
+                  <a href="#" title=""><i class="fas fa-clock"></i> <span id="timezone_1_1"></span> </a>
+                  <div class="c-logo-block media">
+
+                    <p class="media-body">{{user_timezones.timezone1}}</p>
+                  </div>
+                </div>
+
+                <div class="country-field">
+                  <a href="#" title=""><i class="fas fa-clock"></i> <span id="timezone_2_2"></span> </a>
+                  <div class="c-logo-block media">
+
+                    <p class="media-body">{{user_timezones.timezone2}}</p>
+                  </div>
+                </div>
+
+                <div class="country-field">
+                  <a href="#" title=""><i class="fas fa-clock"></i> <span id="timezone_3_3"></span> </a>
+                  <div class="c-logo-block media">
+
+                    <p class="media-body">{{user_timezones.timezone3}}</p>
+                  </div>
+                </div>
+
+                <div class="country-field">
+                  <a href="#" title=""><i class="fas fa-clock"></i> <span id="timezone_4_4"></span> </a>
+                  <div class="c-logo-block media">
+
+                    <p class="media-body">{{user_timezones.timezone4}}</p>
+                  </div>
+                </div>
+
+
+                <div class="btn-group ml-1" role="group" aria-label="Third group">
+                    <form action="{% url 'set_language' %}" method="POST" class="language-form d-flex align-items-center h-100">
+                      {% csrf_token %}
+                      <input type="hidden" name="next" value="{{redirect_to}}">
+                      <select class="form-control mr-2" name="language" id="select_lang">
+                      {% get_available_languages as LANGUAGES %}
+                        {% get_current_language as LANGUAGE_CODE %}
+                        {% get_language_info_list for LANGUAGES as languages %}
+                        {% for language in languages %}
+                          <option value="{{language.code}}" {% if language.code == LANGUAGE_CODE %}selected{% endif %}>
+                                        {{language.name_local}} ({{language.code}})
+                                    </option>
+                        {% endfor %}
+                        
+                      </select> 
+                      <input type="submit" class="btn btn-primary h-100" value="{% trans "Submit" %}" id="submit_lang" style="display: none;">                    
+                    </form>
+                </div>
+
+
+              </div>
+            </div>
+          </li>
+
+          <!-- Nav Item - User Information -->
+          
+          <div class="topbar-divider d-none d-sm-block"></div>
+          <li class="notification nav-item dropdown no-arrow mx-1">
+            <a class="nav-link dropdown-toggle notification_count_a" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="far fa-bell" alt="Notification" data-toggle="tooltip" data-placement="top" title="{% trans "Notification" %}"></i>
+              <!-- Counter - Alerts -->
+              {% if notification_count != 0 %}
+                <span class="badge badge-primary badge-counter  notification_count_bell">{{notification_count}}</span>
+              {% endif %}
+            </a>
+            <!-- Dropdown - Alerts -->
+              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
+                <div class="dropdown-item d-flex justify-content-between align-items-center">
+                 <h5>{% trans "Notifications" %}</h5>
+                 <a class="d-none d-sm-inline-block btn btn-sm btn-primary table-btn clear_all_notification">{% trans "Clear All" %}</a>
+              </div>
+              <div id="notifications_div">
+                {% if notifications %}
+                  {% for not in notifications %}
+                    <div class="dropdown-row notifications_class" data-id="{{not.id}}">
+                      <!-- <div class="close-btn d-flex justify-content-end close_notification" data-attr="{{not.id}}">
+                        <span aria-hidden="true">×</span>
+                      </div> -->
+                      <div class="dropdown-item d-flex justify-content-between align-items-center pt-0">
+                        <div class="left-block">
+                          <span class="mr-2">
+                            <i class="fas fa-circle text-primary"></i> 
+                          </span>
+                          <a>
+                            {% if not.notification_type == "alert" %}
+                              {% if LANGUAGE_CODE == "el" %}O{% endif %} {{not.name}} {% trans "acknowledged the alert message" %} {{not.additional_msg}}
+                            {% elif not.notification_type == "shift" %}
+                              {% if LANGUAGE_CODE == "el" %}O{% endif %} {{not.name}} {% trans "ended their shift at" %} {{not.created|date:'d/m/Y, H:i A'}}
+                            {% elif not.notification_type == "logout" %}
+                              {% if LANGUAGE_CODE == "el" %}O{% endif %} {{not.name}} {% trans "has logged out" %}
+                            {% elif not.notification_type == "login" %}
+                              {% if LANGUAGE_CODE == "el" %}O{% endif %} {{not.name}} {% trans "has logged in" %}
+                            {% elif not.notification_type == "tasks_ack" %}
+                              {% if LANGUAGE_CODE == "el" %}O{% endif %} {{not.name}} {% trans "acknowledged the task" %} {{not.additional_msg}}
+                            {% elif not.notification_type == "email_reply" %}
+                              {% if LANGUAGE_CODE == "el" %}O{% endif %} {{not.name}} {% trans "replied to the email" %} {{not.additional_msg}}
+                            {% elif not.notification_type == "status" %}
+                              {% if LANGUAGE_CODE == "el" %}Η κατάσταση του{% endif %} {{not.name}} {% trans "status has changed to" %}
+                              {% if not.additional_msg == "i_am_here" %}
+                                {% trans "I am here" %}
+                              {% elif not.additional_msg == "in_meeting" %}
+                                {% trans "In Meeting" %}
+                              {% elif not.additional_msg == "lunch_break" %}
+                                {% trans "Lunch Break" %}
+                              {% elif not.additional_msg == "tea_break" %}
+                                {% trans "Tea Break" %}
+                              {% else %}
+                                {% trans "Offline" %}
+                              {% endif %}
+                            {% elif not.notification_type == "status_update" %}
+                              {% if LANGUAGE_CODE == "el" %}O{% endif %} {{not.name}} {% trans "sent their status update at" %} {{not.created|date:'d/m/Y, H:i A'}}
+                            {% endif %}
+                          </a>
+                        </div>
+                        <div class="right-time-block">
+                          {{not.created|date:'d/m/Y , H:i A'}}
+                        </div>
+                      </div>
+                    </div>
+                  {% endfor %}
+                {% else %}
+                  <div class="dropdown-row" id="notification_zero">
+                    {% trans "No notification found" %}
+                  </div>
+                {% endif %}
+              </div>
+
+            <a class="View-all dropdown-item text-center" href="{% url 'all_notifications' %}">{% trans "View All" %}</a>
+            </div>
+          </li>
+          
+        <div class="topbar-divider d-none d-sm-block"></div>
+
+        <li class="nav-item dropdown no-arrow">
+
+          <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false" title="{{manager_details.full_name}}">
+          <span
+          class="mr-2 d-none d-lg-inline font-weight-bold text-black1 small" data-toggle="tooltip" data-placement="top" title="{% trans "Manager" %}">{{manager_details.full_name}}</span>
+          <span data-toggle="tooltip" data-placement="top" title="{% trans "Manager" %}"><img class="img-profile rounded-circle" src="{{manager_details.profile_pic}}"> </span>
+        </a>
+
+        <!-- Dropdown - User Information -->
+        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+          <a class="dropdown-item" href="{% url 'manager_profile' %}">
+            <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+            {% trans "Profile" %}
+          </a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="{% url 'logout' %}" data-toggle="modal" data-target="#logout-conformation-popup">
+            <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+            {% trans "Logout" %}
+          </a>
+        </div>
+      </li>
+
+    </ul>
+
+  </nav>
+
+
+

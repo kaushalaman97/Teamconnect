@@ -1,0 +1,592 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% load custom_template_tags %}
+{% block title %}Employee Profile{% endblock %}
+{% block content %}
+<div class="outer-dashboard py-md-3 py-lg-3 py-3">
+  <!-- Begin Page Content -->
+  <div class="container-fluid">
+    <div class="page-wrap page-add-employee">
+      <!-- Page Heading -->
+      <div class="d-sm-flex align-items-center justify-content-between mb-2">
+        <!-- <h1 class="h3 mb-0 text-gray-800">Team Connect</h1> -->
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0 p-0">
+            <li class="breadcrumb-item"><a href="{% url 'manager_dashboard' %}">{% trans "Manager Dashboard" %}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'employee_listing' %}">{% trans "Employee List" %}</a></li>
+            <li class="breadcrumb-item active"> {% trans "Employee Profile" %}</li>
+          </ol>
+        </nav>
+        <div class="grp-btns ml-auto">
+         <a href="/overtime_list/{{user_details.user.id}}"
+            class="d-sm-inline-block btn btn-sm btn-primary table-btn shadow-sm mr-2 add_department_popup"> 
+          {% trans "Over Time" %} </a>
+         <a href="/comments_list/{{user_details.user.id}}"
+            class="d-sm-inline-block btn btn-sm btn-primary table-btn shadow-sm mr-2 add_department_popup"> 
+          {% trans "Comments List" %} </a>
+          <a href="/scheduler_list/{{user_details.user.id}}"
+            class="d-sm-inline-block btn btn-sm btn-primary table-btn shadow-sm mr-2 add_department_popup"> 
+          {% trans "Scheduled Time" %} </a>
+          <a href="/attendence_record/{{user_details.user.id}}"
+            class="d-sm-inline-block btn btn-sm btn-primary table-btn shadow-sm mr-2 add_department_popup"> 
+          {% trans "Attendance Record" %} </a>
+          <a href="/task_list/{{user_details.user.id}}"
+            class="d-sm-inline-block btn btn-sm btn-primary table-btn shadow-sm mr-2 add_city_popup"> {% trans "Task List" %} </a>
+          <a href="/reporting_module/{{user_details.user.id}}"
+            class="d-sm-inline-block btn btn-sm btn-primary table-btn shadow-sm add_city_popup"> {% trans "Reporting Module" %} </a>
+        </div>
+      </div>
+      <!-- Content Row -->
+      <div class="row">
+
+        <!-- Area Chart -->
+        <div class="col-xl-7 col-lg-7">
+
+          <div class="h-100 pb-4">
+            <div class="card shadow h-100">
+              <!-- Card Header - Dropdown -->
+              <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">{% trans "Work Status" %}</h6>
+
+              </div>
+              <!-- Card Body -->
+              <div class="card-body work-status py-3 px-4">
+                <!-- 1st -->
+                {% if status_obj %}
+                {% for data in status_obj %}
+                <div class="card-wrapper">
+                  <div class="sub-heading d-flex">
+                    <h4 class="m-2">{{ data.created_manager|date:'d/m/Y , h:i A' }}</h4>
+                  </div>
+                  <div class="card-block rounded bg-gray-100 border p-md-3 p-2">
+                    <h4 class="mb-1">{% trans "Status" %} {{forloop.counter}}</h4>
+                    <p class="m-md-0 mb-1">{{data.status}}</p>
+                   <!--  <div class="d-flex justify-content-end">
+                      <h4 class="text-success m-0"><i class="fas fa-check mr-1"></i>{% trans "Completed" %}</h4>
+                    </div> -->
+                  </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="not-found mt-2 text-center">
+                  <h1>{% trans "No data found" %}</h1>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pie Chart -->
+        <div class="col-xl-5 col-lg-5">
+          <!-- Page Heading -->
+          <!-- <div
+            class="top-circle-head d-sm-flex align-items-center justify-content-between mb-2">
+            <h1 class="h3 mb-0 text-gray-800">Attendance Record</h1>
+            <div class="right-wrapper">
+                <a href="#" class="mr-2"><i class="fas fa-circle green-color"></i></a>
+                <a href="#" class="mr-2"><i class="fas fa-circle text-alert"></i></a>
+                <a href="#" class=""><img class="align-self-center" src="{% static 'img/share-like.png' %}"
+                        title="Blue Logo" alt="Blue Logo"></a>
+            </div>
+        </div> -->
+          <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div
+              class="card-header px-3 py-3">
+              <h6 class="m-0 mr-1 font-weight-bold text-primary">{% trans "Employee Information" %}</h6>
+              <div class="head-date-Box mt-2">
+                <div class="form-group m-0">
+                  <label>{% trans "Company Joining Date" %}:</label>
+                  <input type="text" name="" value="{{user_details.date_company_join|date:'d/m/Y'}}" disabled="disabled">
+                </div>
+                <div class="form-group">
+                  <label>{% trans "Department Joining Date" %}:</label>
+                  <input type="text" name="" value="{{user_details.date_department_join|date:'d/m/Y'}}" disabled="disabled">
+                </div>
+              </div>
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+              <div class="employee-profile d-xs-block">
+                <div class="row">
+                  <div class="col-md-5 d-flex flex-column justify-content-between">
+                    <div class="img-wrapper mb-2 mb-md-0 mb-lg-0 text-center">
+                      <img src="{{user_details.profile_pic}}" title="Employee Profile" alt="Employee Profile" class="rounded-circle">
+                    </div>
+                    {% if unblock_obj %}
+                    <a data-toggle="modal" data-target="#edit-profile-employee"
+                      class="mt-2 d-sm-inline-block btn common-btns btn-sm btn-primary">{% trans "Unblock User" %}</a>
+                    {% endif %}
+                    <a href="/staff_profile_edit/{{employee_id}}"
+                      class="mt-2 d-sm-inline-block btn common-btns btn-sm btn-primary">{% trans "Edit Information" %}</a>
+                  </div>
+
+                  <div class="information-part pl-4 col-md-7">
+                    <div class="d-flex flex-column h-100 justify-content-between">
+                      <div class="top-info">
+                        <h2 class="m-0">{{user_details.name}}</h2>
+                        <h4 class="m-0 mb-3">{% trans "Staff Member" %}</h4>
+                      </div>
+                      <div class="bottom-info">
+                        <a><i class="fas fa-phone-alt mr-2"></i>{{user_details.phone_no_1}}</a>
+                        <a><i class="far fa-envelope mr-2"></i>{{user_details.user.username}}</a>
+                        <a><i class="far fa-clock mr-2"></i>{{user_details.timezone}}</a>
+                        <a><i class="fas fa-map-marker-alt mr-2"></i>{{user_details.city}}</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header p-3 d-flex flex-row align-items-center justify-content-between">
+              <h6 class="m-0 mr-2 font-weight-bold text-primary">{% trans "Resources" %} </h6>
+              <a href="{% url 'individual_staff_resource' employee_id %}"
+                class="d-sm-inline-block btn common-btns btn-sm btn-primary">{% trans "View All" %}</a>
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+              <div class="row resources-block w-100 mx-0 text-center">
+                {% if assigned_resources %}
+                {% for resource in assigned_resources %}
+                <div class="col-2 p-0 px-1 files">
+                  <a class="d-block border rounded">
+                    <img {% if ".csv" in resource.resource_obj.name %}src="{% static 'img/csv.png' %}"
+                          {% elif ".pdf" in resource.resource_obj.name %}src="{% static 'img/pdf.png' %}"
+                          {% elif ".docx" in resource.resource_obj.name %}src="{% static 'img/docx.png' %}"
+                          {% elif ".doc" in resource.resource_obj.name %}src="{% static 'img/doc.png' %}"
+                          {% elif ".jpeg" in resource.resource_obj.name %}src="{% static 'img/jpeg.png' %}"
+                          {% elif ".xlsx" in resource.resource_obj.name %}src="{% static 'img/xlsx.png' %}"
+                          {% elif ".xls" in resource.resource_obj.name %}src="{% static 'img/xls.png' %}"
+                          {% elif ".pptx" in resource.resource_obj.name %}src="{% static 'img/pptx.png' %}"
+                          {% elif ".ppt" in resource.resource_obj.name %}src="{% static 'img/ppt.png' %}"
+                          {% elif ".png" in resource.resource_obj.name %}src="{% static 'img/png.png' %}"
+                          {% elif ".jpg" in resource.resource_obj.name %}src="{% static 'img/jpg.png' %}"
+                          {% elif ".mp4" in resource.resource_obj.name %}src="{% static 'img/mp4.png' %}" {% endif %}
+                      title="{{resource.resource_obj.file_name_by_user}}" alt="{{resource.resource_obj.name}}">
+                  </a>
+                  <p class="m-0 mt-2">{{resource.resource_obj.file_name_by_user}}</p>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="not-found w-100 mt-2 text-center">
+                  <h1>{% trans "No resources found" %}</h1>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <!--/row  -->
+
+
+
+      <!-- Content Row -->
+      <div class="row">
+
+        <!-- Area Chart -->
+        <div class="col-xl-7 col-lg-7">
+          <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+              <h6 class="m-0 font-weight-bold text-primary">{% trans "Email" %} </h6>
+              <!-- <div class="dropdown no-arrow">
+                          <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                          </a>
+                          <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                              aria-labelledby="dropdownMenuLink">
+                              <div class="dropdown-header">Dropdown Header:</div>
+                              <a class="dropdown-item" href="#">Action</a>
+                              <a class="dropdown-item" href="#">Another action</a>
+                              <div class="dropdown-divider"></div>
+                              <a class="dropdown-item" href="#">Something else here</a>
+                          </div>
+                      </div> -->
+            </div>
+            <!-- Card Body -->
+            <div class="card-body fix-height p-0">
+              <!-- <tr class="border-bottom-2">
+                <th>S.No.</th>
+                <th>Description</th>
+                <th>Date & Time</th>
+              </tr> -->
+              <div class="emails-block d-flex px-4 py-3 border-bottom" style="background-color: #f8f9fc;">
+                <h4 class="m-0 mr-2"> {% trans "Name" %} </h4>
+                <div class="mail-content">
+                  <h4 class="m-0 mr-2"> {% trans "Description" %} </h4>
+                </div>
+                <div class="time-block ml-auto d-flex align-items-end">
+                  <h4 class="m-0 mr-2"> {% trans "Date & Time" %} </h4>
+                </div>
+              </div>
+              {% if emails %}
+              {% for email in emails %}
+              <div class="emails-block d-flex px-4 py-3 border-bottom">
+                <h4 class="m-0 mr-2">{{manager_details.full_name}}</h4>
+                <div class="mail-content">
+                  <p class="m-0 pb-1 mr-2">{{email.subject}}</p>
+                  <div class="group-attch d-flex">
+
+                    {% email_reply_split email.email_reply as email_rep %}
+                    <span id="email_{{email.id}}">{{email_rep|safe}}</span>
+
+
+                  </div>
+                </div>
+                <div class="time-block ml-auto d-flex align-items-end">
+                  <p class="m-0">{{email.created_manager|date:'d/m/Y , h:i A'}}</p>
+                </div>
+              </div>
+              {% endfor %}
+              {% else %}
+              <div class="not-found mt-3 text-center">
+                <h1>{% trans "No data found" %}</h1>
+              </div>
+              {% endif %}
+
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Pie Chart -->
+        <div class="col-xl-5 col-lg-5">
+          <!-- Page Heading -->
+
+          <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header chats p-3 d-flex flex-row align-items-center justify-content-between">
+              <h6 class="m-0 font-weight-bold text-primary">{% trans "Chat" %} </h6>
+
+            </div>
+            <!-- Card Body -->
+            <div class="card-body message-part empl-chat">
+              <div
+                class="short-bottom d-flex flex-column justify-content-end {% if not chat_messages %}start-conversation{% endif %}">
+                <div class="message-box {{reciever_div_id}}_message-box-div" {{reciever_id}}>
+                  {% if chat_messages %}
+                  {% for chat_d in chat_messages  %}
+
+                  {% if chat_d.sender.id == reciever_id %}
+                  <div class="receiver pt-3" {{chat_d.sender.id}}>
+                    <p>{{ chat_d.message }}</p>
+                    <div class="time">{{ chat_d.created|date:'d/m/Y , h:i A' }}</div>
+                  </div>
+
+                  {% else %}
+                  <div class="d-flex">
+                    <div class="sender pt-3  ml-auto">
+                      <p>{{ chat_d.message }}</p>
+                      <div class="time">{{ chat_d.created|date:'d/m/Y , h:i A' }}</div>
+                    </div>
+                  </div>
+                  {% endif %}
+                  {% endfor %}
+                  {% else %}
+
+                  <div class="mt-show d-flex flex-column justify-content-center justify_content_center_start_conv">
+                    <div class="not-chat text-center">
+                      <i class="fab fa-rocketchat"></i>
+                    </div>
+                    <div class="center-wrap mt-2 text-center">
+                      <h1>{% trans "Start your conversation here!" %}</h1>
+                    </div>
+                  </div>
+
+                  {% endif %}
+
+                </div>
+              </div>
+
+              <div class="send-bar d-flex">
+                <textarea class="form-control search-icon mr-sm-2" type="search" placeholder="{% trans "Type in your message..." %}"
+                  aria-label="Search" id="chat_message"></textarea>
+
+                <div class="send-arrow" id="send_message_btn">
+                  <a><img src="{% static 'img/arrow-white.png' %}" class="res-img ml-auto" tittle="" alt=""></a>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--/row  -->
+
+    </div>
+    <!-- /.container-fluid -->
+  </div>
+
+</div>
+<!-- End of Main Content -->
+
+<!-- End of Footer -->
+
+</div>
+<!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+  <i class="fas fa-angle-up"></i>
+</a>
+
+
+
+<div class="submit-msg alert modal fade" id="time_zone_message" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0">{% trans "Timezones added successfully" %}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm" type="button" data-dismiss="modal">
+          Ok </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!--  Edit-Profile-button Modal-->
+<div class="adjust-clock task add-dce manager-alert modal" id="edit-profile-employee" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> {% trans "Unblock User" %} {{user_details.name}} </h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body p-3 p-md-4 p-lg-4">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <h5 class="m-0 mb-1">{% trans "Are you sure you want to unblock user ?" %}</h5>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm" type="button"
+          data-attr="{{user_details.user.id}}" id="unblock_user_btn">
+          {% trans "Yes" %} </button>
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn brown-clr shadow-sm" type="button"
+          data-dismiss="modal"> {% trans "No" %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="submit-msg alert modal fade" id="universal_msg_modal" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close close-bntn" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0" id="universal_msg"></p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm close-bntn" type="button"
+          data-dismiss="modal"> {% trans "Ok" %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="submit-msg alert modal fade" id="universal_msg_modal11" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+        <button class="close " type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0">{% trans "Something Went Wrong" %}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm " type="button" data-dismiss="modal">
+          Ok </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap core JavaScript-->
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- Core plugin JavaScript-->
+<script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+<!-- Custom scripts for all pages-->
+<script src="{% static 'js/sb-admin-2.js' %}"></script>
+<script type="text/javascript">
+  $("#unblock_user_btn").click(function () {
+    user_id = $(this).attr("data-attr")
+    $("#page_loader").show()
+    $.ajax({
+      type: 'POST',
+      url: "{% url 'unblock_staff' %}",
+      data: {
+        "user_id": user_id,
+      },
+      success: function (response) {
+        $("#page_loader").hide()
+
+        if (response == 1) {
+          $("#edit-profile-employee").modal("hide")
+          $("#universal_msg").text("{% trans "User unblocked successfully" %}")
+          $("#universal_msg_modal").modal("show")
+        }
+        else {
+          $("#universal_msg_modal11").modal("show")
+        }
+      }
+    });
+
+  })
+  $(".close-bntn").click(function () {
+    location.reload()
+  })
+
+  div = $(".message-box");
+  div.scrollTop(div.prop('scrollHeight'));
+
+  var loc = window.location
+  var endpoint = ''
+  var wsStart = 'ws://'
+  if (loc.protocol == 'https:') {
+    wsStart = 'wss://'
+  }
+  var endpoint = wsStart + loc.host + "/char_bxx/"
+
+  console.log(endpoint)
+
+  var socket = new WebSocket(endpoint)
+
+  socket.onmessage = function (e) {
+    console.log("message", e)
+    e_data = JSON.parse(e.data)
+    e_data = JSON.parse(e_data.data)
+    console.log(e_data)
+    if (e_data["thread_id"]) {
+
+
+      console.log(e_data["reciever_div_id"])
+
+      $(e_data["reciever_div_id"]).append('<div class="receiver pt-3"><p>' + e_data["chat_message"] + '</p><div class="time">' + e_data["receiver_date"] + '</div></div>')
+      div = $(e_data["reciever_div_id"])
+      div.scrollTop(div.prop('scrollHeight'));
+    }
+  }
+
+  socket.onopen = function (e) {
+    formData = $("#chat_data")
+    $("#send_message_btn").click(function () {
+      if ($("#chat_message").val() == "") {
+        $("#chat_message").focus()
+      }
+      else {
+        $(".justify_content_center_start_conv").remove()
+        var dt = new Date();
+        var month = dt.getMonth() + 1;
+        var day = dt.getDate();
+        var output = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + dt.getFullYear();
+        var ampm = dt.getHours() >= 12 ? 'PM' : 'AM';
+        minutes = dt.getMinutes() < 10 ? '0' + dt.getMinutes() : dt.getMinutes();
+
+        hours = dt.getHours() % 12;
+        hours = hours ? hours : 12;
+
+        hours = hours < 10 ? '0' + hours : hours;
+        var time = hours + ":" + minutes + " " + ampm;
+        seconds = dt.getSeconds()
+        milli_seconds = dt.getMilliseconds();
+
+
+        backend_time = hours + ":" + minutes + ":" + seconds + " " + ampm;
+
+        $(".{{reciever_div_id}}_message-box-div").append('<div class="d-flex"><div class="sender pt-3  ml-auto"><p>' + $("#chat_message").val() + '</p><div class="time">' + output + ' , ' + time + '</div></div></div>')
+
+
+        var sender_time = moment.tz("{{manager_details.timezone}}").format('DD/MM/YYYY , hh:mm A');
+        var sender_time_backend = moment.tz("{{manager_details.timezone}}").format('MM/DD/YYYY hh:mm:ss A');
+
+        var receiver_time = moment.tz("{{user_details.timezone}}").format('DD/MM/YYYY , hh:mm A');
+        var receiver_time_backend = moment.tz("{{user_details.timezone}}").format('MM/DD/YYYY hh:mm:ss A');
+
+
+        div = $(".{{reciever_div_id}}_message-box-div");
+        div.scrollTop(div.prop('scrollHeight'));
+
+        // data = { "user_id": "{{reciever_id}}", "chat_message": $("#chat_message").val(), 'date': output + ' , ' + time, "backend_time": output + " , " + backend_time, "user_div_message_id": "{{user_div_id}}_message_list", "user_div_thread": "{{user_div_id}}", "name": "{{reciever_name}}", "Online_status": $("#{{user_div_id}}_status").attr("class"), "reciever_email": "{{request.user.username}}", "reciever_div_id": ".{{user_div_id}}_message-box-div", "reciever_div_id_div": "{{user_div_id}}" }
+
+
+        data = {"user_id" : "{{reciever_id}}", "chat_message" : $("#chat_message").val(), 'date' : sender_time, "backend_time" :sender_time_backend , 'receiver_date' : receiver_time, "receiver_backend_time" :receiver_time_backend, "user_div_message_id" : "{{user_div_id}}_message_list", "user_div_thread" : "{{user_div_id}}", "name": "{{manager_details.full_name}}", "Online_status" : $("#{{user_div_id}}_status").attr("class"), "reciever_email" : "{{request.user.username}}", "reciever_div_id" : ".{{user_div_id}}_message-box-div", "reciever_div_id_div": "{{user_div_id}}"}
+
+
+        socket.send(JSON.stringify(data))
+
+
+      manager_data = {"manager_id" : "{{request.user.id}}", "chat_message" : $("#chat_message").val(), 'date' : sender_time, "backend_time" :sender_time_backend , 'receiver_date' : receiver_time, "receiver_backend_time" :receiver_time_backend, "user_div_message_id" : "{{user_div_id}}_message_list", "user_div_thread" : "{{user_div_id}}", "name": "{{manager_details.full_name}}", "Online_status" : $("#{{user_div_id}}_status").attr("class"), "reciever_email" : "{{request.user.username}}", "reciever_div_id" : ".{{user_div_id}}_message-box-div", "reciever_div_id_div": "{{thread_id}}", "name2" : "{{user_details.name}}"}
+
+      socket.send(JSON.stringify(manager_data))
+
+        $("#chat_message").val("")
+        $("#chat_message").focus()
+      }
+    })
+  }
+
+  socket.onerror = function (e) {
+    console.log("error", e)
+  }
+  socket.onclose = function (e) {
+    console.log("onclose", e)
+  }
+
+
+</script>
+{% endblock %}

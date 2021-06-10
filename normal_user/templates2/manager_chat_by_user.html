@@ -1,0 +1,55 @@
+{% load static %}
+{% load i18n %}
+{% block content %}
+        
+        
+
+    <div class="chat-inner d-flex flex-column justify-content-between">
+        <div class="message-header text-right pr-4">
+                <span class="mr-2 d-none d-lg-inline font-weight-bold text-black1 small">{{manager.reciever_name}} </span>
+                <!-- <img class="img-profile rounded-circle" src="/static/img/admin-demo.png"> -->
+        </div>
+        <div class="message-box {{manager.reciever_div_id}}_message-box-div">
+            {% for chat_d in manager.chat_messages  %}
+                {% if chat_d.sender.id == manager.manager_id %}
+                    <!-- sender -->
+                    <div class="d-flex">
+                        <div class="sender d-flex pt-3  ml-auto">
+                            <div class="text-msg">
+                                <p>{{ chat_d.message }}</p>
+                                <div class="time text-end">{% if chat_d.sender.id == manager.manager_id %}{{ chat_d.created|date:'d/m/Y , h:i A' }}{% else %}{{ chat_d.created_receiver|date:'d/m/Y , h:i A' }}{% endif %}</div>
+                            </div>
+                            <img src="{% static 'img/admin-demo.png' %}" class="admin-img ml-2 align-self-end" title="" alt="">
+                        </div>
+                    </div>
+                {% else %}
+                    <!-- receiver -->
+                    <div class="receiver d-flex pt-3">
+                        <img class="admin-img mr-2 align-self-end" src="{% static 'img/admin-demo.png' %}" title="" alt="">
+                        <div class="text-msg">
+                            <p>{{ chat_d.message }}</p>
+                            <div class="time">{% if chat_d.sender.id == manager.manager_id %}{{ chat_d.created|date:'d/m/Y , h:i A' }}{% else %}{{ chat_d.created_receiver|date:'d/m/Y , h:i A' }}{% endif %}</div>
+                        </div>
+                    </div>
+                {% endif %} 
+            {% endfor %}                                       
+        </div>
+    </div>
+
+    <input type="hidden" id='hidden_details_id' sender_timezone="{{manager.sender_timezone}}" reciever_manager_timezone="{{manager.reciever_manager_timezone}}" reciever_div_id="{{manager.reciever_div_id}}" reciever_id="{{manager.reciever_id}}" user_div_id="{{manager.user_div_id}}" thread_id="{{manager.thread_id}}" reciever_name="{{manager.reciever_name}}" name="{{manager.name}}" reciever_email="{{manager.reciever_email}}" reciever_manager_id="{{manager.reciever_manager_id}}" manager_id="{{manager.manager_id}}">
+    
+    <div class="send-bar type-here d-flex">
+        <textarea class="form-control search-icon mr-sm-2" id="chat_message" name="message"  type="search" placeholder="{% trans "Type in your message..." %}" aria-label="Search"></textarea>
+        <div class="send-arrow">
+            <a id="send_message_btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Send">
+                <img src="{% static 'img/arrow-white.png' %}" class="res-img ml-auto" tittle="" alt="">
+            </a>  
+                                                      
+        </div>
+    </div>
+
+     
+    
+    <!-- End of Page Wrapper -->
+    <!-- Bootstrap core JavaScript-->
+    {% endblock %}

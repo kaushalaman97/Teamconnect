@@ -1,0 +1,35 @@
+{% extends 'staff_chat_base.html' %}
+
+{% load static %}
+{% load i18n %}
+{% block title %} Manager chat {% endblock %}
+{% block content %}
+        
+        
+                <div class="chat-screen">
+                    <div class="card no-border-radius border-top-0">
+                        <!-- Card Body -->
+                        <div class="row card-body message-part d-flex">
+                             {% include 'staff_chat_list.html' %}
+
+                            <div class="short-bottom type-msg" id="user_messages">
+                                <div class="chat-inner d-flex flex-column justify-content-center">
+                                    <div class="not-chat text-center">
+                                        <i class="fab fa-rocketchat"></i>
+                                      </div>
+                                    <div class="center-wrap mt-2 text-center">                                      
+                                         <h1>{% trans "Start your conversation here!" %}</h1>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    <!-- End of Page Wrapper -->
+    <!-- Bootstrap core JavaScript-->
+    {% endblock %}

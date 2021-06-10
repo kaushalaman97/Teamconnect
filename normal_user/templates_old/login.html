@@ -1,0 +1,240 @@
+{% load static %}
+{% load i18n %}
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% trans "Login" %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap/fonts/font.css' %}">
+    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+
+    <!-- <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script> -->
+    <!-- <script src='https://www.google.com/recaptcha/api.js'></script> -->
+</head>
+
+<body>
+    <div class="section-background">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="header-wrap d-flex my-5">
+                        <div class="logo-wrap">
+                            <img src="{% static 'images/logo-large-2.jpg' %}" alt="Logo" title="logo">
+                        </div>
+                        <!-- <div class="text-wrap align-items-center d-flex ml-3">
+                            <p>Team Connect</p>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container my-3 extra-lg">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="content-block mt-5">
+                        <img src="{% static 'images/system.svg' %}" alt="">
+                        <h2>{% trans "Welcome to TeamConnect!" %}<br> {% trans "Please log into your account." %}</h2>
+                        <p>{% trans "Collaborate, communicate, and increase productivity with TeamConnect" %}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="content-block">
+                        <h3 class="text-center">{% trans "Welcome Back!" %}</h3>
+                        <form class="form-design"  method="POST" id="signup-form" action="{% url 'login' %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <span class="bg-common email"> </span>
+                                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" 
+                                placeholder=" {% trans "Email" %} *" name="{{form.username.name}}" value="{% if user_details %}{{user_details.email}}{% endif %}" >
+                                <span id="error_emaSil" class="error_field" style="color: red;"></span>
+                                {% if form.username.errors %}
+                                    <span id="error_email" class="error_field" style="color: red;">{{ form.username.errors }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                <span class="bg-common password"> </span>
+                                <input type="password" class="form-control" id="exampleInputPassword1"
+                                 placeholder="{% trans "Enter Password" %} *" name="{{form.password.name}}" value="{% if user_details %}{{user_details.password}}{% endif %}">
+                                 <span id="error_pass" class="error_field" style="color: red;"></span>
+                                {% if form.password.errors %}
+                                    <span id="error_password" style="color: red;">{{ form.password.errors }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="form-group recaptcha mb-1">
+                                <div class="captcha-input">
+                                    {{form.captcha}}
+                                    <button class='js-captcha-refresh btn btn-primary ml-2'><i class="fas fa-sync-alt"></i></button>
+                                    <!-- {{ form.captcha.errors }} -->
+                                    <span id="error_captchas" style="color: red;">{% if form.captcha.errors %}{% trans "Invalid Captcha" %}{% endif %}</span>
+                                </div>
+                                <span id="error_captcha" class="error_field" style="color: red;"></span>
+                            </div>
+
+                            {% if form.non_field_errors %}
+                                <div class="form-group m-0" style="color: red;" >
+                                    {% trans "Please check your email and password and try again" %}
+                                </div>
+                            {% endif %}
+
+                            {% if no_authority %}
+                                <div class="form-group m-0" style="color: red;">
+                                    {{no_authority}}
+                                </div>
+                            {% endif %}
+
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                                <label class="form-check-label" for="exampleCheck1" >{% trans "Remember Me" %}</label>
+                              </div>
+
+                            <button type="button" class="btn btn-primary custom-btn" id="signinbtn">{% trans "Sign In" %}</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+
+        $(function () {
+
+            if (localStorage.chkbox && localStorage.chkbox != '') {
+                $('#exampleCheck1').attr('checked', 'checked');
+                $('#exampleInputEmail1').val(localStorage.username);
+                $('#exampleInputPassword1').val(localStorage.pass);
+            } else {
+                $('#exampleCheck1').removeAttr('checked');
+            }
+
+            $('#exampleCheck1').click(function () {
+                if ($('#exampleCheck1').is(':checked')) {
+                    // save username and password
+                    localStorage.username = $('#exampleInputEmail1').val();
+                    localStorage.pass = $('#exampleInputPassword1').val();
+                    localStorage.chkbox = $('#exampleCheck1').val();
+                } else {
+                    localStorage.username = '';
+                    localStorage.pass = '';
+                    localStorage.chkbox = '';
+                }
+            });
+        });
+
+
+         $(document).on('keypress','#id_captcha_1',function (e) {
+               var key = e.which;
+               if(key == 13)  // the enter key code
+               {
+                  $('#signinbtn').click();
+                  return false;
+               }
+            });
+
+          $(document).on('keypress','#exampleInputPassword1',function (e) {
+               var key = e.which;
+               if(key == 13)  // the enter key code
+               {
+                  $('#signinbtn').click();
+                  return false;
+               }
+            });
+
+          $(document).on('keypress','#exampleInputEmail1',function (e) {
+               var key = e.which;
+               if(key == 13)  // the enter key code
+               {
+                  $('#signinbtn').click();
+                  return false;
+               }
+            }); 
+        $('.js-captcha-refresh').click(function () {
+            var $form = $(this).parents('form');
+            var url = location.protocol + "//" + window.location.hostname + ":"
+                + location.port + "/captcha/refresh/";
+
+            // Make the AJAX-call
+            $.getJSON(url, {}, function (json) {
+                $form.find('input[name="captcha_0"]').val(json.key);
+                $form.find('img.captcha').attr('src', json.image_url);
+            });
+
+            return false;
+        });
+
+        $('#exampleInputEmail1').keyup(function () {
+            var $email = this.value;
+            validateEmail($email);
+        });
+        function validateEmail(email) {
+            $("#error_email").hide()
+            var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+            if(email == ""){
+                $("#error_emaSil").html("{% trans "This field is required" %}")
+                $("#error_emaSil").show()
+                return false
+            }else{
+                if (!emailReg.test(email)) {
+                    $("#error_emaSil").html("{% trans "Please enter a valid email address" %}")
+                    $("#error_emaSil").show()
+                    return false
+                } else {
+                    $("#error_emaSil").hide()
+                    return true
+                }
+            }
+        }
+        $('#exampleInputPassword1').keyup(function () {
+            validatePassword() 
+        });
+        function validatePassword() {
+            $("#error_password").hide()
+            pass = $("#exampleInputPassword1").val()
+            if(pass == ""){
+                $("#error_pass").html("{% trans "This field is required" %}")
+                $("#error_pass").show()
+                return false
+            }else{
+                
+                $("#error_pass").hide()
+                return true
+                
+            }
+        }
+
+        $('#id_captcha_1').keyup(function () {
+            validatecaptcha() 
+        });
+
+        function validatecaptcha() {
+            $("#error_captchas").hide()
+            pass = $("#id_captcha_1").val()
+            if(pass == ""){
+                $("#error_captcha").html("{% trans "This field is required" %}")
+                $("#error_captcha").show()
+                return false
+            }else{
+                
+                $("#error_captcha").hide()
+                return true
+                
+            }
+        }
+        
+        $('#signinbtn').click(function(){
+            email = $('#exampleInputEmail1').val()
+            validateEmail(email)
+            validatePassword()
+            validatecaptcha()
+            if (validateEmail(email) && validatePassword() && validatecaptcha()){
+                $("#signup-form").submit()
+            }
+        });
+    </script>    
+</body>
+</html>

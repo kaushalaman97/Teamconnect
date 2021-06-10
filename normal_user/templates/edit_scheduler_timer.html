@@ -1,0 +1,116 @@
+{% load i18n %}
+{% load static %}
+
+<div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+        <h5 class="modal-title" id="exampleModalLabel"> {% trans "Scheduler" %} </h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn mt-0">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="row form-row">
+        <!--   <div class="col-lg-12 text-center">
+            <h5 class="modal-title schedule-heading" id="exampleModalLabel">{% trans "Scheduler" %} </h5>
+          </div> -->
+          <div class="col-lg-12">
+            <table class="schedule-data" border="0">
+              <tbody>
+                <tr>
+                  <td><span class="btn bg">Day</span> </td>
+                  <td><span class="btn bg">Start Time </span></td>
+                  <td><span class="btn bg">End Time </span></td>
+                  <td><span class="btn bg">Day Off </span></td>
+                </tr>
+                {% for obj in scheduler_obj %}
+                  <tr class="schedule_tr">
+                    <td> <span class="btn bg schedule_day">{{obj.weekday}}</span></td>
+                    <td>
+                      <span class="btn">
+                        <div class="form-group">
+                          <input type="text" class="form-control scheduler_start_date" placeholder="HH:MM" value="{% if obj.start_time %}{{obj.start_time|date:'h:i A'}}{% else %}Day Off{% endif %}"  id="date_picker_{{forloop.counter}}"/>
+                        </div>
+                      </span>
+                    </td>
+                    <td>
+                      <span class="btn">
+                        <div class="form-group">
+                          <input type="text" class="form-control scheduler_end_date" placeholder="HH:MM" value="{% if obj.end_time %}{{obj.end_time|date:'h:i A'}}{% else %}Day Off{% endif %}" id="end_date_picker_{{forloop.counter}}"/ >
+                        </div>
+                      </span>
+                    </td>
+                    <td>
+                      <div class="form-group">
+                        <input type="checkbox" class="schedule_day_off" name="schedule_day_off" value="Boat" {% if not obj.end_time %}checked{% endif %}>
+                      </div>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            <table class="schedule-data" border="0">
+              <tbody>
+                <tr>
+                  <td><span class="btn bg">Start Date </span></td>
+                   <td>
+                    <div class="label-wrapper">
+                      <span class="btn">
+                        <div class="form-group">
+                          <input type="text" class="form-control datepicker schedule-date-cls" placeholder="DD/MM/YYYY" id="start_date_scheduler">
+                        </div>
+                      </span>
+                       <label id="start_date_scheduler_error" style="display: none;color: red;"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="btn bg">End Date </span></td>
+                   <td>
+                    <div class="label-wrapper">
+                    <span class="btn">
+                      <div class="form-group">
+                        <input type="text" class="form-control datepicker schedule-date-cls" placeholder="DD/MM/YYYY" id="end_date_scheduler">
+                      </div>
+                    </span>
+                        <label id="end_date_scheduler_error" style="display: none;color: red;"></label>
+                      </div>
+                  </td>
+                </tr>
+               
+              </tbody>
+            </table>
+          </div>
+          <div class="col-lg-12 text-center">
+            <label id="schedule-date-time-error" style="display: none;color: red;"></label>
+            <div class="form-group">
+              <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm" id="edit_schedule_btn"
+                type="button">{% trans "Update Schedule" %}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<!-- Core plugin JavaScript-->
+<!-- <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script> -->
+<!-- <script src="{% static 'datetime-picker/moment.min.js' %}"></script> -->
+<script src="{% static 'datetime-picker/wickedpicker.min.js' %}"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- <script type="text/javascript" src="http://wmh.github.io/jquery-scrollbox/jquery.scrollbox.js"></script> -->
+<!-- <script type="text/javascript" src="{% static 'js/scrollbox.js' %}"></script> -->
+<!-- Custom scripts for all pages-->
+<script src="{% static 'js/sb-admin-2.js' %}"></script>
+{% for obj in scheduler_obj %}
+  <script type="text/javascript">
+    $("#end_date_picker_{{forloop.counter}}".toString()).wickedpicker({now : {{obj.start_time|date:'h:i'}}, twentyFour: false})
+    $("#date_picker_{{forloop.counter}}".toString()).wickedpicker({now : {{obj.end_time|date:'h:i'}}], twentyFour: false})
+  </script>
+{% endfor %}

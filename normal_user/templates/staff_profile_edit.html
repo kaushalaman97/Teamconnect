@@ -1,0 +1,770 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% block title %}Edit Employee Profile{% endblock %}
+{% block content %}
+
+<div class="container-fluid">
+  <div class="page-wrap page-add-employee">
+    <!-- Content Row -->
+    <div class="row">
+
+      <!-- Area Chart -->
+      <div class="col-xl-12 col-lg-12">
+        <!-- Page Heading -->
+        <!--  <div class="d-sm-flex align-items-center justify-content-between mb-2">
+                                        <h1 class="h3 mb-0 mt-2 text-gray-800">Team Connect</h1>
+                                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+                                    </div> -->
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0 px-0">
+            <li class="breadcrumb-item"><a href="{% url 'manager_dashboard' %}">{% trans "Manager Dashboard" %}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'employee_profile' %}?employee_id={{employee_id}}">{% trans "Employee Profile" %}</a></li>
+            <li class="breadcrumb-item active">{% trans "Staff Profile" %}</li>
+          </ol>
+        </nav>
+
+        <div class="card shadow mb-4">
+          <!-- Card Header - Dropdown -->
+          <div
+            class="card-header px-3 py-3 d-block d-md-flex d-lg-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 mr-1 font-weight-bold text-primary">{% trans "Staff Profile" %}</h6>
+            <!-- <div class="btn-wrapper mt-2 mt-md-0 mt-lg-0">
+              <a class="mr-1 d-sm-inline-block btn common-btns btn-sm btn-primary"
+                id="edit_profile_btn">{% trans "Edit" %}</a>
+            </div> -->
+          </div>
+          <div class=" form-wrap-section">
+            <!-- Card Body -->
+            <div class="card-body">
+              <div class="employee-profile manager-profile d-xs-block">
+                <div class="row">
+                  <div class="rounded mb-3 col-md-12">
+                    <div class="d-flex justify-content-center align-items-baseline">
+                      <div class="img-wrapper-block">
+                        <img src="{{user_details.profile_pic}}" id="image-preview" title="Staff Profile"
+                          alt="Staff Profile">
+                        <!--  <button id="edit_button" type="button"><i class="fas fa-edit"></i>
+                                                         
+                                                                <input name="photo" class="hide_file_btn" type="file" id="pic_value" accept="image/*" onchange="readURL(this)" disabled>
+                                                                 <input type="hidden" id="profile_pic_value" name="">  
+                                                                 </button>  -->
+                        <div class="camera-block">
+                          <label for="pic_value" class="camera-img"><i class="fas fa-camera"></i> </label>
+                          <input name="photo" class="hide_file_btn" type="file" id="pic_value"
+                            accept=".jpg, .png, .jpeg" onchange="readURL(this)">
+                          <input type="hidden" id="profile_pic_value" name="">
+                        </div>
+                        <span id="doc_error" style="display: none; color: red;"></span>
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="information-part col-md-12">
+                    <div class="row form-row ">
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                          <label>{% trans "Name" %} <span class="color-red">*</span></label>
+                          <input type="text" class="form-control" placeholder="{% trans "Enter Name" %}" required=""
+                            value="{{user_details.name}}" onkeyup="full_name_validation()" id="staff_mem_name">
+                          <label id="emergency_contact_person_error" style="display: none;color: red;"></label>
+                        </div>
+                      </div>
+
+
+
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                          <label>{% trans "Email 1" %} <span class="color-red">*</span></label>
+                          <input type="email" class="form-control" placeholder="{% trans "Enter Email 1" %}"
+                            value="{{user_details.user.username}}" required="" id="staff_mem_email1"
+                            onkeyup="email1_validation()">
+                          <label id="error1_email" style="display: none;color: red;"></label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row form-row ">
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                          <label>{% trans "Email 2" %}</label>
+                          <input type="email" class="form-control" placeholder="{% trans "Enter Email 2" %}"
+                            value="{{user_details.email2}}" required="" id="staff_mem_email2"
+                            onkeyup="emai2_validation()">
+                          <label id="error2_email" style="display: none;color: red;"></label>
+                        </div>
+                      </div>
+
+
+
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                          <label>{% trans "Phone 1" %} <span class="color-red">*</span></label>
+                          <input type="text" class="form-control" placeholder="{% trans "Enter Phone 1" %}"
+                            value="{{user_details.phone_no_1}}" id="staff_mem_phone1"
+                            onkeyup="phone_number1_validation()" onkeypress="return accept_number(event)">
+                          <span id="contact_number1_label" style="display: none;color: red;"></span>
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <div class="row form-row ">
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                          <label>{% trans "Phone 2" %}</label>
+                          <input type="number" value="{{user_details.phone_no_2}}" class="form-control"
+                            placeholder="{% trans "Enter Phone 2" %}" id="staff_mem_phone2"
+                            onkeyup="phone_number2_validation()" onkeypress="return accept_number(event)">
+                          <span id="contact_number2_label" style="display: none;color: red;"></span>
+                        </div>
+                      </div>
+                      <div class="col-lg-3">
+                        <div class="form-group">
+                          <label>{% trans "Timezone" %} <span class="color-red">*</span></label>
+                          <select class="form-control" id="staff_timezone" onchange="timezone_validation()">
+                            <option>{% trans "Please select Staff's timezone" %}</option>
+                            {% for timezn in timezones %}
+                            <option {% if user_details.timezone == timezn %}selected{% endif %}>
+                              {{timezn}}</option>
+                            {% endfor %}
+                          </select>
+                          <label id="timezone_error" style="display: none;color: red;"></label>
+                        </div>
+                      </div>
+
+                      <div class="col-lg-3">
+                        <div class="form-group">
+                          <label>{% trans "City" %} <span class="color-red">*</span></label>
+                          <select class="form-control" id="city" onchange="city_validation()">
+                            <option>{% trans "Please select city" %}</option>
+                            {% for i in cities %}
+                            <option {% if user_details.city == i.cities %}selected{% endif %}>
+                              {{i.cities}}</option>
+                            {% endfor %}
+                          </select>
+                          <label id="city_error" style="display: none;color: red;"></label>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <div class="row form-row ">
+
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                          <label>{% trans "Countdown Time" %}r <span class="color-red">*</span></label>
+                          <select class="form-control" id="countdown_timer" onchange="countdown_timer_validation()">
+                            <option>Please select Countdown timer</option>
+                            <option value="0" {% if user_details.count_timer == '0' %}selected{% endif %}>
+                              0 {% trans "Minutes" %}</option>
+                            <option value="2" {% if user_details.count_timer == '2' %}selected{% endif %}>
+                              2 {% trans "Minutes" %}</option>
+                            <option value="5" {% if user_details.count_timer == '5' %}selected{% endif %}>
+                              5 {% trans "Minutes" %}</option>
+                            <option value="10" {% if user_details.count_timer == '10' %}selected{% endif %}>
+                              10 {% trans "Minutes" %}</option>
+                            <option value="15" {% if user_details.count_timer == '15' %}selected{% endif %}>
+                              15 {% trans "Minutes" %}</option>
+                            <option value="20" {% if user_details.count_timer == '20' %}selected{% endif %}>
+                              20 {% trans "Minutes" %}</option>
+                            <option value="30" {% if user_details.count_timer == '30' %}selected{% endif %}>
+                              30 {% trans "Minutes" %}</option>
+                          </select>
+                          <label id="countdown_timer_error" style="display: none;color: red;"></label>
+                        </div>
+                      </div>
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                          <label> {% trans "Department" %} <span class="color-red">*</span></label>
+                          <select class="form-control" id="department" onchange="department_validation()">
+                            <option> {% trans "Please select department" %}</option>
+                            {% for dept in departments %}
+                            <option value="{{dept.id}}"
+                              {% if dept.departments == user_details.department.departments %}selected{% endif %}>
+                              {{dept.departments}}</option>
+                            {% endfor %}
+                          </select>
+                          <label id="department_error" style="display: none;color: red;"></label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row form-row ">
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                          <label> {% trans "Function" %}<span class="color-red">*</span></label>
+                          <select class="form-control" id="function" onchange="function_validation()">
+                            <option> {% trans "Please select function" %}</option>
+                            {% for i in functions %}
+                            <option {% if user_details.function == i.function %}selected{% endif %}>
+                              {{i.function}}</option>
+                            {% endfor %}
+                          </select>
+                          <label id="function_error" style="display: none;color: red;"></label>
+                        </div>
+                      </div>
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                          <label> {% trans "Designation" %} <span class="color-red">*</span></label>
+                          <select class="form-control" id="designation" onchange="designation_validation()">
+                            <option> {% trans "Please select designation" %}</option>
+                            {% for i in designations %}
+                            <option {% if user_details.designation == i.designation %}selected{% endif %}>
+                              {{i.designation}}</option>
+                            {% endfor %}
+                          </select>
+                          <label id="designation_error" style="display: none;color: red;"></label>
+                        </div>
+                      </div>
+
+                      <div class="col-lg-12">
+                        <div class="form-group">
+                          <label> {% trans "IT Equipment Specification" %}</label>
+                          <textarea class="form-control"
+                            placeholder=" {% trans "Enter IT Equipment Specification" %}"
+                            value="{{user_details.it_equipment_specification}}" required=""
+                            id="dummy_specification_line"></textarea>
+                        </div>
+                      </div>
+
+                      <div class="col-lg-12">
+                        <div class="form-group">
+                          <label> {% trans "Comment" %}</label>
+                          <input type="email" class="form-control" placeholder=" {% trans "Enter Comment" %}"
+                            value="{{user_details.comment}}" required="" id="comment">
+                        </div>
+                      </div>
+                    </div>
+
+                    <!--  <div class="row form-row ">
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group">
+                                                                    <label>It Equipment Specification</label>
+                                                                    <input type="email" class="form-control"
+                                                                        placeholder="Enter Number" value="{{user_details.it_equipment_specification}}" required=""  id="dummy_specification_line" readonly>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group">
+                                                                    <label>Comment</label>
+                                                                    <input type="email" class="form-control"
+                                                                        placeholder="Enter Number" value="{{user_details.comment}}" required=""  id="comment" readonly>
+                                                                </div>
+                                                            </div>
+                                                        </div> -->
+
+                    <div class="col-lg-12">
+                      <div class="form-group text-center">
+                        <button type="button" class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm"
+                          id="update_btn"> {% trans "Update" %} </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+  <!--/row  -->
+</div>
+<!-- /.container-fluid -->
+</div>
+
+<!-- End of Footer -->
+
+</div>
+<!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+  <i class="fas fa-angle-up"></i>
+</a>
+
+
+<div class="submit-msg alert modal fade" id="universal_msg_modal" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2 flex-row align-items-center justify-content-between">
+        <button class="close close-bntn" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn mt-0">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0" id="universal_msg"></p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm close-bntn" type="button"
+          data-dismiss="modal"> {% trans "Ok" %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="submit-msg alert modal fade" id="universal_msg_modal1111" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+        <button class="close " type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0"> {% trans "Something Went Wrong" %}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm " type="button" data-dismiss="modal">
+          {% trans "Ok" %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="submit-msg alert modal fade" id="universal_msg_modal11" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2 flex-row align-items-center justify-content-between">
+        <button class="close " type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn mt-0 ">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0" id="universal_msg11"></p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm " type="button" data-dismiss="modal">
+          {% trans "Ok" %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap core JavaScript-->
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- Core plugin JavaScript-->
+<script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+<!-- Custom scripts for all pages-->
+<script src="{% static 'js/sb-admin-2.js' %}"></script>
+<script type="text/javascript">
+
+
+
+
+  function accept_number(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      return false;
+    }
+    return true;
+  }
+
+  $('#countdown_timer option[value=10]').attr('selected', 'selected');
+
+  function phone_number1_validation() {
+
+    phone_number = $("#staff_mem_phone1").val()
+    phone_number_1 = $("#staff_mem_phone2").val()
+    if (phone_number == "") {
+      $("#contact_number1_label").show()
+      $("#contact_number1_label").html(" {% trans "This field is required" %}")
+      return false
+    }
+    else if (phone_number.length < 4 || phone_number.length > 20) {
+      $("#contact_number1_label").show()
+      $("#contact_number1_label").html(" {% trans "A phone number must contain 4 - 20 digits" %}")
+      return false;
+    }
+    else if (phone_number == phone_number_1) {
+      $("#contact_number1_label").show()
+      $("#contact_number1_label").html(" {% trans "Phone numbers should not be same" %}")
+      return false;
+    }
+    else {
+      $("#contact_number1_label").hide()
+      return true;
+    }
+  }
+
+  function phone_number2_validation() {
+
+    phone_number_1 = $("#staff_mem_phone1").val()
+    phone_number = $("#staff_mem_phone2").val()
+
+    if (phone_number != "") {
+      // $("#contact_number2_label").show()
+      // $("#contact_number2_label").html("This field is required")
+      // return false
+      if (phone_number.length < 4 || phone_number.length > 20) {
+        $("#contact_number2_label").show()
+        $("#contact_number2_label").html(" {% trans "A phone number must contain 4 - 20 digits" %}")
+        return false;
+      }
+      else if (phone_number == phone_number_1) {
+        $("#contact_number2_label").show()
+        $("#contact_number2_label").html(" {% trans "Phone numbers should not be same" %}")
+        return false;
+      }
+      else {
+        $("#contact_number2_label").hide()
+        return true;
+      }
+    }
+    else {
+      $("#contact_number2_label").hide()
+      return true;
+    }
+
+  }
+
+  function email1_validation() {
+    email = $('#staff_mem_email1').val()
+    email = $.trim(email)
+    email1 = $('#staff_mem_email2').val()
+    var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+
+    if (email.length == '' || email.length == null) {
+      $("#error1_email").show()
+      $("#error1_email").html(" {% trans "This field is required" %}");
+      return false;
+    }
+    else if (regex.test(email) == false) {
+      $("#error1_email").show()
+      $("#error1_email").html(" {% trans "Please enter a valid email address" %}")
+      return false;
+    }
+    else if (email1 == email) {
+      $("#error1_email").show()
+      $("#error1_email").html(" {% trans "Emails should not be same" %}")
+      return false;
+    }
+    else {
+      $("#error1_email").hide()
+      return true;
+    }
+  }
+
+  function emai2_validation() {
+    email1 = $('#staff_mem_email1').val()
+    email = $('#staff_mem_email2').val()
+    email = $.trim(email)
+    var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+
+    if (email.length != '') {
+      // $("#error2_email").show()
+      // $("#error2_email").html("This field is required");
+      // return false;
+      if (regex.test(email) == false) {
+        $("#error2_email").show()
+        $("#error2_email").html("{% trans "Please enter a valid email address" %}")
+        return false;
+      }
+      else if (email1 == email) {
+        $("#error2_email").show()
+        $("#error2_email").html("{% trans "Emails should not be same" %}")
+        return false;
+      }
+      else {
+        $("#error2_email").hide()
+        return true;
+      }
+    }
+    else {
+      $("#error2_email").hide()
+      return true;
+    }
+
+  }
+
+  function full_name_validation() {
+    var full_name_regex = /^[^0-9]*$/
+    full_name = $('#staff_mem_name').val()
+    full_name = $.trim(full_name)
+    if (full_name == '' || full_name == null) {
+      $("#emergency_contact_person_error").show()
+      $("#emergency_contact_person_error").html("{% trans "This field is required" %}");
+      return false;
+    }
+    else if (full_name_regex.test(full_name) == false) {
+      $("#emergency_contact_person_error").show()
+      $("#emergency_contact_person_error").html("{% trans "Name must not contain numbers" %}");
+      return false;
+    }
+
+    else if (full_name.length > 50 || full_name.length < 3) {
+      $("#emergency_contact_person_error").show()
+      $("#emergency_contact_person_error").html("{% trans "Name contains at least 3 characters" %}");
+      return false;
+    }
+    else {
+      $("#emergency_contact_person_error").hide()
+      return true;
+    }
+  }
+
+  function department_validation() {
+    dept = $("#department option:selected").text()
+    if (dept == "{% trans "Please select department" %}") {
+      $("#department_error").html("{% trans "Please select department" %}")
+      $("#department_error").show()
+      return false
+    }
+	else {
+      $("#department_error").hide()
+      return true
+    }
+  }
+
+  function function_validation() {
+    function_ = $("#function option:selected").text()
+    if (function_ == "{% trans "Please select function" %}") {
+      $("#function_error").html("{% trans "Please select function" %}")
+      $("#function_error").show()
+      return false
+    }
+	else {
+      $("#function_error").hide()
+      return true
+    }
+  }
+
+  function timezone_validation() {
+    timezone = $("#staff_timezone option:selected").text()
+    if (timezone == "{% trans "Please select Staff's timezone" %}") {
+    $("#timezone_error").html("{% trans "Please select Staff's timezone" %}")
+      $("#timezone_error").show()
+      return false
+  }
+    else {
+    $("#timezone_error").hide()
+    return true
+  }
+  }
+
+  function city_validation() {
+    city = $("#city option:selected").text()
+    if (city == "{% trans "Please select city" %}") {
+      $("#city_error").html("{% trans "Please select city" %}")
+      $("#city_error").show()
+      return false
+    }
+    else {
+      $("#city_error").hide()
+      return true
+    }
+  }
+
+  function countdown_timer_validation() {
+    countdown_timer = $("#countdown_timer option:selected").text()
+    if (countdown_timer == "{% trans "Please select Countdown timer" %}") {
+      $("#countdown_timer_error").html("{% trans "Please select Countdown timer" %}")
+      $("#countdown_timer_error").show()
+      return false
+    }
+    else {
+      $("#countdown_timer_error").hide()
+      return true
+    }
+  }
+
+
+
+  $("#edit_profile_btn").click(function () {
+    $('#staff_mem_name').prop('readonly', false);
+    $('#department').prop('disabled', false);
+    $("#staff_mem_email1").prop('readonly', false);
+    $("#staff_mem_email2").prop('readonly', false);
+    $("#staff_mem_phone1").prop('readonly', false);
+    $("#staff_mem_phone2").prop('readonly', false);
+    $("#dummy_specification_line").prop('readonly', false);
+    $("#comment").prop('readonly', false);
+    $("#staff_timezone").prop("disabled", false)
+    $("#city").prop("disabled", false)
+    $("#countdown_timer").prop("disabled", false)
+    $("#department").prop("disabled", false)
+    $("#function").prop("disabled", false)
+    $("#designation").prop("disabled", false)
+    $("#pic_value").prop("disabled", false)
+
+
+    var first_name = $('#staff_mem_name').val();
+    first_name = first_name.trim()
+    $('#staff_mem_name').focus().val('').val(first_name);
+    $("#update_btn").prop('disabled', false);
+
+  })
+
+  function file_error() {
+
+    file = $("#pic_value").val()
+    if (file == "" || file == null) {
+      $("#doc_error").hide()
+      return true
+    }
+
+    else {
+      if (file.includes(".jpeg") || file.includes(".jpg") || file.includes(".png")) {
+
+        const size = (document.getElementById("fileupload").files[0].size / 1024 / 1024).toFixed(2);
+        if (size > 10) {
+          $("#doc_error").html("{% trans "File size must me less than 10 mb" %}")
+          $("#doc_error").modal("show")
+          return false
+        }
+        else {
+          $("#doc_error").hide()
+          return true
+        }
+      }
+      else {
+        $("#doc_error").html("{% trans "Please check your file format" %}")
+        $("#doc_error").show()
+        return false
+      }
+
+    }
+  }
+
+
+  function readURL(input) {
+    $("#result_div").text("")
+    file = $("#pic_value").val()
+
+    if (file.includes(".jpeg") || file.includes(".jpg") || file.includes(".png")) {
+
+      const size = (input.files[0].size / 1024 / 1024).toFixed(2);
+      if (size > 10) {
+        $("#doc_error").html("{% trans "File size must me less than 10 mb" %}")
+        $("#doc_error").show()
+        return false
+      }
+      else {
+        $("#doc_error").hide()
+        if (input.files && input.files[0]) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            $('#image-preview').attr('src', e.target.result)
+            $('#profile_pic_value').val(e.target.result)
+          };
+          reader.readAsDataURL(input.files[0]);
+          // $('#gen-caption-com').css('display', 'none')
+          // $('#btn').show()
+          // $('.hellodiv').show()
+        }
+        return true
+      }
+    }
+    else {
+      $("#doc_error").html("{% trans "Please check your file format" %}")
+      $("#doc_error").show()
+      return false
+    }
+
+
+  }
+
+  function designation_validation() {
+    function_ = $("#designation option:selected").text()
+    if (function_ == "{% trans "Please select designation" %}") {
+      $("#designation_error").html("{% trans "Please select designation" %}")
+      $("#designation_error").show()
+      return false
+    }
+    else {
+      $("#designation_error").hide()
+      return true
+    }
+  }
+
+  $("#update_btn").click(function () {
+    email1_validation()
+    full_name_validation()
+    phone_number1_validation()
+    phone_number2_validation()
+    emai2_validation()
+    department_validation()
+    function_validation()
+    timezone_validation()
+    city_validation()
+    countdown_timer_validation()
+    designation_validation()
+    // file_error()
+    if (email1_validation() && full_name_validation() && phone_number1_validation() && phone_number2_validation() && emai2_validation() && department_validation() && function_validation() && timezone_validation() && city_validation() && countdown_timer_validation() && designation_validation()) {
+      $.ajax({
+        type: 'POST',
+        url: "{% url 'staff_profile_post' %}",
+        data: {
+          "user_id": "{{employee_id}}",
+          "emergency_contact_person": $("#staff_mem_name").val(),
+          "staff_mem_email1": $("#staff_mem_email1").val(),
+          "department": $("#department option:selected").text(),
+          "department_id": $("#department option:selected").val(),
+          "email2": $('#staff_mem_email2').val(),
+          "phone1": $("#staff_mem_phone1").val(),
+          "phone2": $("#staff_mem_phone2").val(),
+          "password": $("#password").val(),
+          "dummy_specification_line": $("#dummy_specification_line").val(),
+          "comment": $("#comment").val(),
+          "staff_timezone": $("#staff_timezone option:selected").text(),
+          "city": $("#city option:selected").text(),
+          "countdown_timer": $("#countdown_timer option:selected").val(),
+          "function": $("#function option:selected").text(),
+          "designation": $("#designation option:selected").text(),
+          "profile_pic": $("#profile_pic_value").val()
+        },
+        success: function (response) {
+          if (response == 1) {
+            $("#universal_msg").text("{% trans "Saved changes successfully" %}")
+            $("#universal_msg_modal").modal("show")
+          }
+          else if (response == 5) {
+            $("#universal_msg11").text("{% trans "Email already exist" %}")
+            $("#universal_msg_modal11").modal("show")
+          }
+          else {
+            $("#universal_msg_modal1111").modal("show")
+          }
+        }
+      });
+    }
+  })
+  $(".close-bntn").click(function () {
+    location.href = "{% url 'manager_dashboard' %}";
+  })
+</script>
+{% endblock %}

@@ -1,0 +1,153 @@
+{% load static %}
+{% load i18n %}
+{% load custom_template_tags %}
+<!-- Card Header - Dropdown -->
+<script src="{% static '/js/websocketbridge.js' %}" type="text/javascript"></script>
+<div class="short-top short-msg border-right">
+    <div class="card-header all-messages py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-black1">{% trans "All Messages" %}</h6>
+        <div class="ml-auto d-flex">
+            <button class="contact-list mr-2 d-sm-inline-block btn btn-sm btn-primary table-btn shadow-sm"
+                onclick="contactList()">{% trans "Contact List" %}</button>
+            <div class="search-block d-none d-sm-inline-block form-inline navbar-search">
+                <div class="input-group">
+                    <input type="text" class="form-control border-0 small" placeholder="{% trans "Search for" %}..."
+                        aria-label="Search" aria-describedby="basic-addon2" id="search_user">
+
+                </div>
+            </div>
+         <div class="d-none d-sm-inline-block">
+                <div class="input-group">
+             
+                  
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="mySidenav" class="sidenav shadow"> <a href="javascript:void(0)" class="closebtncontact"
+            onclick="closeNav()">&times;</a>
+        <div class="chat-side-bar {% if  'manager_chat' in request.path %}manager-staff-chat{% endif %}" id="chat_side_bar">
+            
+                        <h1> {{name}}</h1>
+            {% for chat in chat_thread %}
+                {% chat_info chat.id request.user.id as data %}
+                <div class="block-part d-flex {% if user_manager %}open_chat_thread{% else %}open_chat_thread_staff{% endif %}" data-thread="{{chat.id}}" data-sender="{{chat.sender.id}}" data-receiver="{{chat.reciever.id}}" id="{{data.reciever_email_id}}_message_list">
+                    <a>
+                        <div class="d-flex">
+                            <div class="img-wrap admin-img mr-3">
+                                <img src="{% static 'img/admin-demo.png' %}" class="admin-img mr-3" title="" alt="">
+                                {% user_status data.reciever_id as status %}
+                                <i class="fas fa-circle {{status.icon_class}}-color"
+                                    id="{{data.reciever_email_id}}_status"></i>
+                            </div>
+                            <div class="message-block justify-content-center align-self-center">
+
+                                <h5>{{data.reciever_name}}</h5>
+                                <p id="{{data.reciever_email_id}}_message_list_msg">{{data.last_message}}</p>
+                            </div>
+                            <div class="time-block1 ml-auto justify-content-center align-self-center">
+                                <p id="{{data.reciever_email_id}}_message_list_date">
+                                    {% if chat.sender.id == request.user.id %}{{ chat.date_updated|date:'d/m/Y , h:i A' }}{% else %}{{ chat.date_updated_receiver|date:'d/m/Y, h:i A' }}{% endif %}
+                                </p>
+
+                            </div>
+                        </div>
+                    </a>
+                    <div class="option-block ml-auto justify-content-center align-self-center">
+                        <button class="show-options" href="#" id="searchDropdown" role="button" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false"> <i class="fas fa-ellipsis-v"></i> </button>
+                        <div class="dropdown-menu dropdown-menu-right shadow" aria-labelledby="searchDropdown">
+                            <ul>
+                                <!-- <li>Delete</li> -->
+                                <li class="archive_chat_btn" data-attr="{{data.reciever_email}}">{% trans "Archive" %}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            {% for group in  group_chat %}
+            <ul>
+                                <!-- <li>Delete</li> -->
+              <l1><a href="{% url 'getchat_group'  group.id  %}">{{group.name}}</a></li>
+                            
+            </ul>
+        
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+
+{% comment %} <!-- Model for chat group -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Chat Group</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+         <div class="form-group">
+    <label for="groupname">Group Name</label>
+    <input type="text" class="form-control" id="groupname"  placeholder="Enter Group Name">
+  </div>
+    <div class="form-group">
+    <label for="userchoice">Select User</label>
+    {% for usr in user_details %}
+     <input type="checkbox" class="form-control" id="userchoice" value="{{usr.name}}" name="userchoice"  />{{usr.name}}</label>
+     {% endfor %}
+  </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+         <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm" id="create_group_btn"
+                              type="button">{% trans "Create Group" %}</button>
+      </div>
+    </div>
+  </div>
+</div> {% endcomment %}
+<!-- end of chat group model  -->
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+<!-- <script src="{% static 'datetime-picker/moment.min.js' %}"></script> -->
+<script src="{% static 'datetime-picker/wickedpicker.min.js' %}"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script>
+ $("#create_group_btn").click(function () {
+      group_name = $("#groupname").val();
+      user = $("input[name='userchoice']:checked").val();
+      console.log(user,group_name)
+   
+      
+     $.ajax({
+        url: "{% url 'create_thread' %}",
+        data: {
+          "user": user,
+          "group_name": group_name,
+        },
+        dataType: 'json',
+        type: 'POST',
+        success: function (response) {
+            console.log(user,group_name)
+          $("#page_loader").hide()
+          if (response == 1) {
+            
+            $("#universal_msg").html("Group Created  successfully")
+            $("#universal_msg_modal").modal("show")
+          }
+        }
+      });
+
+    });
+ 
+  $(".close-bntn").click(function(){
+    window.location = "{% url 'create_thread' %}"
+  })
+  
+
+</script>

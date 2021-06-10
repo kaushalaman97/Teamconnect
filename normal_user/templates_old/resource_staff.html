@@ -1,0 +1,39 @@
+{% load static %}
+{% load i18n %}
+{% block content %}
+<div class="row form-row py-2 min-FH justify-content-center">
+    {% if not user.resources %}
+        <div>{% trans "No resources found" %}</div>
+    {% else %}
+        {% for res in user.resources %}
+        <div class="col-md-5 m-2 cards pdf-block border-bottom">
+            <div class="attch-body mb-0 p-3">
+                <img {% if ".csv" in res.resource_obj.name %}src="{% static 'img/csv.png' %}"
+                      {% elif ".pdf" in res.resource_obj.name %}src="{% static 'img/pdf.png' %}"
+                      {% elif ".docx" in res.resource_obj.name %}src="{% static 'img/docx.png' %}"
+                      {% elif ".doc" in res.resource_obj.name %}src="{% static 'img/doc.png' %}"
+                      {% elif ".jpeg" in res.resource_obj.name %}src="{% static 'img/jpeg.png' %}"
+                      {% elif ".xlsx" in res.resource_obj.name %}src="{% static 'img/xlsx.png' %}"
+                      {% elif ".xls" in res.resource_obj.name %}src="{% static 'img/xls.png' %}"
+                      {% elif ".pptx" in res.resource_obj.name %}src="{% static 'img/pptx.png' %}"
+                      {% elif ".ppt" in res.resource_obj.name %}src="{% static 'img/ppt.png' %}"
+                      {% elif ".png" in res.resource_obj.name %}src="{% static 'img/png.png' %}"
+                      {% elif ".jpg" in res.resource_obj.name %}src="{% static 'img/jpg.png' %}"
+                      {% elif ".mp4" in res.resource_obj.name %}src="{% static 'img/mp4.png' %}{% endif %}" title="{{res.resource_obj.file_name_by_user}}">
+            </div>
+            <div class="footer-part d-flex px-2 pb-3 flex-row align-items-center justify-content-between">
+                <div class="left-side mr-auto">
+                    <h4 class="mb-1">{{res.resource_obj.file_name_by_user}}</h4>
+                </div>
+                <div class="right-side mt-auto ml-auto">
+                    <a data-href="{{res.resource_obj.path}}" data-title="{{res.resource_obj.name}}" class="dwnload-resource btn btn-sm btn-primary table-btn resource-btn">
+                        {% trans "Download" %} </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+</div>
+
+{% endblock %}

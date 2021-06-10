@@ -1,0 +1,117 @@
+{% load static %}
+{% load i18n %}
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+      <!-- Sidebar - Brand -->
+      <a class="sidebar-brand d-flex align-items-center" href="{% url 'manager_dashboard' %}">
+        <div class="sidebar-brand-icon">
+          <img src="{% static 'images/logo-large-2.jpg' %}" title="Team Connect" alt="Team Connect">
+        </div>
+        <!-- <div class="sidebar-brand-text">Team Connect<sup></sup></div> -->
+      </a>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider my-0">
+
+      <!-- Nav Item - Dashboard -->
+      <li class="nav-item {% if request.path == '/manager_dashboard' %}active{% endif %}">
+        <a class="nav-link" href="{% url 'manager_dashboard' %}">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <span alt="Dashboard" data-toggle="tooltip"
+          data-placement="top" title="{% trans "Dashboard" %}">{% trans "Dashboard" %}</span>
+        </a>
+      </li>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider">
+
+      <!-- Nav Item - Pages Collapse Menu -->
+      <li class="nav-item {% if request.path == '/employee_listing' %}active{% endif %}">
+        <a class="nav-link collapsed" href="{% url 'employee_listing' %}">
+          <i class="fas fa-list"></i>
+          <span alt="Employee List" data-toggle="tooltip" data-placement="top" title="{% trans "Employee List" %}">{% trans "Employee List" %}</span>
+        </a>
+      </li>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider ">
+
+      <!-- Nav Item - Utilities Collapse Menu -->
+      <li class="nav-item {% if request.path == '/add_employee' %}active{% endif %}">
+        <a class="nav-link collapsed" href="{% url 'add_employee' %}">
+          <i class="fas fa-user-plus"></i>
+          <span alt="Add Employee" data-toggle="tooltip"
+          data-placement="top" title="{% trans "Add Employee" %}">{% trans "Add Employee" %}</span>
+        </a>
+      </li>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider">
+
+ 
+
+      <!-- Nav Item - Pages Collapse Menu -->
+      <li class="nav-item {% if request.path == '/email_listing' %}active{% endif %}">
+        <a class="nav-link collapsed" href="{% url 'email_listing' %}">
+          <i class="far fa-envelope"></i>
+          <span alt="Email List" data-toggle="tooltip"
+          data-placement="top" title="{% trans "Email List" %}">{% trans "Email List" %}</span>
+        </a>
+      </li>
+
+     
+      <!-- Divider -->
+      <hr class="sidebar-divider">
+
+      <!-- Nav Item - Charts -->
+      <li class="nav-item">
+        <a class="nav-link" href="#add-Schedule" data-toggle="modal" data-target="#add-Schedule">
+          <i class="far fa-clock"></i>
+          <span alt="Adjust Clock" data-toggle="tooltip"
+          data-placement="top" title="{% trans "Adjust Clock" %}">{% trans "Adjust Clock" %}</span></a>
+      </li>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider">
+
+      <!-- Nav Item - Tables -->
+      <li class="nav-item {% if request.path == '/manager_chat' %}active{% endif %}">
+        <a class="nav-link" href="{% url 'manager_chat' %}">
+          <i class="far fa-comment-alt"></i>
+          <span alt="All Chats" data-toggle="tooltip"
+          data-placement="top" title="{% trans "All Chats" %}">{% trans "All Chats" %}</span></a>
+      </li>
+
+      <!-- Divider -->
+            <hr class="sidebar-divider ">
+
+            <!-- Nav Item - Tables -->
+            <li class="nav-item {% if request.path == '/resources' %}active{% endif %}">
+                <a class="nav-link" href="{% url 'resources' %}">
+                    <i class="fas fa-file-alt"></i>
+                    <span alt="Resources" data-toggle="tooltip"
+                    data-placement="top"  title="{% trans "Resources" %}">{% trans "Resources" %}</span></a>
+            </li>
+
+            <hr class="sidebar-divider ">
+
+            <!-- Nav Item - Tables -->
+            <li class="nav-item {% if request.path == '/all_notifications' %}active{% endif %}">
+                <a class="nav-link" href="{% url 'all_notifications' %}">
+                    <i class="fas fa-bell"></i>
+                    <span alt="Notification List" data-toggle="tooltip"
+                    data-placement="top" title="{% trans "Notification List" %}">{% trans "Notification List" %}</span></a>
+            </li>
+
+
+      <!-- Divider -->
+      <hr class="sidebar-divider d-none d-md-block">
+
+      <!-- Sidebar Toggler (Sidebar) -->
+      <div class="toggle-btn text-center d-none d-md-inline">
+        <!-- <div id="HiddenText1"><p>Expand Icon</p></div>
+        <div id="HiddenText2"><p>Collapse Icon</p></div> -->
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+      </div>
+
+    </ul>

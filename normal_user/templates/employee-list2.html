@@ -1,0 +1,1679 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% block title %}Employee Listing{% endblock %}
+{% load custom_template_tags %}
+{% block content %}
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+  <div class="">
+
+    <!-- for mobile device -->
+    <div class="row">
+      <div class="left-header-part mobile-device">
+        <div class="country-wrapper">
+
+          <div class="for-mobile">
+            <div class="country-field">
+              <a href="#" title=""><i class="fas fa-clock"></i> 10:00 am </a>
+              <div class="c-logo-block media">
+                <img class="align-self-center mr-2" src="{% static 'img/c-logo.png' %}" title="Blue Logo"
+                  alt="Blue Logo">
+                <p class="media-body"> USA </p>
+              </div>
+            </div>
+
+
+            <div class="country-field">
+              <a href="#" title=""><i class="fas fa-clock"></i> 10:00 am </a>
+              <div class="c-logo-block media">
+                <img class="align-self-center mr-2" src="{% static 'img/c-logo.png' %}" title="Blue Logo"
+                  alt="Blue Logo">
+                <p class="media-body"> USA </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="for-mobile">
+            <div class="country-field">
+              <a href="#" title=""><i class="fas fa-clock"></i> 10:00 am </a>
+              <div class="c-logo-block media">
+                <img class="align-self-center mr-2" src="{% static 'img/c-logo.png' %}" title="Blue Logo"
+                  alt="Blue Logo">
+                <p class="media-body"> USA </p>
+              </div>
+            </div>
+
+            <div class="country-field">
+              <a href="#" title=""><i class="fas fa-clock"></i> 10:00 am </a>
+              <div class="c-logo-block media">
+                <img class="align-self-center mr-2" src="{% static 'img/c-logo.png' %}" title="Blue Logo"
+                  alt="Blue Logo">
+                <p class="media-body"> USA </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Content Row -
+
+    <div class="row">
+
+      <!-- Area Chart -->
+      <div class="col-xl-12 col-lg-12">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0 px-0">
+            <li class="breadcrumb-item"><a href="{% url 'manager_dashboard' %}">{% trans "Manager Dashboard" %}</a></li>
+            <li class="breadcrumb-item active">{% trans "Employees List" %}</li>
+          </ol>
+        </nav>
+        <div class="card shadow mb-4 ScdBlock">
+          <!-- Card Header - Dropdown -->
+          <div class="card-header no-border py-3 d-md-flex d-lg-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary"> {% trans "Employees List" %} ({{emp_count}})</h6>
+
+            <div class="d-flex align-items-center justify-content-between">
+              <form class="custom-search d-sm-inline-block form-inline ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                <div class="input-group">
+                  <input type="text" class="border-0 small" placeholder="{% trans "Search" %}..." aria-label="Search"
+                    aria-describedby="basic-addon2" id="search_bar">
+                  <div class="input-group-append">
+                    <i class="fas fa-search fa-sm" id="search_bar_btn"></i>
+                  </div>
+                </div>
+              </form>
+              <a href="{% url 'employee_listing' %}" class="d-sm-inline-block ml-3"><i
+                  class="fas fa-sync-alt"></i></a>
+            </div>
+          </div>
+          <!-- Table  -->
+          <div class="table-responsive emp-list">
+            <table class="table table-bordered" cellspacing="0" width="100%">
+              <tr class="border-bottom-2">
+                <th>{% trans "Serial no." %}</th>
+                <th>{% trans "Name" %}</th>
+                <th>{% trans "Location" %}</th>
+                <th>{% trans "Current Location" %}</th>
+                <th>{% trans "Department" %}</th>
+                <th>{% trans "Function" %}</th>
+                <th>{% trans "Status" %}</th>
+
+              </tr>
+              {% if employe_data %}
+                {% for i in employe_data %}
+                  <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td><a href="employee-task-list-detail/{{i.user.id}}">{{i.name}}</a></td>
+                    <td>{{i.city}}</td>
+                    <th id="location_{{i.user_id}}">{{i.last_location}}</th>
+                    <td>{{i.department.departments}}</td>
+                    <td>{{i.function}}</td>
+                    <td class="green-color">
+                      {% user_status i.user_id as status %}
+                      <i class="fas fa-circle {{status.icon_class}}-color" id="icon_{{i.user_id}}"></i>
+                      <span class="user_online_status" data-attr="{{i.user_id}}"
+                        id="status_{{i.user_id}}">{{status.user_status}}</span>
+                    </td>
+                    <td>
+         
+
+                      </div>
+                    </td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr><td colspan="8"><h1>{% trans "No data found" %}</h1></td></tr>
+              {% endif %}
+            </table>
+          </div>
+          {% if page_obj.paginator.num_pages > 1 %}
+                  <div class="card-body">
+                    <div class="row align-items-center">
+                      <div class="col">
+                        <span>{% trans "Showing" %} {{page_obj.start_index}} {% trans "to" %} {{page_obj.end_index}} {% trans "of" %} {{emp_count}}</span>
+                      </div>
+                      <div class="col">
+                        <nav aria-label="Page navigation">
+                          <ul class="pagination pg-blue justify-content-end">
+                              {% if page_obj.number != 1 %}
+                                <li class="page-item"><a class="page-link" href="?page=1">{% trans "First" %}</a></li>
+                              {% else %}
+                                <li class="page-item disabled"><a class="page-link" href="#">{% trans "First" %}</a></li>
+                              {% endif %}
+                              {% if page_obj.has_previous %}
+                                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                              {% else %}
+                                <li class="page-item disabled"><a class="page-link" href="#">&laquo;</a></li>
+                              {% endif %}
+                              {% for i in page_obj.paginator.page_range %}
+                                {% if page_obj.number == i %}
+                                  <li class="page-item active"><a class="page-link" href="#">{{ i }} <span class="sr-only">({% trans "current" %})</span></a></li>
+                                {% elif page_obj.number > i|add:"-5" and page_obj.number < i|add:"+5"%}
+                                  <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                {% endif %}
+                              {% endfor %}
+                              {% if page_obj.has_next %}
+                                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                              {% else %}
+                                <li class="page-item disabled"><a class="page-link" href="#">&raquo;</a></li>
+                              {% endif %}
+                              {% if page_obj.paginator.num_pages != page_obj.number %}
+                                <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{% trans "Last" %}</a></li>
+                              {% else %}
+                                <li class="page-item disabled"><a class="page-link" href="#">{% trans "Last" %}</a></li>
+                              {% endif %}
+                          </ul>
+                      </nav>  
+                      </div>
+                    </div>
+                  </div>
+                  {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<!-- /.container-fluid -->
+
+</div>
+<!-- End of Main Content -->
+
+</div>
+<!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+  <i class="fas fa-angle-up"></i>
+</a>
+
+<!-- loader -->
+<div class="loader-overlay" id="page_loader" style="display: none;">
+  <div class="spinner-border text-primary" role="status">
+    <span class="sr-only">{% trans "Loading..." %}</span>
+  </div>
+</div>
+
+<div class="adjust-clock task manager-alert modal" id="manager-alert" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+        <h5 class="modal-title" id="exampleModalLabel">{% trans "Manager's Alert" %} </h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body p-3 p-md-4 p-lg-4">
+        <div class="row form-row">
+          <div class="col-lg-12">
+            <div class="form-group m-0">
+              <label>{% trans "Alert message" %} <span class="color-red">*</span> </label>
+              <textarea type="text" class="form-control" onKeyPress="if(this.value.length>300) return false;"
+                placeholder="{% trans "Enter alert message" %}" id="alert_message" onkeyup="alert_validation()"></textarea>
+              <label id="alert_message_error" style="display: none;color: red"></label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn w-100 btn-sm btn-primary" type="button" id="send_alert_btn"> {% trans "OK" %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Manager Send Email Modal-->
+<div class="adjust-clock task manager-email modal" id="manager-email" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+        <h5 class="modal-title" id="exampleModalLabel">{% trans "Send Email" %} : <span
+            class="mr-2 d-lg-inline font-weight-bold text-black1 small word-style" id="email_to_name"></span></h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body p-3 p-md-4 p-lg-4">
+        <div class="row form-row">
+          <div class="col-lg-12">
+            <div class="form-group">
+              <label>{% trans "To" %} <span class="color-red">*</span></label>
+              <input type="text" class="form-control" id="to_email" readonly>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div class="form-group">
+              <label>{% trans "From" %} <span class="color-red">*</span></label>
+              <input type="text" class="form-control" value="{{request.user.email}}" id="from_email" readonly>
+            </div>
+          </div>
+
+          <div class="col-lg-12">
+            <div class="form-group">
+              <label>{% trans "Subject" %} <span class="color-red">*</span></label>
+              <input type="text" class="form-control" id="email_subject" placeholder="{% trans 'Enter Subject' %}" required onkeyup="subject_validation()">
+              <label id="email_subject_error" style="display: none;color: red"></label>
+            </div>
+          </div>
+
+          <div class="col-lg-12">
+            <div class="form-group m-0">
+              <label>{% trans "Description" %} <span class="color-red">*</span></label>
+              <textarea type="text" class="form-control" id="email_description"  placeholder="{% trans 'Enter Description' %}"
+                onkeyup="description_validation()"></textarea>
+              <label id="email_description_error" style="display: none;color: red"></label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary px-5" type="button" id="send_email_btn"> {% trans "Send" %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Manager  Comment Modal-->
+<div class="adjust-clock task manager-email comment modal" id="manager-comment" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+        <h5 class="modal-title" id="exampleModalLabel">{% trans "Comment to" %}: <span
+            class="mr-2 d-lg-inline font-weight-bold text-black1 small word-style" id="comment_to_name"> </h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body p-3 p-md-4 p-lg-4">
+        <div class="row form-row">
+          <div class="col-lg-12">
+            <div class="form-group m-0">
+              <label>{% trans "Comment" %} <span class="color-red">*</span></label>
+              <textarea type="text" class="form-control" placeholder="{% trans "Add your comment ...." %}." id="user-comment"
+                onkeyup="comment_validation()"></textarea>
+              <label id="comment_error" style="display: none;color: red"></label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary px-5" type="button" id="save-comment" data-attr=""> {% trans "Save" %}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!--Manager Task Modal-->
+<div class="adjust-clock alert task modal" id="manager-task" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+        <h5 class="modal-title" id="exampleModalLabel">{% trans "Task Window" %} </h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body p-3 p-md-4 p-lg-4">
+        <div class="row form-row">
+          <div class="col-lg-12">
+            <div class="form-group">
+              <label> {% trans "Date" %}: <span class="color-red">*</span></label>
+              <input type="text" class="datepicker form-control" placeholder="MM/DD/YYYY" id="task_date">
+              <!-- <input type="date" class="form-control" placeholder="Department Name" > -->
+              <label id="task_date_error" style="display: none;color: red;"></label>
+            </div>
+          </div>
+
+          <div class="col-lg-12">
+            <div class="form-group m-0">
+              <label>{% trans "Today Task" %} <span class="color-red">*</span></label>
+              <textarea type="text" class="form-control" id="today_task" placeholder="{% trans "Add task" %}..."
+                onkeyup="task_validation()"></textarea>
+              <label id="task_error" style="display: none;color: red"></label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn w-100 btn-sm btn-success" type="button" id="assign_task"> {% trans "Assign" %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<div class="submit-msg alert modal fade" id="time_zone_message" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn close-bntn">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0">{% trans "Timezones added successfully" %}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm close-bntn" type="button" data-dismiss="modal">
+          {% trans "Ok" %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="submit-msg alert modal fade" id="universal_msg_modal" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+        <button class="close close-bntn" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0" id="universal_msg"></p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm close-bntn" type="button"
+          data-dismiss="modal"> {% trans "Ok" %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end modal -->
+
+
+<div class="submit-msg alert modal fade" id="universal_msg_modal1111" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+        <button class="close " type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12 text-center">
+            <p class="m-0" >{% trans "Something Went Wrong" %}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm " type="button"
+          data-dismiss="modal"> {% trans "Ok" %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!--Start Schedule date-time  Modal-->
+<div class="adjust-clock modal fade" id="schedule-date-time" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+        <h5 class="modal-title" id="exampleModalLabel"> {% trans "Scheduler" %} </h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn mt-0">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="row form-row">
+        <!--   <div class="col-lg-12 text-center">
+            <h5 class="modal-title schedule-heading" id="exampleModalLabel">{% trans "Scheduler" %} </h5>
+          </div> -->
+          <div class="col-lg-12">
+            <table class="schedule-data" border="0">
+              <tbody>
+                <tr>
+                  <td><span class="btn bg">{% trans 'Day' %}</span> </td>
+                  <td><span class="btn bg">{% trans 'Start Time' %} </span></td>
+                  <td><span class="btn bg">{% trans 'End Time' %} </span></td>
+                  <td><span class="btn bg">{% trans 'Day Off' %} </span></td>
+                </tr>
+                <tr class="schedule_tr">
+                  <td> <span class="btn bg schedule_day">{% trans 'Monday' %}</span></td>
+                  <td>
+                    <span class="btn">
+                      <div class="form-group">
+                        <input type="text" class="form-control timepicker scheduler_start_date" placeholder="HH:MM" />
+                      </div>
+                    </span>
+                  </td>
+                  <td>
+                    <span class="btn">
+                      <div class="form-group">
+                        <input type="text" class="form-control timepicker scheduler_end_date" placeholder="HH:MM" />
+                      </div>
+                    </span>
+                  </td>
+                  <td>
+                    <div class="form-group">
+                      <input type="checkbox" class="schedule_day_off" name="schedule_day_off" value="Boat">
+                    </div>
+                  </td>
+                </tr>
+                <tr class="schedule_tr">
+                  <td> <span class="btn bg schedule_day">{% trans 'Tuesday' %} </span></td>
+                  <td>
+                    <span class="btn">
+                      <div class="form-group">
+                        <input type="text" class="form-control timepicker scheduler_start_date" placeholder="HH:MM" />
+                      </div>
+
+                    </span>
+                  </td>
+                  <td>
+                    <span class="btn">
+                      <div class="form-group">
+                        <input type="text" class="form-control timepicker scheduler_end_date" placeholder="HH:MM" />
+                      </div>
+
+                    </span>
+                  </td>
+                  <td>
+                    <div class="form-group">
+                      <input type="checkbox" class="schedule_day_off" name="schedule_day_off" value="Boat">
+                    </div>
+                  </td>
+                </tr>
+                <tr class="schedule_tr">
+                  <td><span class="btn bg schedule_day">{% trans 'Wednesday' %}</span>
+                  </td>
+                  <td>
+                    <span class="btn">
+                      <div class="form-group">
+                        <input type="text" class="form-control timepicker scheduler_start_date" placeholder="HH:MM" />
+                      </div>
+
+                    </span>
+                  </td>
+                  <td>
+                    <span class="btn">
+                      <div class="form-group">
+                        <input type="text" class="form-control timepicker scheduler_end_date" placeholder="HH:MM" />
+                      </div>
+                    </span>
+                  </td>
+                  <td>
+                    <div class="form-group">
+                      <input type="checkbox" class="schedule_day_off" name="schedule_day_off" value="Boat">
+                    </div>
+                  </td>
+                </tr>
+                <tr class="schedule_tr">
+                  <td><span class="btn bg schedule_day">{% trans 'Thursday' %} </span></td>
+                  <td>
+                    <span class="btn">
+                      <div class="form-group">
+                        <input type="text" class="form-control timepicker scheduler_start_date" placeholder="HH:MM" />
+                      </div>
+                    </span>
+                  </td>
+                  <td>
+                    <span class="btn">
+                      <div class="form-group">
+                        <input type="text" class="form-control timepicker scheduler_end_date" placeholder="HH:MM" />
+                      </div>
+
+                    </span>
+                  </td>
+                  <td>
+                    <div class="form-group">
+                      <input type="checkbox" class="schedule_day_off" name="schedule_day_off" value="Boat">
+                    </div>
+                  </td>
+                </tr>
+                <tr class="schedule_tr">
+                  <td><span class="btn bg schedule_day">{% trans 'Friday' %} </span></td>
+                  <td>
+                    <span class="btn">
+                      <div class="form-group">
+                        <input type="text" class="form-control timepicker scheduler_start_date" placeholder="HH:MM" />
+                      </div>
+                    </span>
+                  </td>
+                  <td>
+                    <span class="btn">
+                      <div class="form-group">
+                        <input type="text" class="form-control timepicker scheduler_end_date" placeholder="HH:MM" />
+                      </div>
+
+                    </span>
+                  </td>
+                  <td>
+                    <div class="form-group">
+                      <input type="checkbox" class="schedule_day_off" name="schedule_day_off" value="Boat">
+                    </div>
+                  </td>
+                </tr>
+                <tr class="schedule_tr">
+                  <td><span class="btn bg schedule_day">{% trans 'Saturday' %}</span></td>
+                  <td>
+                    <span class="btn">
+                      <div class="form-group">
+                        <input type="text" class="form-control timepicker scheduler_start_date" placeholder="HH:MM" />
+                      </div>
+                    </span>
+                  </td>
+                  <td>
+                    <span class="btn">
+                      <div class="form-group">
+                        <input type="text" class="form-control timepicker scheduler_end_date" placeholder="HH:MM" />
+                      </div>
+                    </span>
+                  </td>
+                  <td>
+                    <div class="form-group">
+                      <input type="checkbox" class="schedule_day_off" name="schedule_day_off" value="Boat">
+                    </div>
+                  </td>
+                </tr>
+                <tr class="schedule_tr">
+                  <td><span class="btn bg schedule_day">{% trans 'Sunday' %}</span></td>
+                  <td>
+                    <span class="btn">
+                      <div class="form-group">
+                        <input type="text" class="form-control timepicker scheduler_start_date" placeholder="HH:MM" />
+                      </div>
+                    </span>
+                  </td>
+                  <td>
+                    <span class="btn">
+                      <div class="form-group">
+                        <input type="text" class="form-control timepicker scheduler_end_date" placeholder="HH:MM" />
+                      </div>
+                    </span>
+                  </td>
+                  <td>
+                    <div class="form-group">
+                      <input type="checkbox" class="schedule_day_off" name="schedule_day_off" value="Boat">
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <table class="schedule-data" border="0">
+              <tbody>
+                <tr>
+                  <td><span class="btn bg">{% trans 'Start Date' %} </span></td>
+                   <td>
+                    <div class="label-wrapper">
+                      <span class="btn">
+                        <div class="form-group">
+                          <input type="text" class="datepicker form-control schedule-date-cls" placeholder="MM/DD/YYYY" id="start_date_scheduler">
+                        </div>
+                      </span>
+                       <label id="start_date_scheduler_error" style="display: none;color: red;"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="btn bg">{% trans 'End Date' %} </span></td>
+                   <td>
+                    <div class="label-wrapper">
+                    <span class="btn">
+                      <div class="form-group">
+                        <input type="text" class="datepicker form-control schedule-date-cls" placeholder="MM/DD/YYYY" id="end_date_scheduler">
+                      </div>
+                    </span>
+                        <label id="end_date_scheduler_error" style="display: none;color: red;"></label>
+                      </div>
+                  </td>
+                </tr>
+               
+              </tbody>
+            </table>
+          </div>
+          <div class="col-lg-12 text-center">
+            <label id="schedule-date-time-error" style="display: none;color: red;"></label>
+            <div class="form-group">
+              <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm" id="add_schedule_btn"
+                type="button">{% trans "Set Schedule" %}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Schedule date-time  Modal-->
+
+
+<!-- change-password modal -->
+<div class="adjust-clock task modal" id="change-password" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+        <h5 class="modal-title" id="exampleModalLabel">{% trans "Change Password" %} </h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-body p-3 p-md-4 p-lg-4">
+        <div class="row form-row ">
+          <div class="col-lg-12">
+            <div class="form-group form-row field-static">
+              <label>{% trans "Name" %} : </label>
+              <div class="col-sm-10">
+                <input type="text" readonly class="form-control-plaintext" id="staticName" value="Name">
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div class="form-group form-row field-static">
+              <label>{% trans "Email" %} :</label>
+              <div class="col-sm-10">
+                <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="email@example.com">
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div class="form-group">
+              <label>{% trans "Password" %} <span class="color-red">*</span> </label>
+              <input type="password" class="form-control" placeholder="{% trans "Enter Password" %}" required="" id="password"
+                onkeyup="password_validation()">
+              <label id="password_label" style="display: none;color: red;"></label>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div class="form-group m-0">
+              <label>{% trans "Confirm Password" %}<span class="color-red">*</span></label>
+              <input type="password" class="form-control" placeholder="{% trans "Enter Confirm Password" %}" id="confirm_password"
+                onkeyup="confirm_password_validation()" required="">
+              <label id="confirm_password_label" style="display: none;color: red;"></label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0">
+        <button class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm" type="button"
+          id="change_password_btn">{% trans "Submit" %} </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end modal -->
+<!--Start Overtime date-time  Modal-->
+<div class="adjust-clock modal fade" id="overtime-date-time" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-1 flex-row align-items-center justify-content-between">
+        <h5 class="modal-title" id="exampleModalLabel"> {% trans "Select Extended Hours" %} </h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <div class="close-btn mt-0">
+            <span aria-hidden="true">×</span>
+          </div>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="row form-row">
+          <div class="col-lg-12">
+            <form method='POST'  id="form-validate" action="{% url 'saveovertime' %}">
+              {% csrf_token %}
+            <table class="schedule-data" border="0">
+              <tbody>
+                <tr>
+                  <td><span class="btn bg">{% trans 'Days' %} </span></td>
+                   <td>
+                    <div class="label-wrapper">
+                      <span class="btn">
+                        <div class="form-group">
+                          <select name="days" id="days">
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                            <option value="Saturday">Saturday</option>
+                            <option value="Sunday">Monday</option>
+                          </select>
+                        </div>
+                      </span>
+                       <label id="start_date_scheduler_error" style="display: none;color: red;"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="btn bg">{% trans 'Start Date' %} </span></td>
+                   <td>
+                    <div class="label-wrapper">
+                      <span class="btn">
+                        <div class="form-group">
+                          <input type="text"  name="startdate" class="datepicker form-control schedule-date-cls" placeholder="YYYY/MM/DD" id="start_date_overtime" required="">
+                        </div>
+                      </span>
+                       <label id="start_date_scheduler_error" style="display: none;color: red;"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <tr>
+                    <td><span class="btn bg">{% trans 'End Date' %} </span></td>
+                     <td>
+                      <div class="label-wrapper">
+                        <span class="btn">
+                          <div class="form-group">
+                            <input type="text"  name="enddate" class="datepicker form-control schedule-date-cls" placeholder="YYYY/MM/DD" id="end_date_overtime" required="">
+                          </div>
+                        </span>
+
+                        <div class="form-group">
+                            <input type="text" id="s1" name="user_id" value="" class="form-control" hidden />
+
+                      </div>
+
+                         <label id="start_date_scheduler_error" style="display: none;color: red;"></label>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                   
+
+                  <tr>
+                  <td><span class="btn bg">{% trans 'Start Time' %} </span></td>
+                  <td>
+                    <span class="btn">
+                      <div class="form-group">
+                        <input type="text" class="form-control timepicker" name="starttime" id="overtime_start_time" placeholder="HH:MM"   onkeyup="overtime_validation()"/>
+                      </div>
+                    </span>
+                  </td>
+                </tr> 
+                <tr>
+                  <td><span class="btn bg">{% trans 'End Time' %} </span></td>
+                  <td>
+                    <span class="btn">
+                      <div class="form-group">
+                        <input type="text" class="form-control timepicker"  name="endtime" id="overtime_end_time" placeholder="HH:MM"  onkeyup="overtime_validation()"/>
+                      </div>
+                    </span>
+                  </td>
+                </tr>                 
+              </tbody>
+            </table>
+          </div>
+          <div class="col-lg-12 text-center">
+            <label id="schedule-date-time-error" style="display: none;color: red;"></label>
+            <div class="form-group">
+                <input type="submit"  class="d-sm-inline-block btn btn-sm btn-primary sbt-btn shadow-sm" id="add_overtime_btn" class="btn btn-primary" 
+                data-attr="" value='{% trans "Set Overtime" %}'>
+
+            </div>
+          </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Start Overtime date-time  Modal -->
+
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+<script src="{% static 'datetime-picker/wickedpicker.min.js' %}"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<!-- Bootstrap core JavaScript-->
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- Custom scripts for all pages-->
+<script src="{% static 'js/sb-admin-2.js' %}"></script>
+<script type="text/javascript">
+
+  $(document).on('change', ".schedule_day_off", function(){
+    if($(this).is(":checked")){
+      $(this).parent().parent().parent().find(".scheduler_start_date").prop('disabled', true)
+      $(this).parent().parent().parent().find(".scheduler_start_date").val("{% trans 'Day Off' %}")
+      $(this).parent().parent().parent().find(".scheduler_end_date").prop('disabled', true)
+      $(this).parent().parent().parent().find(".scheduler_end_date").val("{% trans 'Day Off' %}")
+    }
+    else{
+      $(this).parent().parent().parent().find(".scheduler_start_date").prop('disabled', false)
+      $(this).parent().parent().parent().find(".scheduler_end_date").prop('disabled', false)
+      
+      var hours = new Date().getHours();
+      var minutes = new Date().getMinutes();
+      var hours = (hours)%24; 
+
+      var ampm = (hours) >= 12 ? 'PM' : 'AM';
+
+      hours = (hours) % 12;
+      hours = hours ? hours : 12;
+      hours = ((hours.toString()).length == 1) ? "0" + (hours).toString() : hours;
+      minute = ((minutes.toString()).length == 1) ? "0" + minutes.toString() : minutes;
+
+      $(this).parent().parent().parent().find(".scheduler_start_date").val(hours.toString()+" : "+minute.toString()+" "+ampm)
+      $(this).parent().parent().parent().find(".scheduler_end_date").val(hours.toString()+" : "+minute.toString()+" "+ampm)
+    }
+  })
+
+
+  $("#add_overtime_btns").click(function () {
+    user_id = $(this).attr('data-attr')
+    startdate = $("#user-comment").val()
+    starttime = $("#user-comment").val()
+    endtime = $("#user-comment").val()
+    comment_validation()
+    if (comment_validation()) {
+      $("#page_loader").show()
+      $.ajax({
+        type: 'POST',
+        url: "{% url 'add_comment' %}",
+        data: {
+          "user_id": user_id,
+          "comment": comment
+        },
+        success: function (response) {
+          $("#page_loader").hide()
+          if (response == 1) {
+            $("#manager-comment").modal("hide")
+            $("#universal_msg").html("{% trans "Comment added successfully" %}")
+            $("#universal_msg_modal").modal("show")
+          }
+          else {
+            // alert(response)
+            $("#universal_msg_modal11").modal("show")
+          }
+        }
+      });
+    }
+  })
+
+$(".schedule-date-cls").datepicker({ minDate: 0, dateFormat: 'mm/dd/yy' })
+
+$("#start_date").datepicker({ minDate: 0, dateFormat: 'dd/mm/yy' })
+$("#end_date").datepicker({ minDate: 0, dateFormat: 'dd/mm/yy' })
+  $("#task_date").datepicker({ minDate: 0 })
+  $("#start_time").val("")
+    $("#end_time").val("")
+// $(document).on("change","#start_date",function(){   
+//     $("#end_date").datepicker( "option", "minDate", new Date($(this).val()) );
+//   })
+
+  $('#task_date').on("cut copy paste",function(e) {
+      e.preventDefault();
+   });
+$('#start_date').on("cut copy paste",function(e) {
+      e.preventDefault();
+   });
+$('#end_date').on("cut copy paste",function(e) {
+      e.preventDefault();
+   });
+
+
+  
+  $("#search_bar_btn").click(function(){
+    emp_name = $("#search_bar").val()
+    if(emp_name == ""){
+      $("#search_bar").focus()
+    }
+    else{
+      location.href = "{% url 'employee_listing' %}?emp_name="+ emp_name +""
+    }
+  })
+
+  $(document).on('keypress','#search_bar',function (e) {
+         var key = e.which;
+         if(key == 13)  // the enter key code
+         {
+            $('#search_bar_btn').click();
+            return false;
+         }
+      });
+
+
+  var loc = window.location
+  var endpoint = ''
+  var wsStart = 'ws://'
+  if (loc.protocol == 'https:') {
+    wsStart = 'wss://'
+  }
+
+
+
+
+  var endpoint = wsStart + loc.host + "/manager_notify/{{request.user.username}}/"
+  var socket = new WebSocket(endpoint)
+
+  socket.onmessage = function (e) {
+    console.log("message", e)
+    e_data = JSON.parse(e.data)
+    e_data = JSON.parse(e_data["data"])
+    if (e_data["status"] == "i_am_here") {
+      $("#status_" + e_data["staff_id"].toString() + "").html("{% trans "Online" %}")
+      $("#icon_" + e_data["staff_id"].toString() + "").removeClass()
+      $("#icon_" + e_data['staff_id'].toString() + "").addClass("fas fa-circle green-color")
+    }
+    else if (e_data["status"] == "in_meeting") {
+      $("#status_" + e_data["staff_id"].toString() + "").html("{% trans "In Meeting" %}")
+      $("#icon_" + e_data["staff_id"].toString() + "").removeClass()
+      $("#icon_" + e_data['staff_id'].toString() + "").addClass("fas fa-circle orange-color")
+    }
+    else if (e_data["status"] == "lunch_break") {
+      $("#status_" + e_data["staff_id"].toString() + "").html("{% trans "Lunch Break" %}")
+      $("#icon_" + e_data["staff_id"].toString() + "").removeClass()
+      $("#icon_" + e_data['staff_id'].toString() + "").addClass("fas fa-circle orange-color")
+    }
+    else if (e_data["status"] == "tea_break") {
+      $("#status_" + e_data["staff_id"].toString() + "").html("{% trans "Tea Break" %}")
+      $("#icon_" + e_data["staff_id"].toString() + "").removeClass()
+      $("#icon_" + e_data['staff_id'].toString() + "").addClass("fas fa-circle orange-color")
+    }
+    else {
+      $("#status_" + e_data["staff_id"].toString() + "").html("{% trans "Offline" %}")
+      $("#icon_" + e_data["staff_id"].toString() + "").removeClass()
+      $("#icon_" + e_data['staff_id'].toString() + "").addClass("fas fa-circle red-color")
+    }
+
+    if(e_data["ip_loc"]){
+      $("#location_" + e_data["staff_id"].toString() + "").html(e_data["ip_loc"])
+    }
+
+  }
+  socket.onopen = function (e) {
+    console.log("open", e)
+  }
+  socket.onerror = function (e) {
+    console.log("error", e)
+  }
+  socket.onclose = function (e) {
+    console.log("onclose", e)
+  }
+
+
+
+ 
+  $(".open_schedule_calendar").click(function () {
+    $("#schedule-date-time").modal("show")
+    $(".scheduler_start_date").prop('disabled', false)
+    $(".scheduler_end_date").prop('disabled', false)
+    $(".schedule_day_off").prop('checked', false)
+    $("#add_schedule_btn").attr("data-attr", $(this).attr("data-attr"))
+    $("#start_date_scheduler_error").hide()
+    $("#end_date_scheduler_error").hide()
+    $("#schedule-date-time-error").hide()
+    $("#start_date_scheduler").val("")
+    $("#end_date_scheduler").val("")
+    var hours = new Date().getHours();
+      var minutes = new Date().getMinutes();
+      var ampm = (hours) >= 12 ? 'PM' : 'AM';
+
+      hours = (hours) % 12;
+      hours = hours ? hours : 12;
+      hours = ((hours.toString()).length == 1) ? "0" + (hours).toString() : hours;
+      minute = ((minutes.toString()).length == 1) ? "0" + minutes.toString() : minutes;
+    $(".scheduler_start_date").val(hours.toString()+" : "+minute.toString()+" "+ampm)
+    $(".scheduler_end_date").val(hours.toString()+" : "+minute.toString()+" "+ampm)
+
+  })
+
+  function start_date_fn() {
+    start_date = $("#start_date_scheduler").val()
+    if (start_date == "") {
+      $("#start_date_scheduler_error").html("{% trans "This field is required" %}")
+      $("#start_date_scheduler_error").show()
+      return false
+    }
+    else {
+      $("#start_date_scheduler_error").hide()
+      return true
+    }
+  }
+
+  function end_date_fn() {
+    end_date = $("#end_date_scheduler").val()
+    if (end_date == "") {
+      $("#end_date_scheduler_error").html("{% trans "This field is required" %}")
+      $("#end_date_scheduler_error").show()
+      return false
+    }
+    else {
+      $("#end_date_scheduler_error").hide()
+      return true
+    }
+  }
+
+  function time_list_validation() {
+    error_data = []
+    $(".schedule_tr").each(function(){
+        start_time = $(this).find(".scheduler_start_date").val()
+        end_time = $(this).find(".scheduler_end_date").val()
+        if (start_time != "{% trans "Day Off" %}" && end_time != "{% trans 'Day Off' %}"){
+          if(start_time == end_time){
+            error_data.push(($(this).find(".schedule_day").text()).trim())            
+          }
+        }
+      })
+    if(error_data.length != 0){
+      error_data_str = error_data.join(", ");
+      $("#schedule-date-time-error").html("{% trans 'Start and End time for' %} "+error_data_str+" {% trans 'should not be same' %}.")
+      $("#schedule-date-time-error").show()
+      return false
+    }
+    else{
+      $("#schedule-date-time-error").hide()
+      return true
+    }
+  }
+  employee_user_id = {}
+  $(".overtime_icon").click(function () {
+    $("#overtime-date-time").modal("show")
+    id = $(this).attr("data-attr")
+    employee_user_id["staff_id"] = id
+    user_id = $(this).attr("data-attr")
+  })
+  
+
+  $("#add_overtime_btn").click(function () {
+    // id = $(this).attr('data-attr')
+    id="3";
+      $.ajax({
+        type: 'POST',
+        url: "{% url 'saveovertime' %}",
+        data: {
+          "user_id": id,
+        },
+        console.log(">>>>>>>>>>>>>>",data)
+        success: function (response) {
+          $("#page_loader").hide()
+          if (response == 1) {
+            $("#overtime-date-time").modal("hide")
+            $("#universal_msg").html("{% trans "overtime added successfully" %}")
+            $("#universal_msg_modal").modal("show")
+          }
+          else {
+            // alert(response)
+            $("#universal_msg_modal11").modal("show")
+          }
+        }
+      });
+    
+
+
+  $("#add_schedule_btn").click(function () {
+    $("#schedule-date-time-error").hide()
+  $("#start_date_scheduler_error").hide()
+  $("#end_date_scheduler_error").hide()
+    start_date_fn()
+    end_date_fn()
+    time_list_validation()
+    if (start_date_fn() && end_date_fn() && time_list_validation()) {
+      final_data = []
+      $(".schedule_tr").each(function(){
+        start_time = $(this).find(".scheduler_start_date").val()
+        end_time = $(this).find(".scheduler_end_date").val()
+        week_day = $(this).find(".schedule_day").text()
+        
+        dict = {"scheduler_end_date": end_time, "scheduler_start_date" :start_time, "week_day" : week_day}
+        final_data.push(dict)
+      })
+      console.log(final_data)
+      start_date = $("#start_date_scheduler").val()
+      end_date = $("#end_date_scheduler").val()
+      id = $(this).attr("data-attr")
+      $("#page_loader").show()
+      $.ajax({
+        type: 'POST',
+        url: "{% url 'add_schedle_time' %}",
+        data: {
+          "start_date": start_date,
+          "end_date": end_date,
+          "time_list" : JSON.stringify(final_data),
+          "staff_id": id
+        },
+        success: function (response) {
+          $("#page_loader").hide()
+          if (response == 1) {
+            $("#schedule-date-time").modal("hide")
+            $("#universal_msg").html("{% trans "Schedule time added successfully" %}")
+            $("#universal_msg_modal").modal("show")
+          }
+          else {
+            $("#schedule-date-time-error").html(response)
+            $("#schedule-date-time-error").show()
+          }
+        }
+      });
+    }
+
+  })
+
+
+
+  user_online_status(1);
+
+  function user_online_status(tr) {
+    if ($('.emp-list table tr').eq(tr).length > 0) {
+      var attr_val = $('.emp-list table tr').eq(tr).find('.user_online_status').attr('data-attr');
+      console.log(attr_val);
+
+      $.ajax({
+        type: 'POST',
+        url: "{% url 'check_user_online_status' %}",
+        data: {
+          "user_id": attr_val,
+        },
+        success: function (response) {
+          response = JSON.parse(response)
+          console.log(response)
+          response = response[0]
+          if (response['offline']) {
+            $("#status_" + response['user_id'].toString() + "").html("{% trans "Offline" %}")
+            $("#icon_" + response['user_id'] + "").removeClass()
+            $("#icon_" + response['user_id'] + "").addClass("fas fa-circle red-color")
+          }
+          if (response['i_am_here']) {
+            $("#status_" + response['user_id'].toString() + "").html("{% trans "Online" %}")
+            $("#icon_" + response['user_id'] + "").removeClass()
+            $("#icon_" + response['user_id'] + "").addClass("fas fa-circle green-color")
+          }
+          if (response['in_meeting']) {
+            $("#status_" + response['user_id'].toString() + "").html("{% trans "In Meeting" %}")
+            $("#icon_" + response['user_id'] + "").removeClass()
+            $("#icon_" + response['user_id'] + "").addClass("fas fa-circle orange-color")
+          }
+          if (response['lunch_break']) {
+            $("#status_" + response['user_id'].toString() + "").html("{% trans "Lunch Break" %}")
+            $("#icon_" + response['user_id'] + "").removeClass()
+            $("#icon_" + response['user_id'] + "").addClass("fas fa-circle orange-color")
+          }
+          if (response['tea_break']) {
+            $("#status_" + response['user_id'].toString() + "").html("Tea Break")
+            $("#icon_" + response['user_id'] + "").removeClass()
+            $("#icon_" + response['user_id'] + "").addClass("{% trans "fas fa-circle orange-color" %}")
+          }
+        }
+      });
+
+
+      tr++;
+      setTimeout(function () {
+        user_online_status(tr);
+      }, 60000);
+
+    } else {
+      setTimeout(function () {
+        user_online_status(1);
+      }, 60000);
+    }
+  }
+
+
+  function overtime_validation() {
+    start_time = $("#overtime_start_time").val()
+    end_time = $("#overtime_end_time").val()
+    if (end_time < start_time) {
+      $("#start_date_scheduler_error").html("{% trans "Your end time is incorrect" %}")
+      $("#start_date_scheduler_error").show()
+      return false
+    }
+    else {
+      $("#start_date_scheduler_error").hide()
+      return true
+    }
+  }
+
+
+  function comment_validation() {
+    user_comment = $("#user-comment").val()
+    if (user_comment == "") {
+      $("#comment_error").html("{% trans "This field is required" %}")
+      $("#comment_error").show()
+      return false
+    }
+    else {
+      $("#comment_error").hide()
+      return true
+    }
+  }
+
+  function task_validation() {
+    today_task = $("#today_task").val()
+    if (today_task == "") {
+      $("#task_error").html("{% trans "This field is required" %}")
+      $("#task_error").show()
+      return false
+    }
+    else {
+      $("#task_error").hide()
+      return true
+    }
+  }
+
+  function task_date_validation() {
+    task_date = $("#task_date").val()
+    if (task_date == "") {
+      $("#task_date_error").html("{% trans "This field is required" %}")
+      $("#task_date_error").show()
+      return false
+    }
+    else {
+      $("#task_date_error").hide()
+      return true
+    }
+  }
+
+  function subject_validation() {
+    email_subject = $("#email_subject").val()
+    if (email_subject == "") {
+      $("#email_subject_error").html("{% trans "This field is required" %}")
+      $("#email_subject_error").show()
+      return false
+    }
+    else {
+      $("#email_subject_error").hide()
+      return true
+    }
+  }
+
+  function description_validation() {
+    email_description = $("#email_description").val()
+    if (email_description == "") {
+      $("#email_description_error").html("{% trans "This field is required" %}")
+      $("#email_description_error").show()
+      return false
+    }
+    else {
+      $("#email_description_error").hide()
+      return true
+    }
+  }
+
+  function alert_validation() {
+    alert_message = $("#alert_message").val()
+    if (alert_message == "") {
+      $("#alert_message_error").html("{% trans "This field is required" %}")
+      $("#alert_message_error").show()
+      return false
+    }
+    else {
+      $("#alert_message_error").hide()
+      return true
+    }
+  }
+
+  function password_validation() {
+    password = $("#password").val();
+    // var password_regex = /^(?=\S*[a-z][A-Z])(?=\S*\d)(?=\S*[^\w\s])\S{6,}$/;
+     password_regex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
+    if (password.length == '' || password.length == null) {
+      $("#password_label").show()
+      $("#password_label").html("{% trans "This field is required" %}");
+      return false;
+    }
+    else {
+      if (password.length > 20 || password.length < 6) {
+        $("#password_label").show()
+        $("#password_label").html("{% trans "Password must contain 6 to 20 characters" %}");
+        return false;
+      }
+      // else if (!!~password.indexOf(' ')) {
+      //   $("#password_label").show()
+      //   $("#password_label").html("{% trans "Password must not contain white spaces" %}");
+      //   return false;
+      // }
+      else if(password_regex.test(password)==false){
+          $("#password_label").show()
+          $("#password_label").html("{% trans "Password must contain Uppercase & lowercase letters, special characters, and numbers." %}");
+          return false;
+      } 
+      else {
+        $("#password_label").hide()
+        return true;
+      }
+    }
+  };
+
+  function confirm_password_validation() {
+    pass = $("#password").val();
+    password = $("#confirm_password").val();
+
+    if (password.length == '' || password.length == null) {
+      $("#confirm_password_label").show()
+      $("#confirm_password_label").html("{% trans "This field is required" %}")
+      return false;
+    }
+    else {
+      if (password != pass) {
+        $("#confirm_password_label").show()
+        $("#confirm_password_label").html("{% trans "Passwords should be same" %}");
+        return false;
+      }
+      else {
+        $("#confirm_password_label").hide()
+        return true;
+      }
+    }
+  };
+
+  $(".change_password_icon").click(function () {
+    val = $(this).attr('data-attr')
+    split = val.split(",")
+    email = split[1]
+    name = split[0]
+    $("#staticName").val(name)
+    $("#staticEmail").val(email)
+    $("#password").val("")
+    $("#confirm_password").val("")
+    $("#change-password").modal("show")
+    $("#password_label").hide()
+    $("#confirm_password_label").hide()
+  })
+
+  $("#change_password_btn").click(function () {
+    password_validation()
+    confirm_password_validation()
+    if (password_validation() && confirm_password_validation()) {
+      email = $("#staticEmail").val()
+      $.ajax({
+        type: 'POST',
+        url: "{% url 'change_staff_pass' %}",
+        data: {
+          "email": email,
+          "password": $("#password").val(),
+        },
+        success: function (response) {
+          if (response == 1) {
+            $("#change-password").modal("hide")
+            $("#universal_msg").html("{% trans "Password changed successfully" %}")
+            $("#universal_msg_modal").modal("show")
+          }
+          else {
+            
+            $("#universal_msg_modal1111").modal("show")
+            // alert(response)
+          }
+        }
+      });
+    }
+  })
+
+  $("#send_email_btn").click(function () {
+    to_email = $("#to_email").val()
+    from_email = $("#from_email").val()
+    email_subject = $("#email_subject").val()
+    email_description = $("#email_description").val()
+    subject_validation()
+    description_validation()
+    if (subject_validation() && description_validation()) {
+      $("#page_loader").show()
+      $.ajax({
+        type: 'POST',
+        url: "{% url 'today_email' %}",
+        data: {
+          "to_email": to_email,
+          "from_email": from_email,
+          "email_subject": email_subject,
+          "email_description": email_description,
+        },
+        success: function (response) {
+          $("#page_loader").hide()
+          if (response == 1) {
+            $("#manager-email").modal("hide")
+            $("#universal_msg").html("{% trans "Email sent successfully" %}")
+            $("#universal_msg_modal").modal("show")
+          }
+          else {
+            // alert(response)
+            $("#universal_msg_modal11").modal("show")
+          }
+        }
+      });
+    }
+  })
+
+  $(".email_modal").click(function () {
+    val = $(this).attr("data-attr")
+    val = val.split(",")
+    $("#to_email").val(val[0])
+    $("#email_to_name").html(val[1])
+    $("#email_subject_error").hide()
+    $("#email_description_error").hide()
+    $("#manager-email").modal("show")
+    $("#email_subject").val("")
+    $("#email_description").val("")
+  })
+
+
+  $(".task_modal").click(function () {
+    user_id = $(this).attr("data-attr")
+    $("#assign_task").attr("data-attr", user_id)
+    $("#manager-task").modal("show")
+    $("#task_date_error").hide()
+    $("#task_error").hide()
+    $("#task_date").val('')
+    $("#today_task").val('')
+  })
+
+
+  $("#assign_task").click(function () {
+    user_id = $(this).attr("data-attr")
+    task = $("#today_task").val()
+    task_validation()
+    task_date_validation()
+    if (task_validation() && task_date_validation()) {
+      $("#page_loader").show()
+      $.ajax({
+        type: 'POST',
+        url: "{% url 'today_task' %}",
+        data: {
+          "date" : $("#task_date").val(),
+          "user_id": user_id,
+          "task": task
+        },
+        success: function (response) {
+          $("#page_loader").hide()
+          if (response == 1) {
+            $("#manager-task").modal("hide")
+            $("#universal_msg").html("{% trans "Task Assigned successfully" %}")
+            $("#universal_msg_modal").modal("show")
+          }
+          else {
+            // alert(response)
+            $("#universal_msg_modal11").modal("show")
+          }
+        }
+      });
+    }
+  })
+
+  $(".comment_model").click(function () {
+    user_id = $(this).attr("data-attr")
+    comment = $(this).attr("data-comment")
+    name = $(this).attr("data-name")
+    $("#comment_error").hide()
+    $("#comment_to_name").html(name)
+    $("#user-comment").val(comment)
+    $("#save-comment").attr("data-attr", user_id)
+    $("#manager-comment").modal("show")
+  })
+
+  $("#save-comment").click(function () {
+    user_id = $(this).attr('data-attr')
+    comment = $("#user-comment").val()
+    comment_validation()
+    if (comment_validation()) {
+      $("#page_loader").show()
+      $.ajax({
+        type: 'POST',
+        url: "{% url 'add_comment' %}",
+        data: {
+          "user_id": user_id,
+          "comment": comment
+        },
+        success: function (response) {
+          $("#page_loader").hide()
+          if (response == 1) {
+            $("#manager-comment").modal("hide")
+            $("#universal_msg").html("{% trans "Comment added successfully" %}")
+            $("#universal_msg_modal").modal("show")
+          }
+          else {
+            // alert(response)
+            $("#universal_msg_modal11").modal("show")
+          }
+        }
+      });
+    }
+  })
+
+  $(".alert_btn").click(function () {
+    $("#manager-alert").modal("show")
+    $("#alert_message").val('')
+    $("#send_alert_btn").attr("data-attr", $(this).attr('data-attr'))
+    $("#alert_message_error").hide()
+  })
+
+  $("#send_alert_btn").click(function () {
+    user_id = $(this).attr('data-attr')
+    alert_message = $("#alert_message").val()
+    alert_validation()
+    if (alert_validation()) {
+      $("#page_loader").show()
+      $.ajax({
+        type: 'POST',
+        url: "{% url 'alert_user' %}",
+        data: {
+          "user_id": user_id,
+          "alert_message": alert_message,
+        },
+        success: function (response) {
+          $("#page_loader").hide()
+          if (response == 1) {
+            $("#manager-alert").modal("hide")
+            $("#universal_msg").html("{% trans "Alert sent successfully" %}")
+            $("#universal_msg_modal").modal("show")
+          }
+          else {
+            // alert("Something went wrong")
+            $("#universal_msg_modal11").modal("show")
+          }
+        }
+      });
+    }
+  })
+
+  $(".close-bntn").click(function () {
+    location.href = "{% url 'employee_listing' %}";
+  })
+
+
+</script>
+
+<script>
+        
+        // open a socket connection
+        var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+        const chatSocket = new WebSocket(
+            ws_scheme
+            + '://'
+            + window.location.host
+            + '/ws/startCall/'
+        );
+
+        // listen to data on socket communication
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            var meeting_id = data['meeting_id'];// meeting id sent to user browser through socket
+            //https://meet.mgdsw.info:13043/${meeting_id}/
+            var role = $('#user_role').val(); // user role of current logged in user
+            var username = $('#user_name').val(); // username of current logged in user
+            if(role==2 && username==meeting_id){ // the call invitation will be shown to user if user role is employee and meeting id created through socket is same as current logged in username
+                var body = `{% trans "You are invited to join the video call. Please join here" %} - <a  href='/jitsi/meeting/${meeting_id}/' target='_blank'>{% trans "JOIN NOW" %}</a>`;
+                $('#myModal').find('.modal-body').html(body);
+
+                $("#myModal").modal()
+            }
+            
+        };
+
+        // on manager role, clicking on call button will pass the username on socket and send notification to that user for a call accept.
+        $(".meeting_id").click(function(){
+            userToCall= $(this).attr('attr');
+            start(userToCall);
+        });
+
+        
+
+        // start socket connection
+        function start(name) {
+            chatSocket.send(JSON.stringify({
+                'meeting_id': name,
+            }));
+        }
+
+        chatSocket.onopen = function open() {
+          console.log('WebSockets connection created.');
+        };
+        
+
+        chatSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+
+        
+</script>
+{% endblock %}
